@@ -1,0 +1,6 @@
+{
+  "name": "PRAYERCLOUD - Global Christian Missionary & Unreached Peoples Platform",
+  "description": "Global Christian platform for unreached people groups, missionary hub, real-time prayer coordination, interactive world prayer map, chat, voice and video conferencing.",
+  "requestFramePermissions": ["camera", "microphone", "display-capture"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

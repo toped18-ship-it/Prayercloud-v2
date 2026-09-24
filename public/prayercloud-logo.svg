@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%" fill="none">
+  <defs>
+    <!-- Soft Ambient Drop Shadow -->
+    <filter id="pc-shadow" x="-20%" y="-20%" width="150%" height="150%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="-6" dy="14" stdDeviation="12" flood-color="#0a1026" flood-opacity="0.55" />
+    </filter>
+
+    <!-- Blue Front Gradients -->
+    <linearGradient id="blueFront" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2434db" />
+      <stop offset="100%" stop-color="#141ea8" />
+    </linearGradient>
+
+    <!-- Blue Top/Side 3D Extrusion Gradients -->
+    <linearGradient id="blueTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3d52f5" />
+      <stop offset="100%" stop-color="#2535d9" />
+    </linearGradient>
+    <linearGradient id="blueSide" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0e176b" />
+      <stop offset="100%" stop-color="#080c3d" />
+    </linearGradient>
+
+    <!-- Yellow Front Gradients -->
+    <linearGradient id="yellowFront" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd200" />
+      <stop offset="100%" stop-color="#e6b000" />
+    </linearGradient>
+
+    <!-- Yellow 3D Depth Gradients -->
+    <linearGradient id="yellowTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe659" />
+      <stop offset="100%" stop-color="#ffd200" />
+    </linearGradient>
+    <linearGradient id="yellowSide" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#b88600" />
+      <stop offset="100%" stop-color="#735400" />
+    </linearGradient>
+  </defs>
+
+  <g filter="url(#pc-shadow)">
+    <!-- 3D P Side Extrusion (Depth) -->
+    <path d="M 160 140 L 195 125 L 340 125 Q 385 125 400 155 L 365 170 Q 350 145 315 145 L 160 145 Z" fill="url(#blueTop)" />
+    <path d="M 160 140 L 160 350 L 195 330 L 195 125 Z" fill="url(#blueSide)" opacity="0.9" />
+
+    <!-- 3D P Front Body & Top Bar with PRAYER CLOUD Lettering -->
+    <!-- P Vertical Left Stem -->
+    <path d="M 195 195 L 265 195 L 265 345 L 195 345 Z" fill="url(#blueFront)" />
+    <!-- P Left Stem Side Depth -->
+    <path d="M 170 205 L 195 195 L 195 345 L 170 355 Z" fill="url(#blueSide)" />
+    <!-- P Left Stem Front -->
+    <rect x="190" y="195" width="70" height="145" rx="4" fill="url(#blueFront)" />
+
+    <!-- P Top Curved Bar with 3D Depth -->
+    <path d="M 180 135 L 330 135 Q 370 135 370 175 Q 370 215 330 215 L 290 215 L 290 245 L 340 245 Q 405 245 405 175 Q 405 105 330 105 L 180 105 Z" fill="url(#blueFront)" />
+    <!-- P Top Bar Top Facet -->
+    <path d="M 160 135 L 180 105 L 330 105 Q 405 105 405 175 L 385 190 Q 380 125 320 125 L 160 125 Z" fill="url(#blueTop)" />
+    <!-- P Bottom Inner Loop Cutout Depth -->
+    <path d="M 290 215 L 310 200 Q 340 200 340 175 L 370 175 Q 370 215 290 215 Z" fill="url(#blueSide)" />
+
+    <!-- Embossed Yellow Text on Blue P Upper Bar -->
+    <text x="215" y="128" fill="#ffd200" font-family="'Inter', 'Montserrat', 'Arial Black', sans-serif" font-size="20" font-weight="900" letter-spacing="2" transform="rotate(3 215 128)">PRAYER CLOUD</text>
+
+    <!-- 3D Interlocking Yellow C Body -->
+    <!-- C Top Horizontal Arm -->
+    <path d="M 270 200 L 400 200 L 400 265 L 335 265 L 335 235 L 270 235 Z" fill="url(#yellowFront)" />
+    <!-- C Top Arm Top 3D Extrusion -->
+    <path d="M 255 210 L 270 200 L 400 200 L 385 210 Z" fill="url(#yellowTop)" />
+
+    <!-- C Main Arch & Outer Curve (Interlocking through P) -->
+    <path d="M 270 200 Q 240 200 240 280 Q 240 370 340 370 L 400 370 L 400 290 L 340 290 Q 300 290 300 280 Q 300 265 335 265 L 335 200 Z" fill="url(#yellowFront)" />
+
+    <!-- C Bottom Horizontal Arm with Extrusion -->
+    <path d="M 240 330 L 400 330 L 400 375 L 330 375 Q 260 375 240 330 Z" fill="url(#yellowFront)" />
+    
+    <!-- C Outer 3D Side Depth -->
+    <path d="M 240 280 L 225 295 Q 225 390 325 390 L 400 390 L 400 370 L 335 370 Q 240 370 240 280 Z" fill="url(#yellowSide)" />
+    <!-- C Inner 3D Depth Cutout -->
+    <path d="M 335 290 L 350 275 L 400 275 L 400 290 Z" fill="url(#yellowSide)" />
+    <!-- C Bottom Lip Depth -->
+    <path d="M 330 375 L 315 390 L 400 390 L 400 375 Z" fill="url(#yellowSide)" />
+
+    <!-- Interlocking Blue P Lower Loop passing behind/through C -->
+    <path d="M 290 245 L 340 245 Q 365 245 365 265 L 335 265 Q 335 255 315 255 L 290 255 Z" fill="url(#blueFront)" />
+  </g>
+</svg>

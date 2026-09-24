@@ -1,0 +1,125 @@
+@import "tailwindcss";
+
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html, body, #root {
+    width: 100%;
+    max-width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    background-color: #0e121b;
+    color: #f8fafc;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    letter-spacing: -0.02em;
+  }
+
+  .font-serif-spiritual {
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.05em;
+  }
+
+  .font-mono-data {
+    font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Custom cloud gradients & mesh */
+.bg-cloud-gradient {
+  background: radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.08) 0%, rgba(248, 250, 252, 1) 70%);
+}
+
+.bg-cloud-radial {
+  background: radial-gradient(120% 120% at 50% 10%, #FFFFFF 30%, #EFF6FF 70%, #DBEAFE 100%);
+}
+
+.bg-dark-cloud {
+  background: radial-gradient(circle at 50% -20%, #1e3a8a 0%, #0f172a 60%, #020617 100%);
+}
+
+.cloud-pattern {
+  background-image: radial-gradient(rgba(37, 99, 235, 0.07) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+/* Subtle scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.4);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.7);
+}
+
+.mirror {
+  transform: scaleX(-1);
+}
+
+@keyframes floatUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.6);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(-20px) scale(1.1);
+  }
+  80% {
+    opacity: 0.9;
+    transform: translateY(-160px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-240px) scale(0.8);
+  }
+}
+
+.animate-floatUp {
+  animation: floatUp 3.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out forwards;
+}
