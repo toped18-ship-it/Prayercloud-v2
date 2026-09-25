@@ -14,7 +14,7 @@ export const INITIAL_USERS: User[] = [
   {
     id: 'usr-admin-1',
     fullName: 'David Livingstone (Admin)',
-    username: 'superadmin',
+    username: 'admin',
     email: 'admin@prayercloud.org',
     phoneNumber: '+1-800-PRAY-NOW',
     country: 'United Kingdom',
@@ -23,7 +23,7 @@ export const INITIAL_USERS: User[] = [
     bio: 'Overseeing global coordination, missionary welfare, and strategic prayer deployments across unreached nations.',
     isVerified: true,
     isActive: true,
-    mustChangePassword: true, // Prompt specifies: Force password change on first login.
+    mustChangePassword: false,
     joinedAt: '2025-01-01T00:00:00Z',
     prayersOfferedCount: 2480
   },

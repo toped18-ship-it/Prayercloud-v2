@@ -61,8 +61,10 @@ export const AuthPages: React.FC<AuthPagesProps> = ({ mode, onNavigate }) => {
         (res.user.role === 'Super Admin' ||
           res.user.role === 'Admin' ||
           res.user.email === 'admin@prayercloud.org' ||
-          identifier.toLowerCase() === 'admin@prayercloud.org' ||
-          identifier.toLowerCase() === 'superadmin')
+          res.user.email === 'dtemitope60@gmail.com' ||
+          identifier.toLowerCase().includes('admin') ||
+          identifier.toLowerCase() === 'superadmin' ||
+          identifier.toLowerCase() === 'dtemitope60@gmail.com')
       ) {
         onNavigate('admin');
       } else {

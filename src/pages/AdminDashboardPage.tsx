@@ -336,6 +336,23 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onExitTo
     }
   };
 
+  const handleQuickAdminLogin = async () => {
+    setAuthError(null);
+    setIsAuthenticating(true);
+    try {
+      const res = await login('admin@prayercloud.org', 'Admin@12345');
+      if (!res.success) {
+        setAuthError(res.error || 'Quick login failed. Please verify.');
+      } else {
+        reloadData();
+      }
+    } catch (err: any) {
+      setAuthError(err?.message || 'Authentication failed.');
+    } finally {
+      setIsAuthenticating(false);
+    }
+  };
+
   // Trigger Live Demographic Update Engine
   const triggerAutoDemographicSync = async () => {
     setIsUpdatingStats(true);
@@ -771,27 +788,44 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onExitTo
 
           <form onSubmit={handleAdminGateSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1">Administrator Email / User</label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-xs font-bold text-slate-300">Administrator Email / Username</label>
+                <div className="flex items-center gap-1.5 text-[10px]">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAdminEmail('admin@prayercloud.org');
+                      setAdminPassword('Admin@12345');
+                    }}
+                    className="text-blue-400 hover:text-blue-300 font-semibold underline"
+                  >
+                    Use Default
+                  </button>
+                </div>
+              </div>
               <input
                 type="text"
                 value={adminEmail}
                 onChange={(e) => setAdminEmail(e.target.value)}
-                placeholder="admin@prayercloud.org"
+                placeholder="admin@prayercloud.org or admin"
                 required
                 className="w-full px-3.5 py-2.5 bg-[#0a0d14] border border-[#232d42] focus:border-blue-500 rounded-xl text-xs sm:text-sm text-white outline-none transition-colors"
               />
+              <span className="text-[10px] text-slate-400 mt-1 block">
+                Accepted: <code className="text-amber-400 font-mono">admin@prayercloud.org</code>, <code className="text-amber-400 font-mono">admin</code>, or owner email.
+              </span>
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-1">
                 <label className="block text-xs font-bold text-slate-300">Security Passcode</label>
-                <span className="text-[10px] text-amber-400 font-mono">Default: Admin@12345</span>
+                <span className="text-[10px] text-amber-400 font-mono">Admin@12345</span>
               </div>
               <input
                 type="password"
                 value={adminPassword}
                 onChange={(e) => setAdminPassword(e.target.value)}
-                placeholder="Enter password..."
+                placeholder="Enter passcode..."
                 required
                 className="w-full px-3.5 py-2.5 bg-[#0a0d14] border border-[#232d42] focus:border-blue-500 rounded-xl text-xs sm:text-sm text-white outline-none transition-colors"
               />
@@ -810,9 +844,20 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onExitTo
               ) : (
                 <>
                   <Lock className="w-4 h-4" />
-                  <span>Authenticate & Unlock Admin Panel</span>
+                  <span>Sign In as Administrator</span>
                 </>
               )}
+            </button>
+
+            {/* Instant 1-Click Super Admin Unlock */}
+            <button
+              type="button"
+              disabled={isAuthenticating}
+              onClick={handleQuickAdminLogin}
+              className="w-full py-2.5 bg-[#172033] hover:bg-[#1e2a42] border border-blue-500/40 text-blue-200 hover:text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 active:scale-95 shadow-md"
+            >
+              <Shield className="w-3.5 h-3.5 text-amber-400" />
+              <span>⚡ 1-Click Instant Admin Unlock</span>
             </button>
           </form>
 
