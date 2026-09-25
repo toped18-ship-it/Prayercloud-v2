@@ -564,6 +564,134 @@ class StorageService {
     };
   }
 
+  // User Deletion and Account Management
+  public deleteUser(userId: string): void {
+    const users = this.getUsers().filter(u => u.id !== userId);
+    this.set(STORAGE_KEYS.USERS, users);
+    
+    // Also remove credentials
+    const creds = this.getUserCredentials();
+    delete creds[userId];
+    this.set('prayercloud_credentials_v2', creds);
+
+    this.logAudit('admin', 'Super Admin', 'DELETE_USER', userId, `User account ${userId} deleted from system.`);
+
+    // Sync deletion to Cloud SQL backend
+    try {
+      fetch(`/api/users/${userId}`, { method: 'DELETE' }).catch(() => {});
+    } catch {}
+  }
+
+  // Purge all mock/demo users to reset non-admin user count to 0 for fresh production launch
+  public purgeNonAdminUsers(): { remainingUsers: User[]; purgedCount: number } {
+    const allUsers = this.getUsers();
+    const adminUsers = allUsers.filter(u => u.role === 'Super Admin' || u.id === 'usr-admin-1' || u.email === 'admin@prayercloud.org');
+    
+    const purgedCount = allUsers.length - adminUsers.length;
+    this.set(STORAGE_KEYS.USERS, adminUsers);
+
+    // Keep only admin credentials
+    const creds = this.getUserCredentials();
+    const newCreds: Record<string, string> = {
+      'usr-admin-1': creds['usr-admin-1'] || 'Admin@12345'
+    };
+    this.set('prayercloud_credentials_v2', newCreds);
+
+    this.logAudit(
+      'admin',
+      'Super Admin',
+      'PURGE_USER_DATABASE_FOR_LAUNCH',
+      'Users Table',
+      `Purged ${purgedCount} test accounts to reset database for official launch. Only Super Admin retained.`
+    );
+
+    // Sync purge to Cloud SQL backend
+    try {
+      fetch('/api/users/purge-non-admins', { method: 'POST' }).catch(() => {});
+    } catch {}
+
+    return { remainingUsers: adminUsers, purgedCount };
+  }
+
+  // Prayer Management
+  public updatePrayerRequest(prayer: PrayerRequest): void {
+    const list = this.getPrayerRequests();
+    const idx = list.findIndex(p => p.id === prayer.id);
+    if (idx >= 0) {
+      list[idx] = prayer;
+    } else {
+      list.unshift(prayer);
+    }
+    this.set(STORAGE_KEYS.PRAYERS, list);
+  }
+
+  public deletePrayerRequest(prayerId: string): void {
+    const list = this.getPrayerRequests().filter(p => p.id !== prayerId);
+    this.set(STORAGE_KEYS.PRAYERS, list);
+    this.logAudit('admin', 'Admin', 'DELETE_PRAYER', prayerId, `Prayer petition removed by moderator.`);
+  }
+
+  // Mission Reports Management
+  public updateMissionReport(report: MissionReport): void {
+    const list = this.getMissionReports();
+    const idx = list.findIndex(r => r.id === report.id);
+    if (idx >= 0) {
+      list[idx] = report;
+    } else {
+      list.unshift(report);
+    }
+    this.set(STORAGE_KEYS.REPORTS, list);
+  }
+
+  public deleteMissionReport(reportId: string): void {
+    const list = this.getMissionReports().filter(r => r.id !== reportId);
+    this.set(STORAGE_KEYS.REPORTS, list);
+    this.logAudit('admin', 'Admin', 'DELETE_REPORT', reportId, `Mission report removed by moderator.`);
+  }
+
+  // Events Management
+  public updateEvent(evt: EventMeeting): void {
+    const list = this.getEvents();
+    const idx = list.findIndex(e => e.id === evt.id);
+    if (idx >= 0) {
+      list[idx] = evt;
+    } else {
+      list.unshift(evt);
+    }
+    this.set(STORAGE_KEYS.EVENTS, list);
+  }
+
+  public deleteEvent(eventId: string): void {
+    const list = this.getEvents().filter(e => e.id !== eventId);
+    this.set(STORAGE_KEYS.EVENTS, list);
+    this.logAudit('admin', 'Admin', 'DELETE_EVENT', eventId, `Prayer meeting event removed.`);
+  }
+
+  // Resources Management
+  public updateResource(res: MissionaryResource): void {
+    const list = this.getResources();
+    const idx = list.findIndex(r => r.id === res.id);
+    if (idx >= 0) {
+      list[idx] = res;
+    } else {
+      list.unshift(res);
+    }
+    this.set(STORAGE_KEYS.RESOURCES, list);
+  }
+
+  public deleteResource(resourceId: string): void {
+    const list = this.getResources().filter(r => r.id !== resourceId);
+    this.set(STORAGE_KEYS.RESOURCES, list);
+    this.logAudit('admin', 'Admin', 'DELETE_RESOURCE', resourceId, `Resource removed from library.`);
+  }
+
+  // Recordings Management
+  public deleteRecording(recId: string): void {
+    const list = this.getRecordings().filter(r => r.id !== recId);
+    this.set(STORAGE_KEYS.RECORDINGS, list);
+    this.logAudit('admin', 'Admin', 'DELETE_RECORDING', recId, `Meeting recording deleted from archive.`);
+  }
+
   // Audit Logs
   public getAuditLogs(): AuditLog[] {
     return this.get<AuditLog[]>(STORAGE_KEYS.AUDIT_LOGS, []);

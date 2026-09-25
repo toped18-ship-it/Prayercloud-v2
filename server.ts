@@ -3,7 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { getLatestSyncStatus, recordSyncExecution, logAuditToDb } from './src/db/sync.ts';
-import { getOrCreateUser, getAllUsersFromDb, recordPrayerRequestInDb } from './src/db/users.ts';
+import { getOrCreateUser, getAllUsersFromDb, recordPrayerRequestInDb, deleteUserFromDb, purgeNonAdminUsersFromDb } from './src/db/users.ts';
 
 dotenv.config();
 
@@ -78,6 +78,32 @@ app.get('/api/users', async (req: Request, res: Response) => {
     res.json({ success: true, users: list });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error?.message || 'Failed to retrieve users' });
+  }
+});
+
+// API: Delete single user from Cloud SQL
+app.delete('/api/users/:uid', async (req: Request, res: Response) => {
+  try {
+    const { uid } = req.params;
+    if (!uid) {
+      return res.status(400).json({ success: false, error: 'User UID required' });
+    }
+    const deleted = await deleteUserFromDb(uid);
+    await logAuditToDb('DELETE_USER_FROM_DB', `Deleted user account ${uid}`, 'admin', 'Super Admin');
+    res.json({ success: true, deleted });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error?.message || 'Failed to delete user' });
+  }
+});
+
+// API: Purge all demo/non-admin users to reset for fresh launch
+app.post('/api/users/purge-non-admins', async (req: Request, res: Response) => {
+  try {
+    const deleted = await purgeNonAdminUsersFromDb();
+    await logAuditToDb('PURGE_NON_ADMIN_USERS', `Purged ${deleted.length} non-admin accounts to reset for live launch`, 'admin', 'Super Admin');
+    res.json({ success: true, purgedCount: deleted.length });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error?.message || 'Failed to purge users' });
   }
 });
 

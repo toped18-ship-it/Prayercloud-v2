@@ -55,7 +55,19 @@ export const AuthPages: React.FC<AuthPagesProps> = ({ mode, onNavigate }) => {
     setIsLoading(false);
 
     if (res.success) {
-      onNavigate('home');
+      // If user is Admin or Super Admin, immediately route straight to the Admin Control Panel!
+      if (
+        res.user &&
+        (res.user.role === 'Super Admin' ||
+          res.user.role === 'Admin' ||
+          res.user.email === 'admin@prayercloud.org' ||
+          identifier.toLowerCase() === 'admin@prayercloud.org' ||
+          identifier.toLowerCase() === 'superadmin')
+      ) {
+        onNavigate('admin');
+      } else {
+        onNavigate('home');
+      }
     } else {
       setError(res.error || 'Invalid credentials.');
     }
@@ -208,11 +220,22 @@ export const AuthPages: React.FC<AuthPagesProps> = ({ mode, onNavigate }) => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-2"
+                className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-2 active:scale-98"
               >
                 <span>{isLoading ? 'Authenticating...' : 'Sign In to Platform'}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
+
+              <div className="pt-2 text-center border-t border-slate-100 dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => onNavigate('admin')}
+                  className="text-[11px] text-slate-500 hover:text-blue-500 dark:text-slate-400 dark:hover:text-blue-400 font-semibold inline-flex items-center gap-1 transition-colors"
+                >
+                  <Shield className="w-3.5 h-3.5 text-amber-500" />
+                  <span>Authorized Administrator? Login straight to Admin Panel →</span>
+                </button>
+              </div>
             </form>
           ) : (
             /* Register Form */

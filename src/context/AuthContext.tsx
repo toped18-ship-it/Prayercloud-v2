@@ -7,7 +7,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isAdmin: boolean;
   isSuperAdmin: boolean;
-  login: (identifier: string, password: string, rememberMe?: boolean) => Promise<{ success: boolean; error?: string; forcePasswordChange?: boolean }>;
+  login: (identifier: string, password: string, rememberMe?: boolean) => Promise<{ success: boolean; error?: string; forcePasswordChange?: boolean; user?: User }>;
   register: (data: {
     fullName: string;
     username: string;
@@ -58,7 +58,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [currentUser]);
 
-  const login = async (identifier: string, password: string, _rememberMe = true): Promise<{ success: boolean; error?: string; forcePasswordChange?: boolean }> => {
+  const login = async (
+    identifier: string,
+    password: string,
+    _rememberMe = true
+  ): Promise<{ success: boolean; error?: string; forcePasswordChange?: boolean; user?: User }> => {
     const users = storage.getUsers();
     const cleanId = identifier.trim().toLowerCase();
     const cleanPass = password.trim();
@@ -91,10 +95,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     if (matched.mustChangePassword) {
       setForcePasswordModalOpen(true);
-      return { success: true, forcePasswordChange: true };
+      return { success: true, forcePasswordChange: true, user: matched };
     }
 
-    return { success: true };
+    return { success: true, user: matched };
   };
 
   const register = async (data: {

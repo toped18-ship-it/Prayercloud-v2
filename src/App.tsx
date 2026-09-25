@@ -350,7 +350,7 @@ function MainAppContent() {
         )}
 
         {currentPage === 'admin' && (
-          <AdminDashboardPage />
+          <AdminDashboardPage onExitToPublic={() => navigateTo('home')} />
         )}
 
         {currentPage === 'login' && (
@@ -367,12 +367,8 @@ function MainAppContent() {
           />
         )}
 
-        {currentPage === 'profile' && (
-          <UserProfilePage />
-        )}
-
-        {currentPage === 'user-profile' && (
-          <UserProfilePage />
+        {(currentPage === 'profile' || currentPage === 'user-profile') && (
+          <UserProfilePage onNavigate={navigateTo} />
         )}
       </main>
 

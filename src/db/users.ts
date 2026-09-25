@@ -1,6 +1,6 @@
 import { db } from './index.ts';
 import { users, prayerRequests, auditLogs, syncStatus } from './schema.ts';
-import { desc } from 'drizzle-orm';
+import { desc, eq, ne, and } from 'drizzle-orm';
 
 // Fetch all users from Cloud SQL
 export async function getAllUsersFromDb() {
@@ -9,6 +9,34 @@ export async function getAllUsersFromDb() {
   } catch (error) {
     console.error('Database query for users failed:', error);
     throw new Error('Failed to retrieve users from Cloud SQL database.', { cause: error });
+  }
+}
+
+// Delete a single user from Cloud SQL
+export async function deleteUserFromDb(uid: string) {
+  try {
+    const deleted = await db.delete(users).where(eq(users.uid, uid)).returning();
+    return deleted[0] || null;
+  } catch (error) {
+    console.error(`Failed to delete user ${uid} from Cloud SQL:`, error);
+    throw new Error(`Failed to delete user from Cloud SQL database.`, { cause: error });
+  }
+}
+
+// Purge all non-admin demo users from Cloud SQL to reset user count for fresh production launch
+export async function purgeNonAdminUsersFromDb() {
+  try {
+    const deleted = await db.delete(users).where(
+      and(
+        ne(users.uid, 'usr-admin-1'),
+        ne(users.role, 'Super Admin'),
+        ne(users.email, 'admin@prayercloud.org')
+      )
+    ).returning();
+    return deleted;
+  } catch (error) {
+    console.error('Failed to purge non-admin users from Cloud SQL:', error);
+    throw new Error('Failed to purge non-admin users from Cloud SQL database.', { cause: error });
   }
 }
 

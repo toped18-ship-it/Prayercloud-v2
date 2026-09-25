@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useBranding } from '../context/ThemeAndBrandingContext';
 import {
@@ -11,19 +11,39 @@ import {
   CheckCircle,
   Save,
   LogOut,
+  Camera,
+  Upload,
+  Image as ImageIcon,
+  Trash2,
   AlertTriangle
 } from 'lucide-react';
 
-export const UserProfilePage: React.FC = () => {
+interface UserProfilePageProps {
+  onNavigate?: (page: string) => void;
+}
+
+// Preset avatars for missionary/prayer identification
+const PRESET_AVATARS = [
+  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&auto=format&fit=crop&q=80'
+];
+
+export const UserProfilePage: React.FC<UserProfilePageProps> = ({ onNavigate }) => {
   const { currentUser, updateProfile, logout } = useAuth();
   const { isDarkMode, setThemeMode } = useBranding();
   const [fullName, setFullName] = useState(currentUser?.fullName || '');
   const [bio, setBio] = useState(currentUser?.bio || '');
   const [phoneNumber, setPhoneNumber] = useState(currentUser?.phoneNumber || '');
   const [country, setCountry] = useState(currentUser?.country || '');
+  const [avatarUrl, setAvatarUrl] = useState(currentUser?.avatarUrl || '');
   const [saved, setSaved] = useState(false);
   const [themeNotif, setThemeNotif] = useState<string | null>(null);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!currentUser) return null;
 
@@ -34,20 +54,41 @@ export const UserProfilePage: React.FC = () => {
     setTimeout(() => setThemeNotif(null), 2500);
   };
 
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 4 * 1024 * 1024) {
+      alert('Image file is too large. Please select an image under 4MB.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      setAvatarUrl(result);
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     updateProfile({
       fullName,
       bio,
       phoneNumber,
-      country
+      country,
+      avatarUrl
     });
     setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    setTimeout(() => setSaved(false), 2500);
   };
 
-  const handleLogout = () => {
-    logout();
+  const handleRemovePhoto = () => {
+    setAvatarUrl('');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   return (
@@ -55,8 +96,26 @@ export const UserProfilePage: React.FC = () => {
       {/* Header Profile Banner with Quick Sign Out */}
       <div className="p-6 bg-gradient-to-r from-blue-900 via-slate-900 to-[#0d1322] text-white rounded-3xl shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 border border-blue-800/40">
         <div className="flex items-center gap-4 min-w-0">
-          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-blue-600 flex items-center justify-center text-2xl sm:text-3xl font-bold shadow-lg ring-4 ring-blue-500/20 shrink-0">
-            {currentUser.fullName.charAt(0)}
+          <div className="relative group shrink-0">
+            {avatarUrl ? (
+              <img
+                src={avatarUrl}
+                alt={currentUser.fullName}
+                className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover shadow-lg ring-4 ring-blue-500/30 border-2 border-blue-400"
+              />
+            ) : (
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-2xl sm:text-3xl font-bold shadow-lg ring-4 ring-blue-500/20">
+                {currentUser.fullName.charAt(0)}
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="absolute -bottom-1 -right-1 p-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl shadow-md border border-white/20 transition-transform active:scale-95"
+              title="Upload profile picture"
+            >
+              <Camera className="w-3.5 h-3.5" />
+            </button>
           </div>
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
@@ -66,7 +125,7 @@ export const UserProfilePage: React.FC = () => {
               </span>
             </div>
             <p className="text-xs text-blue-200 mt-1 truncate">
-              {currentUser.email} · {currentUser.country}
+              {currentUser.email} · {currentUser.country || 'Global Station'}
             </p>
           </div>
         </div>
@@ -99,7 +158,7 @@ export const UserProfilePage: React.FC = () => {
             <Shield className="w-4 h-4" />
             <span>Verified Worker</span>
           </div>
-          <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Full Missionary Hub Access</div>
+          <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Active Global Identifier</div>
         </div>
       </div>
 
@@ -107,11 +166,96 @@ export const UserProfilePage: React.FC = () => {
       {saved && (
         <div className="p-3.5 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 rounded-xl text-xs font-semibold flex items-center gap-2 animate-fadeIn">
           <CheckCircle className="w-4 h-4 flex-shrink-0" />
-          <span>Profile details saved successfully.</span>
+          <span>Profile & photo details saved successfully.</span>
         </div>
       )}
 
-      {/* Profile Details Form - At the Top of Theme Mode */}
+      {/* Profile Picture Upload & Identification Box */}
+      <section className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 shadow-sm">
+        <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+          <div className="flex items-center gap-2">
+            <Camera className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            <div>
+              <h3 className="font-bold text-base text-slate-900 dark:text-white">Profile Picture Identification</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Upload your personal photo for video rooms, chatrooms, and prayer requests.</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row items-center gap-5">
+          {/* Avatar Preview */}
+          <div className="relative shrink-0">
+            {avatarUrl ? (
+              <img
+                src={avatarUrl}
+                alt="Avatar preview"
+                className="w-24 h-24 rounded-3xl object-cover ring-4 ring-blue-500/20 border-2 border-blue-500 shadow-md"
+              />
+            ) : (
+              <div className="w-24 h-24 rounded-3xl bg-slate-100 dark:bg-slate-800 border-2 border-dashed border-slate-300 dark:border-slate-700 flex flex-col items-center justify-center text-slate-400 gap-1">
+                <ImageIcon className="w-6 h-6" />
+                <span className="text-[10px] font-semibold">No Photo</span>
+              </div>
+            )}
+          </div>
+
+          {/* Upload and Preset Controls */}
+          <div className="flex-1 space-y-3 w-full">
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileUpload}
+              accept="image/*"
+              className="hidden"
+            />
+
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow transition-all flex items-center gap-1.5 active:scale-95"
+              >
+                <Upload className="w-3.5 h-3.5" />
+                <span>Upload from Device</span>
+              </button>
+
+              {avatarUrl && (
+                <button
+                  type="button"
+                  onClick={handleRemovePhoto}
+                  className="px-3 py-2 bg-red-50 hover:bg-red-100 dark:bg-red-950/50 dark:hover:bg-red-900 text-red-600 dark:text-red-300 font-semibold text-xs rounded-xl border border-red-200 dark:border-red-900/50 transition-colors flex items-center gap-1"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Remove</span>
+                </button>
+              )}
+            </div>
+
+            {/* Quick Preset Selector */}
+            <div>
+              <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 block mb-1.5">
+                Or choose from preset missionary avatars:
+              </span>
+              <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                {PRESET_AVATARS.map((preset, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setAvatarUrl(preset)}
+                    className={`relative rounded-xl overflow-hidden border-2 transition-all shrink-0 ${
+                      avatarUrl === preset ? 'border-blue-500 scale-105 shadow-md ring-2 ring-blue-400/30' : 'border-slate-200 dark:border-slate-700 opacity-70 hover:opacity-100'
+                    }`}
+                  >
+                    <img src={preset} alt={`Preset ${idx + 1}`} className="w-10 h-10 object-cover" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Profile Details Form */}
       <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 shadow-sm">
         <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
           <div className="flex items-center gap-2">
@@ -123,7 +267,7 @@ export const UserProfilePage: React.FC = () => {
           </div>
           <button
             type="submit"
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow transition-colors flex items-center gap-1.5"
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow transition-colors flex items-center gap-1.5 active:scale-95"
           >
             <Save className="w-3.5 h-3.5" />
             <span>Save Profile</span>
@@ -142,7 +286,7 @@ export const UserProfilePage: React.FC = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Country of Ministry / Residence</label>
+            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Country of Ministry / Station</label>
             <input
               type="text"
               value={country}
@@ -175,7 +319,7 @@ export const UserProfilePage: React.FC = () => {
         <div className="flex justify-end pt-2">
           <button
             type="submit"
-            className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow transition-colors flex items-center gap-1.5"
+            className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow transition-colors flex items-center gap-1.5 active:scale-95"
           >
             <Save className="w-3.5 h-3.5" />
             <span>Save Profile Changes</span>
@@ -183,7 +327,7 @@ export const UserProfilePage: React.FC = () => {
         </div>
       </form>
 
-      {/* Field Display & Visual Theme Selector - Below Profile Details */}
+      {/* Field Display & Visual Theme Selector */}
       <section className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 space-y-5 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
           <div>
@@ -195,135 +339,67 @@ export const UserProfilePage: React.FC = () => {
               Switch between daylight field mode for outdoor glare readability and deep dark mode for night vigils.
             </p>
           </div>
-
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold self-start sm:self-auto bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-            {isDarkMode ? (
-              <>
-                <Moon className="w-3.5 h-3.5 text-blue-400" />
-                <span>Deep Dark Active</span>
-              </>
-            ) : (
-              <>
-                <Sun className="w-3.5 h-3.5 text-amber-500" />
-                <span>Daylight Field Active</span>
-              </>
-            )}
-          </div>
+          {themeNotif && (
+            <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold animate-fadeIn">
+              {themeNotif}
+            </span>
+          )}
         </div>
 
-        {themeNotif && (
-          <div className="p-3 bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 rounded-xl text-xs font-semibold flex items-center gap-2 animate-fadeIn">
-            <Check className="w-4 h-4 flex-shrink-0" />
-            <span>{themeNotif}</span>
-          </div>
-        )}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* High-Contrast Light Mode (Sunlight Field Ops) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Daylight Mode Option */}
           <button
             type="button"
             onClick={() => handleThemeChange('light')}
-            className={`text-left p-4 sm:p-5 rounded-2xl border-2 transition-all relative flex flex-col justify-between ${
+            className={`p-5 rounded-2xl border text-left transition-all relative flex flex-col justify-between gap-4 ${
               !isDarkMode
-                ? 'border-blue-600 bg-blue-50/40 ring-4 ring-blue-500/10 shadow-md'
-                : 'border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40'
+                ? 'border-blue-600 bg-blue-50/50 dark:bg-blue-950/20 ring-2 ring-blue-500/20 shadow-sm'
+                : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
             }`}
           >
-            <div>
-              <div className="flex items-center justify-between gap-2 mb-2.5">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center font-bold shadow-sm">
-                    <Sun className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                      Daylight Field Mode
-                      {!isDarkMode && (
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-600 text-white font-semibold">
-                          Active
-                        </span>
-                      )}
-                    </h4>
-                    <span className="text-[11px] text-amber-700 dark:text-amber-400 font-medium">
-                      High-Contrast Sunlight UI
-                    </span>
-                  </div>
-                </div>
-
-                {!isDarkMode && (
-                  <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center">
-                    <Check className="w-3.5 h-3.5 stroke-[3]" />
-                  </div>
-                )}
+            <div className="flex items-start justify-between">
+              <div className="p-3 bg-amber-100 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 rounded-xl">
+                <Sun className="w-6 h-6" />
               </div>
-
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-3">
-                High-contrast clean white and slate canvas with rich bold typography. Engineered for direct outdoor sunlight readability during missionary field operations.
-              </p>
+              {!isDarkMode && (
+                <span className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs">
+                  <Check className="w-4 h-4" />
+                </span>
+              )}
             </div>
-
-            {/* Visual Micro Preview */}
-            <div className="p-2.5 bg-white border border-slate-300 rounded-xl space-y-1.5 shadow-xs">
-              <div className="flex items-center justify-between text-[10px] font-bold text-slate-900 border-b border-slate-200 pb-1">
-                <span>Field Station Preview</span>
-                <span className="text-blue-600 font-mono">100% Contrast</span>
-              </div>
-              <div className="h-2 bg-slate-200 rounded w-3/4"></div>
-              <div className="h-2 bg-blue-600 rounded w-1/2"></div>
+            <div>
+              <h4 className="font-bold text-sm text-slate-900 dark:text-white">Daylight Field Mode</h4>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                Optimized high contrast for outdoor field use and daytime mission tasks.
+              </p>
             </div>
           </button>
 
-          {/* Deep Dark Mode (Night Vigils & Stealth) */}
+          {/* Deep Dark Mode Option */}
           <button
             type="button"
             onClick={() => handleThemeChange('dark')}
-            className={`text-left p-4 sm:p-5 rounded-2xl border-2 transition-all relative flex flex-col justify-between ${
+            className={`p-5 rounded-2xl border text-left transition-all relative flex flex-col justify-between gap-4 ${
               isDarkMode
-                ? 'border-blue-500 bg-blue-950/20 ring-4 ring-blue-500/10 shadow-md'
-                : 'border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40'
+                ? 'border-blue-600 bg-blue-950/20 ring-2 ring-blue-500/20 shadow-sm'
+                : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
             }`}
           >
-            <div>
-              <div className="flex items-center justify-between gap-2 mb-2.5">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-xl bg-slate-800 text-blue-400 flex items-center justify-center font-bold shadow-sm border border-slate-700">
-                    <Moon className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                      Deep Dark Mode
-                      {isDarkMode && (
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-600 text-white font-semibold">
-                          Active
-                        </span>
-                      )}
-                    </h4>
-                    <span className="text-[11px] text-blue-400 font-medium">
-                      Night Ops & OLED Stealth
-                    </span>
-                  </div>
-                </div>
-
-                {isDarkMode && (
-                  <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center">
-                    <Check className="w-3.5 h-3.5 stroke-[3]" />
-                  </div>
-                )}
+            <div className="flex items-start justify-between">
+              <div className="p-3 bg-indigo-100 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 rounded-xl">
+                <Moon className="w-6 h-6" />
               </div>
-
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-3">
-                Obsidian and deep slate palette with luminous accent layers. Optimized for midnight prayer vigils, low-light stealth environments, and minimal battery drain.
-              </p>
+              {isDarkMode && (
+                <span className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs">
+                  <Check className="w-4 h-4" />
+                </span>
+              )}
             </div>
-
-            {/* Visual Micro Preview */}
-            <div className="p-2.5 bg-[#0b0f19] border border-slate-800 rounded-xl space-y-1.5 shadow-xs">
-              <div className="flex items-center justify-between text-[10px] font-bold text-slate-100 border-b border-slate-800 pb-1">
-                <span>Vigil Console Preview</span>
-                <span className="text-blue-400 font-mono">OLED Low-Power</span>
-              </div>
-              <div className="h-2 bg-slate-800 rounded w-3/4"></div>
-              <div className="h-2 bg-blue-500 rounded w-1/2"></div>
+            <div>
+              <h4 className="font-bold text-sm text-slate-900 dark:text-white">Deep Dark Night Mode</h4>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                Low-light dark UI for overnight 24/7 prayer watches and battery longevity.
+              </p>
             </div>
           </button>
         </div>
@@ -374,8 +450,12 @@ export const UserProfilePage: React.FC = () => {
               </button>
               <button
                 type="button"
-                onClick={handleLogout}
-                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl shadow transition-colors flex items-center gap-1.5"
+                onClick={() => {
+                  setShowLogoutConfirm(false);
+                  logout();
+                  if (onNavigate) onNavigate('home');
+                }}
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl shadow transition-colors flex items-center gap-1.5"
               >
                 <LogOut className="w-3.5 h-3.5" />
                 <span>Yes, Log Out</span>
