@@ -128,7 +128,18 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   Frontier Heatmap
                 </button>
               </li>
-              <li className="pt-2 text-[11px] text-slate-500">
+              <li className="pt-2 text-[11px] text-slate-400">
+                <a
+                  href="https://www.livingtech.name.ng"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-sky-400 hover:text-sky-300 font-medium transition-colors"
+                >
+                  <Globe className="w-3.5 h-3.5" />
+                  <span>www.livingtech.name.ng</span>
+                </a>
+              </li>
+              <li className="text-[11px] text-slate-500">
                 Contact: {branding.contactEmail || 'missions@prayercloud.org'}
               </li>
             </ul>

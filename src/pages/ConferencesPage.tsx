@@ -57,9 +57,10 @@ export const ConferencesPage: React.FC<ConferencesPageProps> = ({
   const pmiNumber = '849 2049 1192';
   const pmiPasscode = '104088';
   const [copiedPmi, setCopiedPmi] = useState(false);
+  const baseDomain = typeof window !== 'undefined' ? window.location.origin : 'https://www.livingtech.name.ng';
 
   const copyPmiLink = () => {
-    const link = `https://prayercloud.app/j/${pmiNumber.replace(/\s+/g, '')}\nMeeting ID: ${pmiNumber}\nPasscode: ${pmiPasscode}`;
+    const link = `${baseDomain}/#calls?j=${pmiNumber.replace(/\s+/g, '')}\nMeeting ID: ${pmiNumber}\nPasscode: ${pmiPasscode}`;
     navigator.clipboard.writeText(link);
     setCopiedPmi(true);
     setTimeout(() => setCopiedPmi(false), 2500);
@@ -78,7 +79,7 @@ export const ConferencesPage: React.FC<ConferencesPageProps> = ({
       type: 'Mission Strategy Summit',
       hostId: currentUser?.id || 'me',
       hostName: currentUser?.fullName || 'Mission Mobilizer',
-      meetingLink: `https://prayercloud.app/j/${pmiNumber.replace(/\s+/g, '')}`,
+      meetingLink: `${baseDomain}/#calls?j=${pmiNumber.replace(/\s+/g, '')}`,
       isLiveNow: false,
       targetCountry: scheduleCountry,
       rsvps: [currentUser?.id || 'me']
@@ -226,7 +227,7 @@ export const ConferencesPage: React.FC<ConferencesPageProps> = ({
               <div className="flex items-center gap-2.5 flex-wrap">
                 <button
                   onClick={() => {
-                    const link = `https://prayercloud.app/j/849${2040 + idx}${1190 + idx}\nTopic: ${evt.title}\nPasscode: prayer247`;
+                    const link = `${baseDomain}/#calls?j=849${2040 + idx}${1190 + idx}\nTopic: ${evt.title}\nPasscode: prayer247`;
                     navigator.clipboard.writeText(link);
                   }}
                   className="px-3.5 py-2 bg-slate-100 dark:bg-[#232a3b] hover:bg-slate-200 dark:hover:bg-[#2f3950] text-slate-700 dark:text-slate-200 font-semibold text-xs rounded-xl transition-colors flex items-center gap-1.5"
@@ -338,7 +339,7 @@ export const ConferencesPage: React.FC<ConferencesPageProps> = ({
 
             <div className="flex justify-between items-center py-2">
               <span className="text-slate-500">Invite Link:</span>
-              <span className="text-emerald-500 font-mono truncate max-w-xs">https://prayercloud.app/j/{pmiNumber.replace(/\s+/g, '')}</span>
+              <span className="text-emerald-500 font-mono truncate max-w-xs">{baseDomain}/#calls?j={pmiNumber.replace(/\s+/g, '')}</span>
             </div>
 
             <div className="flex justify-between items-center py-2">

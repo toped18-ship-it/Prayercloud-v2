@@ -103,7 +103,8 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ initialRoomId }) =
   };
 
   const copyPmiLink = () => {
-    const link = `https://prayercloud.app/j/${pmiNumber.replace(/\s+/g, '')}\nMeeting ID: ${pmiNumber}\nPasscode: ${pmiPasscode}`;
+    const baseDomain = typeof window !== 'undefined' ? window.location.origin : 'https://www.livingtech.name.ng';
+    const link = `${baseDomain}/#calls?j=${pmiNumber.replace(/\s+/g, '')}\nMeeting ID: ${pmiNumber}\nPasscode: ${pmiPasscode}`;
     navigator.clipboard.writeText(link);
     setCopiedPmi(true);
     setTimeout(() => setCopiedPmi(false), 2500);
