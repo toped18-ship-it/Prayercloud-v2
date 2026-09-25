@@ -173,6 +173,27 @@ class StorageService {
       users.push(user);
     }
     this.set(STORAGE_KEYS.USERS, users);
+
+    // Asynchronously synchronize user record to Cloud SQL backend
+    try {
+      fetch('/api/users/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          uid: user.id,
+          email: user.email,
+          fullName: user.fullName,
+          username: user.username,
+          phoneNumber: user.phoneNumber,
+          country: user.country,
+          role: user.role,
+          avatarUrl: user.avatarUrl,
+          bio: user.bio,
+        }),
+      }).catch((e) => console.warn('Cloud SQL user background sync notice:', e));
+    } catch {
+      // Graceful offline
+    }
   }
 
   public getUserCredentials(): Record<string, string> {
@@ -211,6 +232,28 @@ class StorageService {
     const list = this.getPrayerRequests();
     list.unshift(req);
     this.set(STORAGE_KEYS.PRAYERS, list);
+
+    // Asynchronously synchronize prayer request to Cloud SQL
+    try {
+      fetch('/api/prayers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: req.id,
+          title: req.title,
+          description: req.description,
+          targetCountry: req.targetCountry || 'Global',
+          category: req.category,
+          urgency: req.urgency,
+          authorId: req.authorId,
+          authorName: req.authorName,
+          authorRole: req.authorRole,
+          authorCountry: req.authorCountry,
+        }),
+      }).catch((e) => console.warn('Cloud SQL prayer sync notice:', e));
+    } catch {
+      // Graceful offline
+    }
   }
 
   public recordPrayerOffered(prayerId: string, userId: string): void {

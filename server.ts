@@ -3,7 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { getLatestSyncStatus, recordSyncExecution, logAuditToDb } from './src/db/sync.ts';
-import { getOrCreateUser, getAllUsersFromDb } from './src/db/users.ts';
+import { getOrCreateUser, getAllUsersFromDb, recordPrayerRequestInDb } from './src/db/users.ts';
 
 dotenv.config();
 
@@ -15,17 +15,20 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-// API Health Check
+// API Health Check & Cloud SQL Connection Info
 app.get('/api/health', (req: Request, res: Response) => {
   res.json({
     status: 'healthy',
-    database: 'Firebase Realtime Database (RTDB)',
-    databaseURL: 'https://prayercloud-e341d-default-rtdb.firebaseio.com',
+    database: 'Google Cloud SQL (PostgreSQL)',
+    region: 'europe-west1',
+    engine: 'PostgreSQL 15',
+    orm: 'Drizzle ORM',
+    pool: 'pg.Pool (Object Configuration)',
     timestamp: new Date().toISOString(),
   });
 });
 
-// API: Get Realtime Database Sync Status
+// API: Get Cloud SQL Database Sync Status
 app.get('/api/sync/status', async (req: Request, res: Response) => {
   try {
     const status = await getLatestSyncStatus();
@@ -35,39 +38,68 @@ app.get('/api/sync/status', async (req: Request, res: Response) => {
   }
 });
 
-// API: Trigger & Record Demographic Synchronization to Firebase Realtime Database
+// API: Trigger & Record Demographic Synchronization to Cloud SQL
 app.post('/api/sync/trigger', async (req: Request, res: Response) => {
   try {
     const { countriesCount, upgsCount, interval } = req.body || {};
     const recorded = await recordSyncExecution(countriesCount || 195, upgsCount || 7420, interval || '1h');
-    await logAuditToDb('DEMOGRAPHICS_SYNC_TRIGGERED', `Firebase RTDB demographic sync triggered for ${countriesCount || 195} countries.`);
+    await logAuditToDb('DEMOGRAPHICS_SYNC_TRIGGERED', `Cloud SQL demographic sync triggered for ${countriesCount || 195} countries.`);
     res.json({ success: true, record: recorded });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error?.message || 'Failed to record sync execution' });
   }
 });
 
-// API: Synchronize User Profile to Firebase Realtime Database
+// API: Synchronize User Profile to Cloud SQL Database
 app.post('/api/users/sync', async (req: Request, res: Response) => {
   try {
-    const { uid, email, fullName } = req.body || {};
+    const { uid, email, fullName, username, phoneNumber, country, role, avatarUrl, bio } = req.body || {};
     if (!uid || !email) {
       return res.status(400).json({ success: false, error: 'uid and email are required' });
     }
-    const user = await getOrCreateUser(uid, email, fullName);
+    const user = await getOrCreateUser(uid, email, fullName, {
+      username,
+      phoneNumber,
+      country,
+      role,
+      avatarUrl,
+      bio,
+    });
     res.json({ success: true, user });
   } catch (error: any) {
-    res.status(500).json({ success: false, error: error?.message || 'Failed to sync user' });
+    res.status(500).json({ success: false, error: error?.message || 'Failed to sync user to Cloud SQL' });
   }
 });
 
-// API: Get Users from Firebase Realtime Database
+// API: Get Users from Cloud SQL
 app.get('/api/users', async (req: Request, res: Response) => {
   try {
     const list = await getAllUsersFromDb();
     res.json({ success: true, users: list });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error?.message || 'Failed to retrieve users' });
+  }
+});
+
+// API: Record Prayer in Cloud SQL
+app.post('/api/prayers', async (req: Request, res: Response) => {
+  try {
+    const { id, title, description, countryCode, targetCountry, category, urgency, authorId, authorName, authorRole, authorCountry } = req.body || {};
+    if (!title || !description || !authorId) {
+      return res.status(400).json({ success: false, error: 'title, description, and authorId are required' });
+    }
+    const prayer = await recordPrayerRequestInDb({
+      id: id || `pr-${Date.now()}`,
+      title,
+      description,
+      targetCountry: targetCountry || 'Global',
+      urgency: urgency || 'Medium',
+      authorId,
+      authorName: authorName || 'Intercessor',
+    });
+    res.json({ success: true, prayer });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error?.message || 'Failed to save prayer to Cloud SQL' });
   }
 });
 
