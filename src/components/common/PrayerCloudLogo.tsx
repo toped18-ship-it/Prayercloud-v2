@@ -9,14 +9,14 @@ interface PrayerCloudLogoProps {
 }
 
 const sizeMap = {
-  xs: { emblemSize: 'w-6 h-6', text: 'text-xs' },
-  sm: { emblemSize: 'w-9 h-9', text: 'text-sm' },
-  md: { emblemSize: 'w-12 h-12', text: 'text-base' },
-  lg: { emblemSize: 'w-16 h-16', text: 'text-xl' },
-  xl: { emblemSize: 'w-24 h-24', text: 'text-2xl' },
-  '2xl': { emblemSize: 'w-36 h-36', text: 'text-3xl' },
-  splash: { emblemSize: 'w-56 h-56 sm:w-64 sm:h-64', text: 'text-4xl' },
-  full: { emblemSize: 'w-full h-full', text: 'text-4xl' }
+  xs: { emblemSize: 'w-4 h-4', text: 'text-[10px]' },
+  sm: { emblemSize: 'w-6 h-6', text: 'text-xs' },
+  md: { emblemSize: 'w-8 h-8', text: 'text-sm' },
+  lg: { emblemSize: 'w-12 h-12', text: 'text-base' },
+  xl: { emblemSize: 'w-16 h-16', text: 'text-lg' },
+  '2xl': { emblemSize: 'w-24 h-24', text: 'text-2xl' },
+  splash: { emblemSize: 'w-36 h-36 sm:w-44 sm:h-44', text: 'text-3xl' },
+  full: { emblemSize: 'w-full h-full', text: 'text-3xl' }
 };
 
 export const PrayerCloudLogo: React.FC<PrayerCloudLogoProps> = ({

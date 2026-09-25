@@ -9,11 +9,13 @@ import {
   Eye,
   Check,
   CheckCircle,
-  Save
+  Save,
+  LogOut,
+  AlertTriangle
 } from 'lucide-react';
 
 export const UserProfilePage: React.FC = () => {
-  const { currentUser, updateProfile } = useAuth();
+  const { currentUser, updateProfile, logout } = useAuth();
   const { isDarkMode, setThemeMode } = useBranding();
   const [fullName, setFullName] = useState(currentUser?.fullName || '');
   const [bio, setBio] = useState(currentUser?.bio || '');
@@ -21,6 +23,7 @@ export const UserProfilePage: React.FC = () => {
   const [country, setCountry] = useState(currentUser?.country || '');
   const [saved, setSaved] = useState(false);
   const [themeNotif, setThemeNotif] = useState<string | null>(null);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   if (!currentUser) return null;
 
@@ -43,24 +46,41 @@ export const UserProfilePage: React.FC = () => {
     setTimeout(() => setSaved(false), 2000);
   };
 
+  const handleLogout = () => {
+    logout();
+  };
+
   return (
     <div className="max-w-3xl mx-auto space-y-6 pb-20">
-      {/* Header Profile Banner */}
-      <div className="p-6 bg-gradient-to-r from-blue-900 via-slate-900 to-[#0d1322] text-white rounded-3xl shadow-xl flex items-center gap-5 border border-blue-800/40">
-        <div className="w-20 h-20 rounded-2xl bg-blue-600 flex items-center justify-center text-3xl font-bold shadow-lg ring-4 ring-blue-500/20 shrink-0">
-          {currentUser.fullName.charAt(0)}
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-2xl font-bold truncate">{currentUser.fullName}</h1>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 font-semibold border border-blue-400/30">
-              {currentUser.role}
-            </span>
+      {/* Header Profile Banner with Quick Sign Out */}
+      <div className="p-6 bg-gradient-to-r from-blue-900 via-slate-900 to-[#0d1322] text-white rounded-3xl shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 border border-blue-800/40">
+        <div className="flex items-center gap-4 min-w-0">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-blue-600 flex items-center justify-center text-2xl sm:text-3xl font-bold shadow-lg ring-4 ring-blue-500/20 shrink-0">
+            {currentUser.fullName.charAt(0)}
           </div>
-          <p className="text-xs text-blue-200 mt-1 truncate">
-            {currentUser.email} · Based in {currentUser.country} · Member since {new Date(currentUser.joinedAt).getFullYear()}
-          </p>
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="text-xl sm:text-2xl font-bold truncate">{currentUser.fullName}</h1>
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 font-semibold border border-blue-400/30">
+                {currentUser.role}
+              </span>
+            </div>
+            <p className="text-xs text-blue-200 mt-1 truncate">
+              {currentUser.email} · {currentUser.country}
+            </p>
+          </div>
         </div>
+
+        {/* Quick Log Out Button in Header Banner */}
+        <button
+          type="button"
+          onClick={() => setShowLogoutConfirm(true)}
+          className="px-3.5 py-2 bg-red-950/70 hover:bg-red-900 border border-red-500/40 text-red-200 hover:text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1.5 shrink-0"
+          title="Sign out of Prayer Cloud"
+        >
+          <LogOut className="w-3.5 h-3.5" />
+          <span>Log Out</span>
+        </button>
       </div>
 
       {/* Field Metrics */}
@@ -91,7 +111,7 @@ export const UserProfilePage: React.FC = () => {
         </div>
       )}
 
-      {/* Profile Details Form - Now at the Top of Theme Mode */}
+      {/* Profile Details Form - At the Top of Theme Mode */}
       <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 shadow-sm">
         <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
           <div className="flex items-center gap-2">
@@ -308,6 +328,62 @@ export const UserProfilePage: React.FC = () => {
           </button>
         </div>
       </section>
+
+      {/* Account Session & Danger Zone */}
+      <section className="bg-white dark:bg-slate-900 rounded-3xl border border-red-200 dark:border-red-950/60 p-6 shadow-sm space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="font-bold text-base text-slate-900 dark:text-white">Account Session</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Sign out from this device to protect your missionary credentials and prayer shields.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowLogoutConfirm(true)}
+            className="px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl shadow-md transition-colors flex items-center gap-2"
+          >
+            <LogOut className="w-4 h-4" />
+            <span>Sign Out / Log Out</span>
+          </button>
+        </div>
+      </section>
+
+      {/* Log Out Confirmation Dialog Modal */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fadeIn">
+          <div className="w-full max-w-sm bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 shadow-2xl animate-scaleUp">
+            <div className="flex items-center gap-3 text-amber-500 dark:text-amber-400">
+              <div className="w-10 h-10 rounded-2xl bg-amber-500/15 flex items-center justify-center">
+                <AlertTriangle className="w-5 h-5" />
+              </div>
+              <h3 className="font-bold text-base text-slate-900 dark:text-white">Confirm Sign Out</h3>
+            </div>
+            
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              Are you sure you want to log out of your Prayer Cloud session? You will need your email/username and password to sign back in.
+            </p>
+
+            <div className="flex items-center justify-end gap-2.5 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowLogoutConfirm(false)}
+                className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl shadow transition-colors flex items-center gap-1.5"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span>Yes, Log Out</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

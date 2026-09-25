@@ -95,16 +95,16 @@ export const AuthPages: React.FC<AuthPagesProps> = ({ mode, onNavigate }) => {
       <div className="w-full max-w-md space-y-6">
         
         {/* Brand Header with 3D Logo */}
-        <div className="text-center space-y-3 flex flex-col items-center">
-          <div className="p-3 bg-slate-900/60 rounded-3xl border border-blue-500/20 backdrop-blur-md shadow-xl">
-            <PrayerCloudLogo size="xl" />
+        <div className="text-center space-y-2 flex flex-col items-center">
+          <div className="p-2 bg-slate-900/60 rounded-2xl border border-blue-500/20 backdrop-blur-md shadow-lg">
+            <PrayerCloudLogo size="md" />
           </div>
           <div>
-            <div className="flex items-center justify-center gap-1.5 text-2xl sm:text-3xl font-black font-display text-slate-900 dark:text-white tracking-tight">
+            <div className="flex items-center justify-center gap-1.5 text-xl sm:text-2xl font-black font-display text-slate-900 dark:text-white tracking-tight">
               <span>PRAYER</span>
               <span className="text-amber-500">CLOUD</span>
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xs mx-auto">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 max-w-xs mx-auto">
               {mode === 'login'
                 ? 'Access real-time missional strategy, prayer shields, and video conferences.'
                 : 'Join the global network of missionaries, pastors, and prayer warriors.'}

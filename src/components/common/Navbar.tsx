@@ -60,7 +60,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={() => handleNavClick('home')}
               className="flex items-center gap-1.5 sm:gap-2 text-left group"
             >
-              <div className="w-8 h-8 rounded-lg bg-[#0e121b] border border-[#253046] flex items-center justify-center p-0.5 shadow-md shadow-blue-950/60 group-hover:scale-105 transition-transform shrink-0">
+              <div className="w-7 h-7 rounded-lg bg-[#0e121b] border border-[#253046] flex items-center justify-center p-0.5 shadow-sm shadow-blue-950/60 group-hover:scale-105 transition-transform shrink-0">
                 <PrayerCloudLogo size="sm" />
               </div>
               <div className="hidden sm:block">
