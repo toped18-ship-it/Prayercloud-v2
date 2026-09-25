@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useBranding } from '../../context/ThemeAndBrandingContext';
+import { PrayerCloudLogo } from './PrayerCloudLogo';
 
 interface NavbarProps {
   currentPage: string;
@@ -84,20 +85,20 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={() => handleNavClick('home')}
               className="flex items-center gap-2 sm:gap-2.5 text-left group"
             >
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-500 to-[#0e71eb] flex items-center justify-center text-white font-black shadow-lg shadow-emerald-500/25 group-hover:scale-105 transition-transform shrink-0">
-                <Globe className="w-4 h-4 text-white" />
+              <div className="w-9 h-9 rounded-xl bg-[#0f1422] border border-[#2b3752] flex items-center justify-center p-0.5 shadow-lg shadow-blue-950/60 group-hover:scale-105 transition-transform shrink-0">
+                <PrayerCloudLogo size="sm" />
               </div>
               <div className="hidden sm:block">
                 <div className="flex items-center gap-1.5">
-                  <span className="font-extrabold text-sm tracking-tight text-white group-hover:text-emerald-400 transition-colors">
-                    10/40 Watch
+                  <span className="font-extrabold text-sm tracking-tight text-white group-hover:text-amber-400 transition-colors">
+                    PRAYER CLOUD
                   </span>
-                  <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider bg-emerald-950/80 px-1.5 py-0.5 rounded border border-emerald-500/30">
+                  <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider bg-amber-950/80 px-1.5 py-0.5 rounded border border-amber-500/30">
                     Live
                   </span>
                 </div>
                 <div className="text-[10px] text-slate-400 font-semibold leading-none truncate max-w-[180px]">
-                  {branding.siteName || 'Frontier Mission & Intercession Hub'}
+                  {branding.siteName || 'Global Intercession Platform'}
                 </div>
               </div>
             </button>

@@ -1,86 +1,98 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="90 55 350 375" width="100%" height="100%">
   <defs>
-    <!-- Soft Ambient Glow & Shadow for browser tabs -->
-    <filter id="pc-glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#050a24" flood-opacity="0.65" />
-      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#1e3a8a" flood-opacity="0.4" />
+    <!-- Soft Realistic 3D Cast Shadow matching original image -->
+    <filter id="pc-full-shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="-10" dy="16" stdDeviation="10" flood-color="#0a1026" flood-opacity="0.65" />
+      <feDropShadow dx="-2" dy="6" stdDeviation="4" flood-color="#030712" flood-opacity="0.45" />
     </filter>
 
     <!-- Royal Blue Front Faces -->
-    <linearGradient id="blueFront" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#2563eb" />
-      <stop offset="40%" stop-color="#1d4ed8" />
+    <linearGradient id="blueFrontGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e40af" />
+      <stop offset="50%" stop-color="#1d4ed8" />
       <stop offset="100%" stop-color="#1e3a8a" />
     </linearGradient>
 
-    <!-- Blue Top 3D Bevel Highlight -->
-    <linearGradient id="blueTop" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#60a5fa" />
-      <stop offset="60%" stop-color="#3b82f6" />
-      <stop offset="100%" stop-color="#2563eb" />
+    <!-- Blue Top 3D Bevel Facet -->
+    <linearGradient id="blueTopGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="60%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#1d4ed8" />
     </linearGradient>
 
-    <!-- Blue Side 3D Extrusion Shadow -->
-    <linearGradient id="blueSide" x1="0%" y1="0%" x2="0%" y2="100%">
+    <!-- Blue Left Side 3D Extrusion -->
+    <linearGradient id="blueSideGrad" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stop-color="#172554" />
-      <stop offset="100%" stop-color="#0b1329" />
+      <stop offset="60%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#020617" />
     </linearGradient>
 
-    <!-- Vivid Golden Yellow Front Faces -->
-    <linearGradient id="goldFront" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fbbf24" />
-      <stop offset="50%" stop-color="#f59e0b" />
-      <stop offset="100%" stop-color="#d97706" />
+    <!-- Bright Vibrant Golden Yellow Front Face -->
+    <linearGradient id="yellowFrontGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffcc00" />
+      <stop offset="45%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#eab308" />
     </linearGradient>
 
-    <!-- Gold Top 3D Highlight -->
-    <linearGradient id="goldTop" x1="0%" y1="0%" x2="100%" y2="100%">
+    <!-- Yellow Top Facet Highlight -->
+    <linearGradient id="yellowTopGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#fef08a" />
       <stop offset="60%" stop-color="#fde047" />
-      <stop offset="100%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#f59e0b" />
     </linearGradient>
 
-    <!-- Gold Side 3D Extrusion Shadow -->
-    <linearGradient id="goldSide" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#b45309" />
+    <!-- Yellow 3D Bottom/Side Extrusions -->
+    <linearGradient id="yellowSideGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#d97706" />
+      <stop offset="50%" stop-color="#b45309" />
       <stop offset="100%" stop-color="#78350f" />
     </linearGradient>
   </defs>
 
-  <!-- Background rounded plate for ultra clear favicon visibility on dark/light tabs -->
-  <rect width="512" height="512" rx="112" fill="#0c1322" />
-  <rect width="504" height="504" x="4" y="4" rx="108" fill="none" stroke="#1e293b" stroke-width="4" opacity="0.6" />
+  <g filter="url(#pc-full-shadow)">
+    <!-- 3D P Top Bar - Left Extruded Face -->
+    <path d="M 125 115 L 145 80 L 155 80 L 138 122 Z" fill="url(#blueSideGrad)" />
+    <!-- 3D P Top Bar - Top Bevel -->
+    <path d="M 145 80 L 295 80 Q 370 80 375 130 L 335 150 Q 325 118 280 118 L 138 118 Z" fill="url(#blueTopGrad)" />
+    <!-- 3D P Top Bar - Front Face -->
+    <path d="M 135 118 L 295 118 Q 365 118 365 170 Q 365 220 310 220 L 255 220 L 255 260 L 315 260 Q 405 260 405 170 Q 405 75 295 75 L 135 75 Z" fill="url(#blueFrontGrad)" />
 
-  <g filter="url(#pc-glow)" transform="translate(18, 12)">
-    <!-- 3D P Side Extrusions -->
-    <path d="M 120 120 L 155 85 L 310 85 Q 380 85 390 135 L 350 155 Q 335 120 295 120 L 120 120 Z" fill="url(#blueTop)" />
-    <path d="M 120 120 L 120 380 L 160 350 L 160 120 Z" fill="url(#blueSide)" />
+    <!-- Embossed Yellow "PRAYER CLOUD" Text on Top Bar -->
+    <text
+      x="170"
+      y="104"
+      fill="#fde047"
+      font-family="'Montserrat', 'Arial Black', sans-serif"
+      font-size="20"
+      font-weight="900"
+      letter-spacing="2.2"
+      transform="rotate(1.5 170 104)"
+    >
+      PRAYER CLOUD
+    </text>
 
-    <!-- Blue P Vertical Stem -->
-    <rect x="155" y="195" width="85" height="190" rx="6" fill="url(#blueFront)" />
-    <path d="M 120 215 L 155 195 L 155 385 L 120 405 Z" fill="url(#blueSide)" />
+    <!-- Blue Vertical Stem - Left 3D Extruded Block Shadow -->
+    <path d="M 138 150 L 165 130 L 165 365 L 138 385 Z" fill="url(#blueSideGrad)" />
+    <!-- Blue Vertical Stem - Front Face Pillar -->
+    <rect x="165" y="130" width="82" height="235" rx="3" fill="url(#blueFrontGrad)" />
+    <!-- Blue Vertical Stem - Bottom 3D Facet -->
+    <path d="M 138 385 L 165 365 L 247 365 L 220 385 Z" fill="url(#blueSideGrad)" />
 
-    <!-- Blue P Upper Loop Bar -->
-    <path d="M 150 120 L 310 120 Q 370 120 370 180 Q 370 235 310 235 L 255 235 L 255 275 L 320 275 Q 415 275 415 180 Q 415 75 310 75 L 150 75 Z" fill="url(#blueFront)" />
-    <path d="M 115 120 L 150 75 L 310 75 Q 415 75 415 180 L 380 200 Q 375 110 295 110 L 115 110 Z" fill="url(#blueTop)" />
-
-    <!-- Embossed Yellow Text on Blue P Upper Bar -->
-    <text x="175" y="105" fill="#fde047" font-family="'Montserrat', 'Arial Black', sans-serif" font-size="20" font-weight="900" letter-spacing="3" transform="rotate(2 175 105)">PRAYER CLOUD</text>
-
-    <!-- 3D Interlocking Golden Yellow C Body -->
+    <!-- 3D Yellow Interlocking C Structure -->
     <!-- C Top Horizontal Arm -->
-    <path d="M 235 195 L 395 195 L 395 275 L 325 275 L 325 235 L 235 235 Z" fill="url(#goldFront)" />
-    <path d="M 215 210 L 235 195 L 395 195 L 375 210 Z" fill="url(#goldTop)" />
+    <path d="M 247 140 L 390 140 L 390 220 L 325 220 L 325 185 L 247 185 Z" fill="url(#yellowFrontGrad)" />
+    <path d="M 225 155 L 247 140 L 390 140 L 370 155 Z" fill="url(#yellowTopGrad)" />
 
-    <!-- C Main Body Arch Interlocking Through P -->
-    <path d="M 235 195 Q 195 195 195 290 Q 195 395 315 395 L 395 395 L 395 315 L 325 315 Q 275 315 275 290 Q 275 275 325 275 L 325 195 Z" fill="url(#goldFront)" />
+    <!-- C Main Body Right Arch Curve -->
+    <path d="M 247 140 Q 200 140 200 260 Q 200 380 320 380 L 395 380 L 395 285 L 330 285 Q 280 285 280 260 Q 280 230 330 230 L 330 140 Z" fill="url(#yellowFrontGrad)" />
     
-    <!-- C 3D Side Depth Extrusion -->
-    <path d="M 195 290 L 175 310 Q 175 420 295 420 L 395 420 L 395 395 L 315 395 Q 195 395 195 290 Z" fill="url(#goldSide)" />
-    <path d="M 325 315 L 345 295 L 395 295 L 395 315 Z" fill="url(#goldSide)" />
-    <path d="M 315 395 L 295 420 L 395 420 L 395 395 Z" fill="url(#goldSide)" />
+    <!-- C 3D Left/Bottom Extrusions & Real-world Depth -->
+    <path d="M 200 260 L 180 280 Q 180 405 300 405 L 395 405 L 395 380 L 320 380 Q 200 380 200 260 Z" fill="url(#yellowSideGrad)" />
+    <!-- C Gap/Notch on Bottom Arm -->
+    <path d="M 330 285 L 350 265 L 395 265 L 395 285 Z" fill="url(#yellowSideGrad)" />
+    <path d="M 320 380 L 300 405 L 395 405 L 395 380 Z" fill="url(#yellowSideGrad)" />
 
-    <!-- Interlocking Lower Blue P Joint -->
-    <path d="M 255 270 L 320 270 Q 355 270 355 290 L 325 290 Q 325 280 295 280 L 255 280 Z" fill="url(#blueFront)" />
+    <!-- Blue Lower Loop Interlocking Return Piece -->
+    <path d="M 255 250 L 315 250 Q 350 250 350 270 L 325 270 Q 325 260 295 260 L 255 260 Z" fill="url(#blueFrontGrad)" />
   </g>
 </svg>
