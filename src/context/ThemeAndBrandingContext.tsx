@@ -8,6 +8,7 @@ interface ThemeAndBrandingContextType {
   updateBranding: (newSettings: Partial<SiteBrandingSettings>) => void;
   isDarkMode: boolean;
   toggleDarkMode: () => void;
+  setThemeMode: (mode: 'dark' | 'light') => void;
 }
 
 const ThemeAndBrandingContext = createContext<ThemeAndBrandingContextType | undefined>(undefined);
@@ -18,7 +19,12 @@ export const ThemeAndBrandingProvider: React.FC<{ children: React.ReactNode }> =
   });
 
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
-    return localStorage.getItem('prayercloud_dark_mode') === 'true';
+    const stored = localStorage.getItem('prayercloud_dark_mode');
+    if (stored !== null) {
+      return stored === 'true';
+    }
+    // Default to true (deep dark) as current standard theme
+    return true;
   });
 
   useEffect(() => {
@@ -47,13 +53,18 @@ export const ThemeAndBrandingProvider: React.FC<{ children: React.ReactNode }> =
     setIsDarkMode(prev => !prev);
   };
 
+  const setThemeMode = (mode: 'dark' | 'light') => {
+    setIsDarkMode(mode === 'dark');
+  };
+
   return (
     <ThemeAndBrandingContext.Provider
       value={{
         branding,
         updateBranding,
         isDarkMode,
-        toggleDarkMode
+        toggleDarkMode,
+        setThemeMode
       }}
     >
       {children}

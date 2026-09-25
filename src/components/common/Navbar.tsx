@@ -22,7 +22,8 @@ import {
   Sliders,
   Sparkles,
   Command,
-  Lock
+  Lock,
+  BookOpen
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useBranding } from '../../context/ThemeAndBrandingContext';
@@ -143,6 +144,20 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* RIGHT ZONE: Status, Quick Call, Settings, Profile Avatar */}
           <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             
+            {/* Quick SU Devotional & Bible Hub Button */}
+            <button
+              onClick={() => handleNavClick('devotionals')}
+              className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-sm ${
+                currentPage === 'devotionals' || currentPage === 'bible' || currentPage === 'devotional-hub'
+                  ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-amber-500/20'
+                  : 'bg-[#1f2738] hover:bg-[#262f43] border border-[#2f3950] text-amber-400 hover:text-amber-300'
+              }`}
+              title="Scripture Union Daily Devotional & Holy Bible Hub"
+            >
+              <BookOpen className="w-4 h-4" />
+              <span>SU Devotional</span>
+            </button>
+
             {/* Quick Launch New Meeting Button */}
             <button
               onClick={() => onLaunchInstantCall ? onLaunchInstantCall() : handleNavClick('missionary-hub')}
@@ -226,7 +241,23 @@ export const Navbar: React.FC<NavbarProps> = ({
                       className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-[#2a3449] transition-colors flex items-center gap-2 text-slate-300"
                     >
                       <User className="w-4 h-4 text-blue-400" />
-                      <span>My Profile & Statistics</span>
+                      <span>My Profile & Settings</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        toggleDarkMode();
+                      }}
+                      className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-[#2a3449] transition-colors flex items-center justify-between text-slate-300"
+                      title="Toggle between Deep Dark Mode and High-Contrast Daylight Mode"
+                    >
+                      <div className="flex items-center gap-2">
+                        {isDarkMode ? <Moon className="w-4 h-4 text-blue-400" /> : <Sun className="w-4 h-4 text-amber-400" />}
+                        <span>{isDarkMode ? 'Deep Dark Mode' : 'Daylight Field Mode'}</span>
+                      </div>
+                      <span className="text-[10px] bg-[#161b26] text-blue-300 px-1.5 py-0.5 rounded border border-[#2f3950]">
+                        Toggle
+                      </span>
                     </button>
                   </div>
 

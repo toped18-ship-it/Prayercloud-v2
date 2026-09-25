@@ -33,6 +33,7 @@ import { ResourcesPage } from './pages/ResourcesPage';
 import { AdminDashboardPage } from './pages/AdminDashboardPage';
 import { AuthPages } from './pages/AuthPages';
 import { UserProfilePage } from './pages/UserProfilePage';
+import { DevotionalHubPage } from './pages/DevotionalHubPage';
 
 function MainAppContent() {
   const { isAuthenticated, isOnboardingOpen, setIsOnboardingOpen, currentUser } = useAuth();
@@ -232,7 +233,7 @@ function MainAppContent() {
   }
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden flex flex-col bg-[#0e121b] dark:bg-[#0c1018] text-slate-100 antialiased font-sans transition-colors">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden flex flex-col bg-slate-100 dark:bg-[#0c1018] text-slate-900 dark:text-slate-100 antialiased font-sans transition-colors">
       <GoogleMapsQuotaBanner />
 
       {/* Global Video Conference / WhatsApp Call Active Room */}
@@ -331,6 +332,13 @@ function MainAppContent() {
           <FieldReportsPage
             reports={reports}
             onRefreshReports={refreshData}
+          />
+        )}
+
+        {(currentPage === 'devotionals' || currentPage === 'devotional-hub' || currentPage === 'bible' || currentPage === 'devotional') && (
+          <DevotionalHubPage
+            initialTab={currentPage === 'bible' ? 'bible' : 'devotional'}
+            onNavigate={navigateTo}
           />
         )}
 

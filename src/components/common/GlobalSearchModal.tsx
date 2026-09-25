@@ -92,6 +92,31 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({ isOpen, on
 
         {/* Results Body */}
         <div className="overflow-y-auto p-4 space-y-5">
+          {/* Quick Hub Launchers */}
+          {(!q || 'devotional'.includes(q) || 'bible'.includes(q) || 'scripture union'.includes(q) || 'su'.includes(q)) && (
+            <div className="p-3 bg-gradient-to-r from-amber-500/10 to-blue-500/10 border border-amber-500/30 rounded-2xl flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-bold">
+                  <BookOpen className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="font-bold text-sm text-slate-900 dark:text-white">
+                    Scripture Union (SU) Devotional & Holy Bible Hub
+                  </div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400">
+                    Daily Guide, Encounter with God, 66-Book Bible reader & Spiritual Journal
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={() => handleSelect('devotionals')}
+                className="px-3.5 py-1.5 bg-[#0e71eb] text-white font-bold text-xs rounded-xl shadow shrink-0"
+              >
+                Open Hub
+              </button>
+            </div>
+          )}
+
           {/* Countries Section */}
           {filteredCountries.length > 0 && (
             <div>

@@ -3,6 +3,7 @@
   "appId": "1:1015180810141:web:9d8a801cdac9a9bcfc8174",
   "apiKey": "AIzaSyA_KLM9qv3fzzxJKAlc7jQP7Kk2K0fYaMU",
   "authDomain": "temporal-student-6k76w.firebaseapp.com",
+  "firestoreDatabaseId": "ai-studio-prayercloudgloba-13fbd439-8f48-4e20-88cf-2b0f802da752",
   "storageBucket": "temporal-student-6k76w.firebasestorage.app",
   "messagingSenderId": "1015180810141",
   "measurementId": "",

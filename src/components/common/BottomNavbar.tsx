@@ -3,7 +3,8 @@ import {
   Globe,
   Compass,
   MessageSquare,
-  MapPin
+  MapPin,
+  BookOpen
 } from 'lucide-react';
 
 interface BottomNavbarProps {
@@ -17,6 +18,7 @@ export const BottomNavbar: React.FC<BottomNavbarProps> = ({
 }) => {
   const navTabs = [
     { id: 'home', label: 'Home', icon: Globe },
+    { id: 'devotionals', label: 'Devotional & Bible', icon: BookOpen, badge: 'SU Daily' },
     { id: 'missionary-hub', label: 'Missionary Hub', icon: Compass, badge: 'Hub' },
     { id: 'chat', label: 'Chatroom', icon: MessageSquare, badge: 'Live' },
     { id: 'countries', label: 'Countries', icon: MapPin },

@@ -281,3 +281,75 @@ export interface AuditLog {
   target: string;
   details: string;
 }
+
+export type SUDevotionalEdition = 'Daily Guide' | 'Daily Power' | 'Encounter with God';
+
+export interface SUDailyDevotional {
+  id: string;
+  date: string; // YYYY-MM-DD
+  edition: SUDevotionalEdition;
+  title: string;
+  openingPrayer: string;
+  biblePassage: {
+    book: string;
+    chapter: number;
+    verses: string;
+    text: string;
+  };
+  keyVerse: {
+    text: string;
+    reference: string;
+  };
+  readingNotes: string[];
+  reflectionQuestions: string[];
+  prayerOfCommitment: string;
+  oneYearBibleReading: {
+    morning: string;
+    evening: string;
+  };
+  suGlobalPrayerFocus: string;
+  authorOrSource: string;
+  tags: string[];
+}
+
+export interface BibleBookMeta {
+  id: string;
+  name: string;
+  abbreviation: string;
+  testament: 'OT' | 'NT';
+  category: 'Law' | 'History' | 'Poetry' | 'Prophets' | 'Gospels' | 'Acts' | 'Epistles' | 'Revelation';
+  chaptersCount: number;
+}
+
+export interface BibleVerse {
+  verse: number;
+  text: string;
+}
+
+export interface BibleChapterData {
+  book: string;
+  chapter: number;
+  translation: string;
+  verses: BibleVerse[];
+}
+
+export interface DevotionalJournalEntry {
+  id: string;
+  devotionalId?: string;
+  date: string;
+  title: string;
+  scriptureReference: string;
+  notes: string;
+  actionPoint: string;
+  createdAt: string;
+}
+
+export interface BibleHighlight {
+  id: string;
+  book: string;
+  chapter: number;
+  verse: number;
+  color: 'amber' | 'emerald' | 'blue' | 'purple' | 'rose';
+  createdAt: string;
+}
+

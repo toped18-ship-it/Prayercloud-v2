@@ -15,6 +15,7 @@ export const UNREACHED_PLACES_DATA: UnreachedPlace[] = [
     churchesCount: 0,
     bibleAvailability: 'Complete',
     missionaryPresence: 'Pioneer Needed',
+    photoUrl: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?q=80&w=800&auto=format&fit=crop',
     prayerRequests: [
       'Tribal elders (Maliks) to encounter Jesus through dreams and visions',
       'Pashtun women and youth to find freedom and salvation in the Messiah',
@@ -41,6 +42,7 @@ export const UNREACHED_PLACES_DATA: UnreachedPlace[] = [
     churchesCount: 4,
     bibleAvailability: 'Portions',
     missionaryPresence: 'Few',
+    photoUrl: 'https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?q=80&w=800&auto=format&fit=crop',
     prayerRequests: [
       'Healing from profound trauma and statelessness in refugee camps',
       'Audio scripture translation in native Rohingya language',
@@ -67,6 +69,7 @@ export const UNREACHED_PLACES_DATA: UnreachedPlace[] = [
     churchesCount: 18,
     bibleAvailability: 'Complete',
     missionaryPresence: 'Few',
+    photoUrl: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=800&auto=format&fit=crop',
     prayerRequests: [
       'Breakthrough of Disciple-Making Movements (DMM) across West Java villages',
       'Sundanese Christian music and cultural worship expressions',
@@ -93,6 +96,7 @@ export const UNREACHED_PLACES_DATA: UnreachedPlace[] = [
     churchesCount: 8,
     bibleAvailability: 'Complete',
     missionaryPresence: 'Few',
+    photoUrl: 'https://images.unsplash.com/photo-1527838832700-5059252407fa?q=80&w=800&auto=format&fit=crop',
     prayerRequests: [
       'Sovereign Holy Spirit outpouring across southeastern cities (Diyarbakir, Mardin, Van)',
       'Alevi Kurdish seekers finding the ultimate Mediator in Christ',
@@ -119,6 +123,7 @@ export const UNREACHED_PLACES_DATA: UnreachedPlace[] = [
     churchesCount: 120,
     bibleAvailability: 'Complete',
     missionaryPresence: 'Few',
+    photoUrl: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?q=80&w=800&auto=format&fit=crop',
     prayerRequests: [
       'Massive transformation among agrarian and dairy farming communities',
       'Deliverance from caste pride and spiritual bondage to ancestral idols',
@@ -145,6 +150,7 @@ export const UNREACHED_PLACES_DATA: UnreachedPlace[] = [
     churchesCount: 3,
     bibleAvailability: 'Translation in Progress',
     missionaryPresence: 'Pioneer Needed',
+    photoUrl: 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?q=80&w=800&auto=format&fit=crop',
     prayerRequests: [
       'Gospel caravans across nomadic Saharan grazing tracks',
       'Tamasheq Bible translation completion and oral Bible recording',
@@ -171,6 +177,7 @@ export const UNREACHED_PLACES_DATA: UnreachedPlace[] = [
     churchesCount: 15,
     bibleAvailability: 'Complete',
     missionaryPresence: 'Few',
+    photoUrl: 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?q=80&w=800&auto=format&fit=crop',
     prayerRequests: [
       'Han Chinese Christians overcoming ethnic prejudice to lovingly share Christ with Hui neighbors',
       'Understanding of Isa al-Masih as Lord through the Arabic and Chinese Quranic bridges',
@@ -197,6 +204,7 @@ export const UNREACHED_PLACES_DATA: UnreachedPlace[] = [
     churchesCount: 0,
     bibleAvailability: 'Complete',
     missionaryPresence: 'Pioneer Needed',
+    photoUrl: 'https://images.unsplash.com/photo-1579606032834-de00b39678e0?q=80&w=800&auto=format&fit=crop',
     prayerRequests: [
       'Deliverance from generational cycles of warfare and famine',
       'Courage for secret seekers following Jesus in ancient mud-brick tower homes',
@@ -223,6 +231,7 @@ export const UNREACHED_PLACES_DATA: UnreachedPlace[] = [
     churchesCount: 2,
     bibleAvailability: 'Complete',
     missionaryPresence: 'Few',
+    photoUrl: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=800&auto=format&fit=crop',
     prayerRequests: [
       'Spiritual liberation from fear of demons and reincarnation cycles',
       'Monks inside Jokhang and Sera monasteries to find the True Light',
@@ -249,6 +258,7 @@ export const UNREACHED_PLACES_DATA: UnreachedPlace[] = [
     churchesCount: 5,
     bibleAvailability: 'Complete',
     missionaryPresence: 'Pioneer Needed',
+    photoUrl: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?q=80&w=800&auto=format&fit=crop',
     prayerRequests: [
       'Ethiopian highland churches to send loving workers into the Somali desert',
       'Deliverance from severe drought, clan warfare, and poverty',

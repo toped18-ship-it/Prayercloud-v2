@@ -217,7 +217,9 @@ export const INITIAL_MISSION_REPORTS: MissionReport[] = [
       'Solar audio players in Berber language',
       'Continued intercession against village elder intimidation'
     ],
-    photoUrls: [],
+    photoUrls: [
+      'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?q=80&w=800&auto=format&fit=crop'
+    ],
     scriptureAnchor: 'Isaiah 42:11 - "Let the desert and its towns raise their voices; let the settlements where Kedar lives rejoice. Let the people of Sela sing for joy; let them shout from the mountaintops."',
     createdAt: '2026-09-18T16:00:00Z',
     isVerified: true,
@@ -241,7 +243,9 @@ export const INITIAL_MISSION_REPORTS: MissionReport[] = [
       'Bicycles for traveling village evangelists',
       'Micro-loans for goat farming so pastors remain self-sustained'
     ],
-    photoUrls: [],
+    photoUrls: [
+      'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?q=80&w=800&auto=format&fit=crop'
+    ],
     scriptureAnchor: 'Matthew 9:37-38 - "The harvest is plentiful but the workers are few. Ask the Lord of the harvest, therefore, to send out workers into his harvest field."',
     createdAt: '2026-09-15T12:30:00Z',
     isVerified: true,

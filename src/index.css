@@ -12,8 +12,18 @@
     margin: 0;
     padding: 0;
     overflow-x: hidden;
-    background-color: #0e121b;
+  }
+
+  html.dark, html.dark body, html.dark #root {
+    background-color: #0b0f19;
     color: #f8fafc;
+    color-scheme: dark;
+  }
+
+  html:not(.dark), html:not(.dark) body, html:not(.dark) #root {
+    background-color: #f1f5f9;
+    color: #0f172a;
+    color-scheme: light;
   }
 
   body {

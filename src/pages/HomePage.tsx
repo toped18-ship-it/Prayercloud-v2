@@ -361,20 +361,32 @@ export const HomePage: React.FC<HomePageProps> = ({
               <div
                 key={rep.id}
                 onClick={() => onNavigate('reports')}
-                className="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#1a2130] border border-slate-100 dark:border-[#2a3449] hover:border-slate-300 dark:hover:border-slate-600 transition-colors cursor-pointer space-y-1.5"
+                className="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#1a2130] border border-slate-100 dark:border-[#2a3449] hover:border-slate-300 dark:hover:border-slate-600 transition-colors cursor-pointer flex gap-3 items-center"
               >
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-semibold text-slate-800 dark:text-slate-200 truncate max-w-[200px]">
-                    {rep.title}
-                  </span>
-                  <span className="text-slate-400 text-[11px]">{rep.country}</span>
-                </div>
-                <p className="text-xs text-slate-500 line-clamp-2">
-                  {rep.summary}
-                </p>
-                <div className="text-[11px] text-slate-400 pt-1 flex items-center justify-between">
-                  <span>By: <strong>{rep.missionaryName}</strong></span>
-                  <span className="text-emerald-400 font-semibold">Verified Field Dispatch</span>
+                {rep.photoUrls && rep.photoUrls.length > 0 ? (
+                  <img
+                    src={rep.photoUrls[0]}
+                    alt={rep.title}
+                    className="w-16 h-16 rounded-xl object-cover shrink-0 border border-slate-200 dark:border-slate-700"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLElement).style.display = 'none';
+                    }}
+                  />
+                ) : null}
+                <div className="flex-1 min-w-0 space-y-1">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-semibold text-slate-800 dark:text-slate-200 truncate max-w-[180px]">
+                      {rep.title}
+                    </span>
+                    <span className="text-slate-400 text-[11px] shrink-0">{rep.country}</span>
+                  </div>
+                  <p className="text-xs text-slate-500 line-clamp-2">
+                    {rep.summary}
+                  </p>
+                  <div className="text-[11px] text-slate-400 pt-0.5 flex items-center justify-between">
+                    <span>By: <strong>{rep.missionaryName}</strong></span>
+                    <span className="text-emerald-400 font-semibold text-[10px]">Verified Dispatch</span>
+                  </div>
                 </div>
               </div>
             ))}
