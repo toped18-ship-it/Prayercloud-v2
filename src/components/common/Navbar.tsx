@@ -1,31 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
-  Video,
-  MessageSquare,
-  Calendar,
-  Globe,
-  MapPin,
-  HeartHandshake,
-  FileText,
   Search,
-  Settings,
-  Shield,
-  Moon,
-  Sun,
-  User,
-  LogOut,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
   Plus,
-  Radio,
-  Sliders,
-  Sparkles,
-  Command,
-  Lock,
   BookOpen
 } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
 import { useBranding } from '../../context/ThemeAndBrandingContext';
 import { PrayerCloudLogo } from './PrayerCloudLogo';
 
@@ -41,149 +22,140 @@ export const Navbar: React.FC<NavbarProps> = ({
   currentPage,
   onNavigate,
   onOpenSearch,
-  onRestartTour,
   onLaunchInstantCall
 }) => {
-  const { currentUser, isAuthenticated, logout, isAdmin } = useAuth();
-  const { branding, isDarkMode, toggleDarkMode } = useBranding();
+  const { branding } = useBranding();
   
-  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [presenceStatus, setPresenceStatus] = useState<'available' | 'in-meeting' | 'away' | 'dnd'>('available');
   const [showStatusMenu, setShowStatusMenu] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleNavClick = (pageId: string) => {
     onNavigate(pageId);
-    setProfileDropdownOpen(false);
-    setMobileMenuOpen(false);
   };
 
   const getStatusDot = () => {
     switch (presenceStatus) {
       case 'available':
-        return <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-[#121622]" />;
+        return <span className="w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-[#121622]" />;
       case 'in-meeting':
-        return <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse ring-2 ring-[#121622]" />;
+        return <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse ring-2 ring-[#121622]" />;
       case 'away':
-        return <span className="w-2.5 h-2.5 rounded-full bg-amber-400 ring-2 ring-[#121622]" />;
+        return <span className="w-2 h-2 rounded-full bg-amber-400 ring-2 ring-[#121622]" />;
       case 'dnd':
-        return <span className="w-2.5 h-2.5 rounded-full bg-purple-500 ring-2 ring-[#121622]" />;
+        return <span className="w-2 h-2 rounded-full bg-purple-500 ring-2 ring-[#121622]" />;
     }
   };
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full max-w-full bg-[#161b26] border-b border-[#262f43] text-white select-none transition-colors shadow-md overflow-x-hidden">
+      <header className="sticky top-0 z-40 w-full max-w-full bg-[#141823] border-b border-[#232b3d] text-white select-none transition-colors shadow-md overflow-x-hidden">
         
-        {/* Main Workplace Header Bar */}
-        <div className="max-w-[1700px] w-full mx-auto px-2.5 sm:px-5 flex items-center justify-between h-14 gap-2">
+        {/* Main Workplace Header Bar - Compact & Streamlined */}
+        <div className="max-w-[1700px] w-full mx-auto px-2 sm:px-4 flex items-center justify-between h-12 gap-1.5 sm:gap-2">
           
           {/* LEFT ZONE: App Brand & Navigation Chevrons */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
             {/* App Brand & Navigation */}
             <button
               onClick={() => handleNavClick('home')}
-              className="flex items-center gap-2 sm:gap-2.5 text-left group"
+              className="flex items-center gap-1.5 sm:gap-2 text-left group"
             >
-              <div className="w-9 h-9 rounded-xl bg-[#0f1422] border border-[#2b3752] flex items-center justify-center p-0.5 shadow-lg shadow-blue-950/60 group-hover:scale-105 transition-transform shrink-0">
+              <div className="w-8 h-8 rounded-lg bg-[#0e121b] border border-[#253046] flex items-center justify-center p-0.5 shadow-md shadow-blue-950/60 group-hover:scale-105 transition-transform shrink-0">
                 <PrayerCloudLogo size="sm" />
               </div>
               <div className="hidden sm:block">
-                <div className="flex items-center gap-1.5">
-                  <span className="font-extrabold text-sm tracking-tight text-white group-hover:text-amber-400 transition-colors">
+                <div className="flex items-center gap-1">
+                  <span className="font-extrabold text-xs tracking-tight text-white group-hover:text-amber-400 transition-colors">
                     PRAYER CLOUD
                   </span>
-                  <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider bg-amber-950/80 px-1.5 py-0.5 rounded border border-amber-500/30">
+                  <span className="text-[9px] font-bold text-amber-400 uppercase tracking-wider bg-amber-950/80 px-1 py-0.2 rounded border border-amber-500/30">
                     Live
                   </span>
                 </div>
-                <div className="text-[10px] text-slate-400 font-semibold leading-none truncate max-w-[180px]">
+                <div className="text-[9px] text-slate-400 font-semibold leading-none truncate max-w-[160px]">
                   {branding.siteName || 'Global Intercession Platform'}
                 </div>
               </div>
             </button>
 
-            {/* Window Back / Forward Chevrons */}
-            <div className="hidden lg:flex items-center gap-0.5 ml-2 text-slate-400">
+            {/* Compact Window Back / Forward Chevrons */}
+            <div className="hidden lg:flex items-center gap-0.5 ml-1 text-slate-400">
               <button
                 onClick={() => window.history.back()}
-                className="p-1 hover:text-white hover:bg-[#232a3b] rounded-lg transition-colors"
+                className="p-1 hover:text-white hover:bg-[#1e2536] rounded-md transition-colors"
                 title="Back"
               >
-                <ChevronLeft className="w-4 h-4" />
+                <ChevronLeft className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={() => window.history.forward()}
-                className="p-1 hover:text-white hover:bg-[#232a3b] rounded-lg transition-colors"
+                className="p-1 hover:text-white hover:bg-[#1e2536] rounded-md transition-colors"
                 title="Forward"
               >
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
 
           {/* CENTER ZONE: Global Search Bar */}
-          <div className="flex items-center gap-2 md:gap-4 flex-1 max-w-xl mx-1 sm:mx-4 justify-center min-w-0">
-            
-            {/* Global Search Input */}
+          <div className="flex items-center gap-1.5 md:gap-3 flex-1 max-w-lg mx-1 sm:mx-3 justify-center min-w-0">
             <button
               onClick={onOpenSearch}
-              className="w-full max-w-sm sm:max-w-md flex items-center justify-between px-2.5 sm:px-3.5 py-1.5 bg-[#1f2738] hover:bg-[#262f43] border border-[#2f3950] rounded-xl text-xs text-slate-400 transition-all shadow-inner group min-w-0"
+              className="w-full max-w-xs sm:max-w-sm flex items-center justify-between px-2.5 py-1 bg-[#1c2232] hover:bg-[#232b3d] border border-[#283247] rounded-lg text-xs text-slate-400 transition-all shadow-inner group min-w-0"
             >
-              <div className="flex items-center gap-1.5 sm:gap-2 truncate min-w-0">
-                <Search className="w-3.5 h-3.5 text-slate-400 group-hover:text-white transition-colors shrink-0" />
-                <span className="truncate text-[11px] sm:text-xs">Search prayers, countries, meetings...</span>
+              <div className="flex items-center gap-1.5 truncate min-w-0">
+                <Search className="w-3 h-3 text-slate-400 group-hover:text-white transition-colors shrink-0" />
+                <span className="truncate text-[10px] sm:text-[11px]">Search prayers, nations, meetings...</span>
               </div>
-              <div className="hidden md:flex items-center gap-0.5 text-[10px] bg-[#161b26] text-slate-400 px-1.5 py-0.5 rounded border border-[#2f3950] shrink-0">
+              <div className="hidden md:flex items-center gap-0.5 text-[9px] bg-[#121622] text-slate-400 px-1 py-0.2 rounded border border-[#283247] shrink-0">
                 <span>Ctrl</span>
                 <span>K</span>
               </div>
             </button>
-
           </div>
 
-          {/* RIGHT ZONE: Status, Quick Call, Settings, Profile Avatar */}
-          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+          {/* RIGHT ZONE: Status & Quick Actions */}
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             
-            {/* Quick SU Devotional & Bible Hub Button */}
+            {/* Quick SU Devotional & Bible Hub Button - Compact */}
             <button
               onClick={() => handleNavClick('devotionals')}
-              className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-sm ${
+              className={`hidden md:flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all shadow-xs ${
                 currentPage === 'devotionals' || currentPage === 'bible' || currentPage === 'devotional-hub'
                   ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-amber-500/20'
-                  : 'bg-[#1f2738] hover:bg-[#262f43] border border-[#2f3950] text-amber-400 hover:text-amber-300'
+                  : 'bg-[#1c2232] hover:bg-[#232b3d] border border-[#283247] text-amber-400 hover:text-amber-300'
               }`}
               title="Scripture Union Daily Devotional & Holy Bible Hub"
             >
-              <BookOpen className="w-4 h-4" />
-              <span>SU Devotional</span>
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>Devotional</span>
             </button>
 
-            {/* Quick Launch New Meeting Button */}
+            {/* Quick Launch New Meeting Button - Compact */}
             <button
               onClick={() => onLaunchInstantCall ? onLaunchInstantCall() : handleNavClick('missionary-hub')}
-              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-[#f26d21] hover:bg-[#e05b11] text-white text-xs font-bold rounded-xl shadow-md shadow-orange-500/20 transition-all hover:scale-105 active:scale-95"
+              className="hidden md:flex items-center gap-1 px-2.5 py-1 bg-[#f26d21] hover:bg-[#e05b11] text-white text-[11px] font-bold rounded-lg shadow-sm shadow-orange-500/20 transition-all hover:scale-105 active:scale-95"
               title="Launch Instant Meeting"
             >
-              <Plus className="w-4 h-4" />
-              <span>New Meeting</span>
+              <Plus className="w-3.5 h-3.5" />
+              <span>New Call</span>
             </button>
 
-            {/* Presence Status Dropdown */}
+            {/* Presence Status Dropdown - Compact */}
             <div className="relative">
               <button
                 onClick={() => setShowStatusMenu(!showStatusMenu)}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 bg-[#1f2738] hover:bg-[#262f43] border border-[#2f3950] rounded-xl text-xs font-semibold text-slate-300 transition-colors"
+                className="flex items-center gap-1 px-2 py-1 bg-[#1c2232] hover:bg-[#232b3d] border border-[#283247] rounded-lg text-[11px] font-semibold text-slate-300 transition-colors"
                 title="Change Presence Status"
               >
                 {getStatusDot()}
-                <span className="hidden xl:inline capitalize text-[11px]">{presenceStatus.replace('-', ' ')}</span>
-                <ChevronDown className="w-3 h-3 text-slate-400" />
+                <span className="hidden xl:inline capitalize text-[10px]">{presenceStatus.replace('-', ' ')}</span>
+                <ChevronDown className="w-2.5 h-2.5 text-slate-400" />
               </button>
 
               {showStatusMenu && (
-                <div className="absolute top-10 right-0 w-44 bg-[#1f2738] border border-[#2f3950] rounded-2xl shadow-2xl p-2 z-50 text-xs space-y-1 animate-fadeIn">
-                  <div className="text-[10px] font-bold uppercase text-slate-400 px-2 py-1">Set Presence:</div>
+                <div className="absolute top-9 right-0 w-40 bg-[#1c2232] border border-[#283247] rounded-xl shadow-2xl p-1.5 z-50 text-[11px] space-y-0.5 animate-fadeIn">
+                  <div className="text-[9px] font-bold uppercase text-slate-400 px-2 py-0.5">Set Presence:</div>
                   {[
                     { id: 'available', label: 'Available 🟢', color: 'text-emerald-400' },
                     { id: 'in-meeting', label: 'In a Meeting 🔴', color: 'text-red-400' },
@@ -196,84 +168,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                         setPresenceStatus(s.id as any);
                         setShowStatusMenu(false);
                       }}
-                      className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-[#2a3449] font-medium transition-colors flex items-center justify-between"
+                      className="w-full text-left px-2 py-1 rounded-md hover:bg-[#253046] font-medium transition-colors flex items-center justify-between"
                     >
                       <span className={s.color}>{s.label}</span>
                       {presenceStatus === s.id && <span className="text-blue-400 text-xs">✓</span>}
                     </button>
                   ))}
-                </div>
-              )}
-            </div>
-
-            {/* User Profile Avatar with Zoom Dropdown */}
-            <div className="relative">
-              <button
-                onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                className="flex items-center gap-2 p-1 rounded-xl hover:bg-[#1f2738] transition-colors"
-              >
-                <div className="relative">
-                  <div className="w-8 h-8 rounded-xl bg-[#0e71eb] text-white font-bold flex items-center justify-center text-xs shadow-md">
-                    {currentUser?.fullName?.charAt(0) || 'U'}
-                  </div>
-                  <div className="absolute -bottom-0.5 -right-0.5">
-                    {getStatusDot()}
-                  </div>
-                </div>
-                <ChevronDown className="w-3.5 h-3.5 text-slate-400 hidden sm:inline" />
-              </button>
-
-              {/* Profile Dropdown Box */}
-              {profileDropdownOpen && (
-                <div className="absolute top-11 right-0 w-64 bg-[#1f2738] border border-[#2f3950] rounded-2xl shadow-2xl p-3 z-50 text-xs space-y-2 animate-fadeIn">
-                  <div className="p-2 bg-[#161b26] rounded-xl border border-[#2f3950]">
-                    <div className="font-bold text-white text-sm truncate">{currentUser?.fullName || 'Operative'}</div>
-                    <div className="text-[11px] text-slate-400 truncate">{currentUser?.email}</div>
-                    <span className="inline-block mt-1 text-[10px] bg-blue-950 text-blue-300 px-2 py-0.5 rounded font-semibold border border-blue-800">
-                      {currentUser?.role || 'Missionary'} · Zoom Enterprise
-                    </span>
-                  </div>
-
-                  <div className="space-y-1">
-                    <button
-                      onClick={() => {
-                        handleNavClick('user-profile');
-                      }}
-                      className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-[#2a3449] transition-colors flex items-center gap-2 text-slate-300"
-                    >
-                      <User className="w-4 h-4 text-blue-400" />
-                      <span>My Profile & Settings</span>
-                    </button>
-
-                    <button
-                      onClick={() => {
-                        toggleDarkMode();
-                      }}
-                      className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-[#2a3449] transition-colors flex items-center justify-between text-slate-300"
-                      title="Toggle between Deep Dark Mode and High-Contrast Daylight Mode"
-                    >
-                      <div className="flex items-center gap-2">
-                        {isDarkMode ? <Moon className="w-4 h-4 text-blue-400" /> : <Sun className="w-4 h-4 text-amber-400" />}
-                        <span>{isDarkMode ? 'Deep Dark Mode' : 'Daylight Field Mode'}</span>
-                      </div>
-                      <span className="text-[10px] bg-[#161b26] text-blue-300 px-1.5 py-0.5 rounded border border-[#2f3950]">
-                        Toggle
-                      </span>
-                    </button>
-                  </div>
-
-                  <div className="pt-2 border-t border-[#2f3950]">
-                    <button
-                      onClick={() => {
-                        logout();
-                        setProfileDropdownOpen(false);
-                      }}
-                      className="w-full text-left px-2.5 py-1.5 rounded-lg hover:bg-red-950/50 text-red-400 font-semibold transition-colors flex items-center gap-2"
-                    >
-                      <LogOut className="w-4 h-4" />
-                      <span>Sign Out</span>
-                    </button>
-                  </div>
                 </div>
               )}
             </div>
@@ -286,3 +186,4 @@ export const Navbar: React.FC<NavbarProps> = ({
     </>
   );
 };
+export default Navbar;

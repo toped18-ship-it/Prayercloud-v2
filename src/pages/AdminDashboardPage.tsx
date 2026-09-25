@@ -224,7 +224,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onExitTo
             </div>
 
             <div className="p-2.5 bg-slate-50 dark:bg-[#1a2130] rounded-xl border border-slate-200 dark:border-[#2a3449] text-[11px] text-slate-500">
-              <span>Demo Admin: </span>
+              <span>Default Admin Credentials: </span>
               <strong className="text-slate-700 dark:text-slate-300">admin@prayercloud.org</strong>
               <span> · Password: </span>
               <strong className="text-slate-700 dark:text-slate-300">Admin@12345</strong>

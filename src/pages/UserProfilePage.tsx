@@ -3,24 +3,18 @@ import { useAuth } from '../context/AuthContext';
 import { useBranding } from '../context/ThemeAndBrandingContext';
 import {
   User,
-  HeartHandshake,
   Shield,
-  Globe,
-  Mail,
-  Phone,
-  Lock,
-  CheckCircle,
   Sun,
   Moon,
-  Sparkles,
   Eye,
-  Zap,
-  Check
+  Check,
+  CheckCircle,
+  Save
 } from 'lucide-react';
 
 export const UserProfilePage: React.FC = () => {
   const { currentUser, updateProfile } = useAuth();
-  const { isDarkMode, setThemeMode, toggleDarkMode } = useBranding();
+  const { isDarkMode, setThemeMode } = useBranding();
   const [fullName, setFullName] = useState(currentUser?.fullName || '');
   const [bio, setBio] = useState(currentUser?.bio || '');
   const [phoneNumber, setPhoneNumber] = useState(currentUser?.phoneNumber || '');
@@ -52,8 +46,8 @@ export const UserProfilePage: React.FC = () => {
   return (
     <div className="max-w-3xl mx-auto space-y-6 pb-20">
       {/* Header Profile Banner */}
-      <div className="p-6 bg-gradient-to-r from-blue-900 to-slate-900 text-white rounded-3xl shadow-xl flex items-center gap-5 border border-blue-800/40">
-        <div className="w-20 h-20 rounded-2xl bg-blue-600 flex items-center justify-center text-3xl font-bold shadow-lg ring-4 ring-blue-500/20">
+      <div className="p-6 bg-gradient-to-r from-blue-900 via-slate-900 to-[#0d1322] text-white rounded-3xl shadow-xl flex items-center gap-5 border border-blue-800/40">
+        <div className="w-20 h-20 rounded-2xl bg-blue-600 flex items-center justify-center text-3xl font-bold shadow-lg ring-4 ring-blue-500/20 shrink-0">
           {currentUser.fullName.charAt(0)}
         </div>
         <div className="flex-1 min-w-0">
@@ -89,7 +83,87 @@ export const UserProfilePage: React.FC = () => {
         </div>
       </div>
 
-      {/* Field Display & Visual Theme Selector */}
+      {/* Update confirmation banner */}
+      {saved && (
+        <div className="p-3.5 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 rounded-xl text-xs font-semibold flex items-center gap-2 animate-fadeIn">
+          <CheckCircle className="w-4 h-4 flex-shrink-0" />
+          <span>Profile details saved successfully.</span>
+        </div>
+      )}
+
+      {/* Profile Details Form - Now at the Top of Theme Mode */}
+      <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 shadow-sm">
+        <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+          <div className="flex items-center gap-2">
+            <User className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            <div>
+              <h3 className="font-bold text-base text-slate-900 dark:text-white">Profile Details</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Manage your identity, field location, and missional call.</p>
+            </div>
+          </div>
+          <button
+            type="submit"
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow transition-colors flex items-center gap-1.5"
+          >
+            <Save className="w-3.5 h-3.5" />
+            <span>Save Profile</span>
+          </button>
+        </div>
+
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Full Name</label>
+          <input
+            type="text"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:border-blue-500 dark:focus:border-blue-400 rounded-xl text-xs sm:text-sm text-slate-900 dark:text-white outline-none"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Country of Ministry / Residence</label>
+            <input
+              type="text"
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+              className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:border-blue-500 dark:focus:border-blue-400 rounded-xl text-xs sm:text-sm text-slate-900 dark:text-white outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Phone Number</label>
+            <input
+              type="tel"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:border-blue-500 dark:focus:border-blue-400 rounded-xl text-xs sm:text-sm text-slate-900 dark:text-white outline-none"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Bio / Missional Calling</label>
+          <textarea
+            rows={3}
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+            placeholder="Describe your missional focus, target people group, or prayer watch."
+            className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:border-blue-500 dark:focus:border-blue-400 rounded-xl text-xs sm:text-sm text-slate-900 dark:text-white outline-none"
+          />
+        </div>
+
+        <div className="flex justify-end pt-2">
+          <button
+            type="submit"
+            className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow transition-colors flex items-center gap-1.5"
+          >
+            <Save className="w-3.5 h-3.5" />
+            <span>Save Profile Changes</span>
+          </button>
+        </div>
+      </form>
+
+      {/* Field Display & Visual Theme Selector - Below Profile Details */}
       <section className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 space-y-5 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
           <div>
@@ -234,72 +308,7 @@ export const UserProfilePage: React.FC = () => {
           </button>
         </div>
       </section>
-
-      {/* Update confirmation banner */}
-      {saved && (
-        <div className="p-3.5 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 rounded-xl text-xs font-semibold flex items-center gap-2 animate-fadeIn">
-          <CheckCircle className="w-4 h-4 flex-shrink-0" />
-          <span>Missionary profile updated successfully.</span>
-        </div>
-      )}
-
-      {/* Profile Form */}
-      <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 shadow-sm">
-        <h3 className="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
-          <User className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-          <span>Profile Details</span>
-        </h3>
-
-        <div>
-          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Full Name</label>
-          <input
-            type="text"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:border-blue-500 dark:focus:border-blue-400 rounded-xl text-xs sm:text-sm text-slate-900 dark:text-white outline-none"
-          />
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Country</label>
-            <input
-              type="text"
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-              className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:border-blue-500 dark:focus:border-blue-400 rounded-xl text-xs sm:text-sm text-slate-900 dark:text-white outline-none"
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Phone</label>
-            <input
-              type="tel"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:border-blue-500 dark:focus:border-blue-400 rounded-xl text-xs sm:text-sm text-slate-900 dark:text-white outline-none"
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Bio / Missional Calling</label>
-          <textarea
-            rows={3}
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-            className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:border-blue-500 dark:focus:border-blue-400 rounded-xl text-xs sm:text-sm text-slate-900 dark:text-white outline-none"
-          />
-        </div>
-
-        <div className="flex justify-end pt-2">
-          <button
-            type="submit"
-            className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow transition-colors"
-          >
-            Save Profile Changes
-          </button>
-        </div>
-      </form>
     </div>
   );
 };
+export default UserProfilePage;

@@ -155,7 +155,7 @@ class StorageService {
     this.logAudit('usr-admin-1', 'Admin', 'CREATE_UNREACHED_PLACE', place.name, `Added unreached group: ${place.name} in ${place.countryName}`);
   }
 
-  // Users
+  // Users & Authentication Credentials
   public getUsers(): User[] {
     return this.get<User[]>(STORAGE_KEYS.USERS, INITIAL_USERS);
   }
@@ -173,6 +173,33 @@ class StorageService {
       users.push(user);
     }
     this.set(STORAGE_KEYS.USERS, users);
+  }
+
+  public getUserCredentials(): Record<string, string> {
+    return this.get<Record<string, string>>('prayercloud_credentials_v2', {
+      'usr-admin-1': 'Admin@12345',
+      'usr-miss-1': 'Missions@2025',
+      'usr-intercessor-1': 'Prayer@2025'
+    });
+  }
+
+  public setUserPassword(userId: string, password: string): void {
+    const creds = this.getUserCredentials();
+    creds[userId] = password;
+    this.set('prayercloud_credentials_v2', creds);
+  }
+
+  public verifyUserPassword(userId: string, passwordAttempt: string): boolean {
+    const creds = this.getUserCredentials();
+    const stored = creds[userId];
+    if (stored) {
+      return stored === passwordAttempt;
+    }
+    // Fallback default for existing accounts
+    if (userId === 'usr-admin-1') {
+      return passwordAttempt === 'Admin@12345' || passwordAttempt === 'admin';
+    }
+    return passwordAttempt.length >= 6;
   }
 
   // Prayers

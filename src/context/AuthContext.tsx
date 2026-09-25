@@ -18,7 +18,7 @@ interface AuthContextType {
     password: string;
   }) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
-  switchDemoAccount: (userId: string) => void;
+  switchAccount: (userId: string) => void;
   changePassword: (newPass: string) => boolean;
   updateProfile: (data: Partial<User>) => void;
   isOnboardingOpen: boolean;
@@ -38,9 +38,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (saved) {
         return JSON.parse(saved);
       }
-      // default to Super Admin for seamless development & demo if none logged in
-      const defaultAdmin = storage.getUserById('usr-admin-1');
-      return defaultAdmin || null;
+      return null;
     } catch {
       return null;
     }
@@ -63,28 +61,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (identifier: string, password: string, _rememberMe = true): Promise<{ success: boolean; error?: string; forcePasswordChange?: boolean }> => {
     const users = storage.getUsers();
     const cleanId = identifier.trim().toLowerCase();
+    const cleanPass = password.trim();
 
-    // Default admin check
-    if (cleanId === 'admin@prayercloud.org' || cleanId === 'superadmin') {
-      if (password === 'Admin@12345' || password === 'admin' || password.length >= 6) {
-        const adminUser = users.find(u => u.email.toLowerCase() === 'admin@prayercloud.org') || users[0];
-        setCurrentUser(adminUser);
-        storage.logAudit(adminUser.id, adminUser.fullName, 'USER_LOGIN', 'Auth', 'Super Admin logged in successfully.');
-        if (adminUser.mustChangePassword) {
-          setForcePasswordModalOpen(true);
-          return { success: true, forcePasswordChange: true };
-        }
-        return { success: true };
-      }
+    if (!cleanId) {
+      return { success: false, error: 'Email or Username is required.' };
+    }
+
+    if (!cleanPass) {
+      return { success: false, error: 'Password details are required to log in.' };
     }
 
     const matched = users.find(u => u.email.toLowerCase() === cleanId || u.username.toLowerCase() === cleanId);
     if (!matched) {
-      return { success: false, error: 'No account found with this email or username.' };
+      return { success: false, error: 'No account found with this email or username. Please check and try again.' };
     }
 
     if (!matched.isActive) {
       return { success: false, error: 'Your account has been deactivated. Please contact missions@prayercloud.org.' };
+    }
+
+    // Strict password verification against stored credentials
+    const isPasswordValid = storage.verifyUserPassword(matched.id, cleanPass);
+    if (!isPasswordValid) {
+      return { success: false, error: 'Incorrect password. Please verify your password details and try again.' };
     }
 
     setCurrentUser(matched);
@@ -111,6 +110,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const cleanEmail = data.email.trim().toLowerCase();
     const cleanUsername = data.username.trim().toLowerCase();
 
+    if (!data.password || data.password.length < 6) {
+      return { success: false, error: 'Password must be at least 6 characters.' };
+    }
+
     if (users.some(u => u.email.toLowerCase() === cleanEmail)) {
       return { success: false, error: 'An account with this email already exists.' };
     }
@@ -118,8 +121,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return { success: false, error: 'This username is already taken.' };
     }
 
+    const newUserId = `usr-${Date.now()}`;
     const newUser: User = {
-      id: `usr-${Date.now()}`,
+      id: newUserId,
       fullName: data.fullName,
       username: data.username,
       email: data.email,
@@ -128,18 +132,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       role: data.role || 'Prayer Warrior',
       avatarUrl: '',
       bio: `Dedicated ${data.role} committed to fulfilling the Great Commission.`,
-      isVerified: data.role === 'Prayer Warrior' || data.role === 'Intercessor',
+      isVerified: true,
       isActive: true,
       mustChangePassword: false,
       joinedAt: new Date().toISOString(),
       prayersOfferedCount: 0
     };
 
+    // Store user profile and securely save credentials
     storage.updateUser(newUser);
+    storage.setUserPassword(newUserId, data.password);
+
     setCurrentUser(newUser);
     storage.logAudit(newUser.id, newUser.fullName, 'USER_REGISTER', 'Auth', `New registration as ${newUser.role}`);
 
-    // Prompt specifies: "Show onboarding tour on registration"
     setIsOnboardingOpen(true);
 
     return { success: true };
@@ -150,9 +156,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       storage.logAudit(currentUser.id, currentUser.fullName, 'USER_LOGOUT', 'Auth', 'User logged out.');
     }
     setCurrentUser(null);
+    localStorage.removeItem(CURRENT_USER_KEY);
   };
 
-  const switchDemoAccount = (userId: string) => {
+  const switchAccount = (userId: string) => {
     const target = storage.getUserById(userId);
     if (target) {
       setCurrentUser(target);
@@ -162,11 +169,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const changePassword = (_newPass: string): boolean => {
+  const changePassword = (newPass: string): boolean => {
     if (!currentUser) return false;
     const updated = { ...currentUser, mustChangePassword: false };
     setCurrentUser(updated);
     storage.updateUser(updated);
+    storage.setUserPassword(currentUser.id, newPass);
     setForcePasswordModalOpen(false);
     storage.logAudit(currentUser.id, currentUser.fullName, 'PASSWORD_CHANGE', 'Security', 'User updated password.');
     return true;
@@ -193,7 +201,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         login,
         register,
         logout,
-        switchDemoAccount,
+        switchAccount,
         changePassword,
         updateProfile,
         isOnboardingOpen,
@@ -214,3 +222,4 @@ export const useAuth = () => {
   }
   return context;
 };
+export default AuthProvider;
