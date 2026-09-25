@@ -61,11 +61,21 @@ export const BottomNavbar: React.FC<BottomNavbarProps> = ({
             >
               <div className="relative flex items-center justify-center">
                 {tab.isProfile && currentUser ? (
-                  <div className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-black ${
-                    isActive ? 'bg-amber-400 text-slate-900 ring-1 ring-white' : 'bg-blue-500/90 text-white'
-                  }`}>
-                    {currentUser.fullName ? currentUser.fullName.charAt(0).toUpperCase() : 'U'}
-                  </div>
+                  currentUser.avatarUrl ? (
+                    <img
+                      src={currentUser.avatarUrl}
+                      alt={currentUser.fullName}
+                      className={`w-4 h-4 rounded-full object-cover ${
+                        isActive ? 'ring-2 ring-white shadow-xs' : 'ring-1 ring-blue-400/50'
+                      }`}
+                    />
+                  ) : (
+                    <div className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-black ${
+                      isActive ? 'bg-amber-400 text-slate-900 ring-1 ring-white' : 'bg-blue-500/90 text-white'
+                    }`}>
+                      {currentUser.fullName ? currentUser.fullName.charAt(0).toUpperCase() : 'U'}
+                    </div>
+                  )
                 ) : (
                   <Icon className={`w-3.5 h-3.5 sm:w-3.5 sm:h-3.5 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                 )}

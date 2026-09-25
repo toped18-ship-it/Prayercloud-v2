@@ -55,6 +55,7 @@ import { useAuth } from '../context/AuthContext';
 import { useBranding } from '../context/ThemeAndBrandingContext';
 import { storage } from '../services/storageService';
 import { User, UserRole, Country, PrayerRequest, MissionReport, EventMeeting, MissionaryResource, MeetingRecording } from '../types';
+import { compressAvatarImage } from '../utils/imageUtils';
 
 interface AdminDashboardPageProps {
   onExitToPublic?: () => void;
@@ -248,21 +249,22 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onExitTo
     }
   }, [currentUser]);
 
-  const handleAdminAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAdminAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 4 * 1024 * 1024) {
-      alert('Image file is too large. Please select an image under 4MB.');
+    if (!file.type.startsWith('image/')) {
+      alert('Please choose an image file (PNG, JPG, or WebP).');
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result as string;
-      setAdminAvatarUrl(result);
-    };
-    reader.readAsDataURL(file);
+    try {
+      const compressed = await compressAvatarImage(file, 360, 360, 0.85);
+      setAdminAvatarUrl(compressed);
+    } catch (err) {
+      console.error('Admin photo optimization failed:', err);
+      alert('Could not process this image file. Please try another.');
+    }
   };
 
   const handleSaveAdminProfile = (e: React.FormEvent) => {
@@ -480,12 +482,12 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onExitTo
     
     if (
       confirm(
-        `🚨 PRODUCTION LAUNCH RESET:\n\nAre you sure you want to purge all ${nonAdminCount} test/demo user accounts?\n\nThis will reset non-admin users to ZERO so real users can register and use the app from scratch. Your Super Admin account will remain active.`
+        `🚨 PRODUCTION LAUNCH RESET:\n\nAre you sure you want to purge all ${nonAdminCount} non-admin directory records?\n\nThis will reset the user registry to ZERO so incoming users can register and use the app from scratch. Your Super Admin account will remain active.`
       )
     ) {
       const res = storage.purgeNonAdminUsers();
       reloadData();
-      setUpdateSuccessMessage(`🚀 Launch Reset Complete: Purged ${res.purgedCount} test accounts from database. User directory is now ready for live registrations!`);
+      setUpdateSuccessMessage(`🚀 Launch Reset Complete: Purged ${res.purgedCount} directory accounts from database. User directory is now ready for live registrations!`);
       setTimeout(() => setUpdateSuccessMessage(null), 6000);
     }
   };
@@ -1032,7 +1034,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onExitTo
                 <button
                   onClick={handlePurgeAllNonAdminUsers}
                   className="p-3.5 bg-gradient-to-r from-red-950/80 to-[#2c1318] hover:from-red-900 hover:to-red-950 border border-red-500/50 rounded-xl text-left font-bold text-xs text-red-200 hover:text-white shadow-md shadow-red-950/40 flex items-center justify-between group transition-all"
-                  title="Reset test users to zero for official launch"
+                  title="Reset user directory to zero for official launch"
                 >
                   <div className="flex items-center gap-2.5">
                     <Trash2 className="w-4 h-4 text-red-400 group-hover:scale-110 transition-transform" />
@@ -1627,7 +1629,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onExitTo
                 <button
                   onClick={handlePurgeAllNonAdminUsers}
                   className="w-full sm:w-auto px-3.5 py-2 bg-red-950/80 hover:bg-red-900 border border-red-500/50 text-red-200 hover:text-white text-xs font-bold rounded-xl shadow-sm transition-all flex items-center justify-center gap-1.5 active:scale-95"
-                  title="Purge mock and demo users to reset non-admin user count to 0 for official launch"
+                  title="Purge non-admin records to reset user count to 0 for official launch"
                 >
                   <Trash2 className="w-3.5 h-3.5 text-red-400" />
                   <span>Reset Users to Zero (Launch Mode)</span>

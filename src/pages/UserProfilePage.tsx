@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useBranding } from '../context/ThemeAndBrandingContext';
+import { compressAvatarImage } from '../utils/imageUtils';
 import {
   User,
   Shield,
@@ -15,7 +16,8 @@ import {
   Upload,
   Image as ImageIcon,
   Trash2,
-  AlertTriangle
+  AlertTriangle,
+  RefreshCw
 } from 'lucide-react';
 
 interface UserProfilePageProps {
@@ -41,6 +43,8 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({ onNavigate }) 
   const [country, setCountry] = useState(currentUser?.country || '');
   const [avatarUrl, setAvatarUrl] = useState(currentUser?.avatarUrl || '');
   const [saved, setSaved] = useState(false);
+  const [isProcessingPhoto, setIsProcessingPhoto] = useState(false);
+  const [photoMessage, setPhotoMessage] = useState<string | null>(null);
   const [themeNotif, setThemeNotif] = useState<string | null>(null);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -54,21 +58,64 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({ onNavigate }) 
     setTimeout(() => setThemeNotif(null), 2500);
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 4 * 1024 * 1024) {
-      alert('Image file is too large. Please select an image under 4MB.');
+    if (!file.type.startsWith('image/')) {
+      alert('Please choose an image file (PNG, JPG, or WebP).');
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result as string;
-      setAvatarUrl(result);
-    };
-    reader.readAsDataURL(file);
+    setIsProcessingPhoto(true);
+    setPhotoMessage(null);
+
+    try {
+      // Compress to high quality compact format (< 40KB) to ensure reliable storage
+      const optimizedDataUrl = await compressAvatarImage(file, 360, 360, 0.85);
+      setAvatarUrl(optimizedDataUrl);
+      
+      // Immediately save to profile and persist
+      updateProfile({
+        avatarUrl: optimizedDataUrl
+      });
+      setSaved(true);
+      setPhotoMessage('Profile photo uploaded and saved successfully.');
+      setTimeout(() => {
+        setSaved(false);
+        setPhotoMessage(null);
+      }, 3500);
+    } catch (err) {
+      console.error('Photo optimization failed:', err);
+      alert('Could not process this image. Please try another image file.');
+    } finally {
+      setIsProcessingPhoto(false);
+    }
+  };
+
+  const handleSelectPreset = (preset: string) => {
+    setAvatarUrl(preset);
+    updateProfile({ avatarUrl: preset });
+    setSaved(true);
+    setPhotoMessage('Avatar updated and saved.');
+    setTimeout(() => {
+      setSaved(false);
+      setPhotoMessage(null);
+    }, 2500);
+  };
+
+  const handleRemovePhoto = () => {
+    setAvatarUrl('');
+    updateProfile({ avatarUrl: '' });
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+    setSaved(true);
+    setPhotoMessage('Profile photo removed.');
+    setTimeout(() => {
+      setSaved(false);
+      setPhotoMessage(null);
+    }, 2500);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -82,13 +129,6 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({ onNavigate }) 
     });
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
-  };
-
-  const handleRemovePhoto = () => {
-    setAvatarUrl('');
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
   };
 
   return (
@@ -110,11 +150,12 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({ onNavigate }) 
             )}
             <button
               type="button"
+              disabled={isProcessingPhoto}
               onClick={() => fileInputRef.current?.click()}
-              className="absolute -bottom-1 -right-1 p-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl shadow-md border border-white/20 transition-transform active:scale-95"
+              className="absolute -bottom-1 -right-1 p-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl shadow-md border border-white/20 transition-transform active:scale-95 disabled:opacity-50"
               title="Upload profile picture"
             >
-              <Camera className="w-3.5 h-3.5" />
+              {isProcessingPhoto ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Camera className="w-3.5 h-3.5" />}
             </button>
           </div>
           <div className="min-w-0">
@@ -163,10 +204,10 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({ onNavigate }) 
       </div>
 
       {/* Update confirmation banner */}
-      {saved && (
+      {(saved || photoMessage) && (
         <div className="p-3.5 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 rounded-xl text-xs font-semibold flex items-center gap-2 animate-fadeIn">
           <CheckCircle className="w-4 h-4 flex-shrink-0" />
-          <span>Profile & photo details saved successfully.</span>
+          <span>{photoMessage || 'Profile & identification details saved successfully.'}</span>
         </div>
       )}
 
@@ -197,6 +238,11 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({ onNavigate }) 
                 <span className="text-[10px] font-semibold">No Photo</span>
               </div>
             )}
+            {isProcessingPhoto && (
+              <div className="absolute inset-0 bg-black/60 rounded-3xl flex items-center justify-center">
+                <RefreshCw className="w-6 h-6 text-white animate-spin" />
+              </div>
+            )}
           </div>
 
           {/* Upload and Preset Controls */}
@@ -212,11 +258,12 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({ onNavigate }) 
             <div className="flex flex-wrap items-center gap-2">
               <button
                 type="button"
+                disabled={isProcessingPhoto}
                 onClick={() => fileInputRef.current?.click()}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow transition-all flex items-center gap-1.5 active:scale-95"
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow transition-all flex items-center gap-1.5 active:scale-95 disabled:opacity-50"
               >
                 <Upload className="w-3.5 h-3.5" />
-                <span>Upload from Device</span>
+                <span>{isProcessingPhoto ? 'Optimizing Photo...' : 'Upload from Device'}</span>
               </button>
 
               {avatarUrl && (
@@ -234,14 +281,14 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({ onNavigate }) 
             {/* Quick Preset Selector */}
             <div>
               <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 block mb-1.5">
-                Or choose from preset missionary avatars:
+                Or choose from missionary representative avatars:
               </span>
               <div className="flex items-center gap-2 overflow-x-auto pb-1">
                 {PRESET_AVATARS.map((preset, idx) => (
                   <button
                     key={idx}
                     type="button"
-                    onClick={() => setAvatarUrl(preset)}
+                    onClick={() => handleSelectPreset(preset)}
                     className={`relative rounded-xl overflow-hidden border-2 transition-all shrink-0 ${
                       avatarUrl === preset ? 'border-blue-500 scale-105 shadow-md ring-2 ring-blue-400/30' : 'border-slate-200 dark:border-slate-700 opacity-70 hover:opacity-100'
                     }`}
@@ -430,21 +477,17 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({ onNavigate }) 
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fadeIn">
           <div className="w-full max-w-sm bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 shadow-2xl animate-scaleUp">
             <div className="flex items-center gap-3 text-amber-500 dark:text-amber-400">
-              <div className="w-10 h-10 rounded-2xl bg-amber-500/15 flex items-center justify-center">
-                <AlertTriangle className="w-5 h-5" />
-              </div>
-              <h3 className="font-bold text-base text-slate-900 dark:text-white">Confirm Sign Out</h3>
+              <AlertTriangle className="w-6 h-6 shrink-0" />
+              <h3 className="font-bold text-base text-slate-900 dark:text-white">Sign Out Confirmation</h3>
             </div>
-            
-            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-              Are you sure you want to log out of your Prayer Cloud session? You will need your email/username and password to sign back in.
+            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+              Are you sure you want to end your current session? You will need your login credentials to sign back in.
             </p>
-
-            <div className="flex items-center justify-end gap-2.5 pt-2">
+            <div className="flex items-center justify-end gap-2 pt-2">
               <button
                 type="button"
                 onClick={() => setShowLogoutConfirm(false)}
-                className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors"
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-xs rounded-xl transition-colors"
               >
                 Cancel
               </button>
@@ -455,10 +498,9 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({ onNavigate }) 
                   logout();
                   if (onNavigate) onNavigate('home');
                 }}
-                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl shadow transition-colors flex items-center gap-1.5"
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl shadow-md transition-colors"
               >
-                <LogOut className="w-3.5 h-3.5" />
-                <span>Yes, Log Out</span>
+                Yes, Sign Out
               </button>
             </div>
           </div>

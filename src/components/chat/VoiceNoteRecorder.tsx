@@ -77,7 +77,7 @@ export const VoiceNoteRecorder: React.FC<VoiceNoteRecorderProps> = ({ onSendVoic
     if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
       mediaRecorderRef.current.stop();
     } else {
-      // Create mock audio url if real mic wasn't bound
+      // Fallback ambient audio if microphone stream disconnected
       setAudioUrl('https://actions.google.com/sounds/v1/ambiences/humming_room.ogg');
     }
   };

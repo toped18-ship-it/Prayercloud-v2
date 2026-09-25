@@ -582,7 +582,7 @@ class StorageService {
     } catch {}
   }
 
-  // Purge all mock/demo users to reset non-admin user count to 0 for fresh production launch
+  // Purge all non-admin users to reset user count to 0 for fresh production launch
   public purgeNonAdminUsers(): { remainingUsers: User[]; purgedCount: number } {
     const allUsers = this.getUsers();
     const adminUsers = allUsers.filter(u => u.role === 'Super Admin' || u.id === 'usr-admin-1' || u.email === 'admin@prayercloud.org');
@@ -602,7 +602,7 @@ class StorageService {
       'Super Admin',
       'PURGE_USER_DATABASE_FOR_LAUNCH',
       'Users Table',
-      `Purged ${purgedCount} test accounts to reset database for official launch. Only Super Admin retained.`
+      `Purged ${purgedCount} directory records to reset database for official launch. Primary administrator retained.`
     );
 
     // Sync purge to Cloud SQL backend
