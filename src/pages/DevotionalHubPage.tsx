@@ -78,7 +78,7 @@ export const DevotionalHubPage: React.FC<DevotionalHubPageProps> = ({
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-amber-600/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-2 max-w-2xl">
+          <div className="space-y-2 max-w-3xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-300 text-xs font-bold backdrop-blur-sm">
               <Flame className="w-3.5 h-3.5 fill-current animate-pulse text-amber-400" />
               <span>Scripture Union (SU) Global Devotional Hub</span>
@@ -93,22 +93,6 @@ export const DevotionalHubPage: React.FC<DevotionalHubPageProps> = ({
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
               Equipping frontier intercessors, missionaries, and disciples with Scripture Union daily guides, the complete Holy Bible, and personal Rhema journaling.
             </p>
-          </div>
-
-          {/* Quick Hub Stats */}
-          <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap shrink-0">
-            <div className="p-3.5 rounded-2xl bg-[#161c2b]/90 border border-[#2a3754] text-center min-w-[110px]">
-              <div className="text-[10px] text-slate-400 font-bold uppercase">SU Editions</div>
-              <div className="text-lg font-black text-amber-400 mt-0.5">3 Guides</div>
-            </div>
-            <div className="p-3.5 rounded-2xl bg-[#161c2b]/90 border border-[#2a3754] text-center min-w-[110px]">
-              <div className="text-[10px] text-slate-400 font-bold uppercase">Bible Books</div>
-              <div className="text-lg font-black text-sky-400 mt-0.5">66 Books</div>
-            </div>
-            <div className="p-3.5 rounded-2xl bg-[#161c2b]/90 border border-[#2a3754] text-center min-w-[110px]">
-              <div className="text-[10px] text-slate-400 font-bold uppercase">Translations</div>
-              <div className="text-lg font-black text-emerald-400 mt-0.5">5 Versions</div>
-            </div>
           </div>
         </div>
       </div>

@@ -104,7 +104,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({ isOpen, on
                     Scripture Union (SU) Devotional & Holy Bible Hub
                   </div>
                   <div className="text-xs text-slate-500 dark:text-slate-400">
-                    Daily Guide, Encounter with God, 66-Book Bible reader & Spiritual Journal
+                    Scripture Union Daily Guide, Holy Bible reader & Spiritual Journal
                   </div>
                 </div>
               </div>

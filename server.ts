@@ -19,14 +19,13 @@ app.use(express.json());
 app.get('/api/health', (req: Request, res: Response) => {
   res.json({
     status: 'healthy',
-    database: 'Cloud SQL (PostgreSQL)',
-    projectId: 'temporal-student-6k76w',
-    region: 'europe-west1',
+    database: 'Firebase Realtime Database (RTDB)',
+    databaseURL: 'https://prayercloud-e341d-default-rtdb.firebaseio.com',
     timestamp: new Date().toISOString(),
   });
 });
 
-// API: Get Cloud SQL Sync Status
+// API: Get Realtime Database Sync Status
 app.get('/api/sync/status', async (req: Request, res: Response) => {
   try {
     const status = await getLatestSyncStatus();
@@ -36,19 +35,19 @@ app.get('/api/sync/status', async (req: Request, res: Response) => {
   }
 });
 
-// API: Trigger & Record Demographic Synchronization
+// API: Trigger & Record Demographic Synchronization to Firebase Realtime Database
 app.post('/api/sync/trigger', async (req: Request, res: Response) => {
   try {
     const { countriesCount, upgsCount, interval } = req.body || {};
     const recorded = await recordSyncExecution(countriesCount || 195, upgsCount || 7420, interval || '1h');
-    await logAuditToDb('DEMOGRAPHICS_SYNC_TRIGGERED', `Cloud SQL demographic sync triggered for ${countriesCount || 195} countries.`);
+    await logAuditToDb('DEMOGRAPHICS_SYNC_TRIGGERED', `Firebase RTDB demographic sync triggered for ${countriesCount || 195} countries.`);
     res.json({ success: true, record: recorded });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error?.message || 'Failed to record sync execution' });
   }
 });
 
-// API: Synchronize User Profile
+// API: Synchronize User Profile to Firebase Realtime Database
 app.post('/api/users/sync', async (req: Request, res: Response) => {
   try {
     const { uid, email, fullName } = req.body || {};
@@ -62,7 +61,7 @@ app.post('/api/users/sync', async (req: Request, res: Response) => {
   }
 });
 
-// API: Get Users
+// API: Get Users from Firebase Realtime Database
 app.get('/api/users', async (req: Request, res: Response) => {
   try {
     const list = await getAllUsersFromDb();

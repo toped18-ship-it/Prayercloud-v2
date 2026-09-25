@@ -311,7 +311,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onExitTo
             </span>
             <span className="flex items-center gap-1.5 text-emerald-400 font-medium bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
               <Database className="w-3.5 h-3.5" />
-              <span>Cloud SQL (PostgreSQL · europe-west1)</span>
+              <span>Firebase Realtime Database (prayercloud-e341d)</span>
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">

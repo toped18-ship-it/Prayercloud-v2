@@ -1,12 +1,13 @@
 {
-  "projectId": "temporal-student-6k76w",
-  "appId": "1:1015180810141:web:9d8a801cdac9a9bcfc8174",
-  "apiKey": "AIzaSyA_KLM9qv3fzzxJKAlc7jQP7Kk2K0fYaMU",
-  "authDomain": "temporal-student-6k76w.firebaseapp.com",
-  "firestoreDatabaseId": "ai-studio-prayercloudgloba-13fbd439-8f48-4e20-88cf-2b0f802da752",
-  "storageBucket": "temporal-student-6k76w.firebasestorage.app",
-  "messagingSenderId": "1015180810141",
-  "measurementId": "",
+  "projectId": "prayercloud-e341d",
+  "appId": "1:34654319570:web:54ec36ed02a142bcbd0e0b",
+  "apiKey": "AIzaSyDuLOEWH-J7mg70p2g65HDVOqrByDKhCAI",
+  "authDomain": "prayercloud-e341d.firebaseapp.com",
+  "databaseURL": "https://prayercloud-e341d-default-rtdb.firebaseio.com",
+  "storageBucket": "prayercloud-e341d.firebasestorage.app",
+  "messagingSenderId": "34654319570",
+  "measurementId": "G-REDNHQ4D59",
+  "firestoreDatabaseId": "(default)",
   "oAuthClientId": "1015180810141-465in50m6lvltdsn9oqcj8fj30p85sup.apps.googleusercontent.com",
   "recaptchaSiteKey": ""
 }

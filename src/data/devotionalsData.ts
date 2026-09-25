@@ -33,78 +33,8 @@ export const SU_DAILY_DEVOTIONALS: SUDailyDevotional[] = [
       evening: '2 Corinthians 6'
     },
     suGlobalPrayerFocus: 'Pray for Scripture Union school clubs and university fellowships in Central Asia and Northern Nigeria facing severe pressure from hostile authorities. Pray for wisdom, courage, and spiritual stamina for the student leaders.',
-    authorOrSource: 'Scripture Union Daily Guide (International Edition)',
+    authorOrSource: 'Scripture Union Daily Guide',
     tags: ['Boldness', 'Holy Spirit', 'Persecution', 'Frontier Mission', 'Prayer']
-  },
-  {
-    id: 'su-dp-2026-09-25',
-    date: '2026-09-25',
-    edition: 'Daily Power',
-    title: 'Guarding Your Spiritual Fire',
-    openingPrayer: 'Dear Lord Jesus, ignite my heart with holy passion. Help me to discard every distraction and burn brightly as a light in this generation. Amen.',
-    biblePassage: {
-      book: 'Romans',
-      chapter: 12,
-      verses: '9-16',
-      text: 'Love must be sincere. Hate what is evil; cling to what is good. Be devoted to one another in love. Honor one another above yourselves. Never be lacking in zeal, but keep your spiritual fervor, serving the Lord. Be joyful in hope, patient in affliction, faithful in prayer. Share with the Lord\'s people who are in need. Practice hospitality. Bless those who persecute you; bless and do not curse. Rejoice with those who rejoice; mourn with those who mourn. Live in harmony with one another. Do not be proud, but be willing to associate with people of low position. Do not be conceited.'
-    },
-    keyVerse: {
-      text: 'Never be lacking in zeal, but keep your spiritual fervor, serving the Lord.',
-      reference: 'Romans 12:11'
-    },
-    readingNotes: [
-      'The Christian life is not a sprint of brief excitement, but a sustained marathon fueled by spiritual fervor. Paul commands believers: "Never be lacking in zeal, but keep your spiritual fervor, serving the Lord." The Greek phrase literally means to "boil in spirit"—to maintain a living, boiling flame for Jesus.',
-      'Spiritual coldness is insidious; it begins with tiny compromises, neglected secret devotion, and excessive consumption of worldly noise. Paul gives us the antidote: genuine brotherly devotion, hospitality to strangers, perseverance under pressure, and continuous prayer.',
-      'Notice that our fervor is demonstrated not just in Sunday worship, but in counter-cultural love: blessing those who persecute us, practicing radical humility, and weeping with those who weep. Authentic fire warms everyone around us.'
-    ],
-    reflectionQuestions: [
-      'Is your spiritual passion currently burning hot, simmering warm, or growing cold?',
-      'What practical habits help keep your devotion to Christ boiling and vibrant?',
-      'How can you actively demonstrate selfless honor to someone in your fellowship today?'
-    ],
-    prayerOfCommitment: 'Lord Jesus, forgive me for the times I have allowed worldly distractions to quench the fire of Your Holy Spirit in me. Fan into flame the gifts and passions You have placed in my heart. Give me genuine love for my brothers and sisters, and make my life a burning witness for Your glory. In Your holy Name. Amen.',
-    oneYearBibleReading: {
-      morning: 'Proverbs 18',
-      evening: 'Galatians 3'
-    },
-    suGlobalPrayerFocus: 'Pray for SU Youth Camps taking place across Sub-Saharan Africa and Southeast Asia. Intercede that thousands of teenagers will surrender their lives to Christ and receive a missionary burden for unreached tribes.',
-    authorOrSource: 'Scripture Union Daily Power (Youth & Young Adults)',
-    tags: ['Spiritual Fervor', 'Love in Action', 'Holiness', 'Youth Mobilization']
-  },
-  {
-    id: 'su-ewg-2026-09-25',
-    date: '2026-09-25',
-    edition: 'Encounter with God',
-    title: 'The Great Commission Mandate: All Authority, All Nations',
-    openingPrayer: 'Eternal Father, Lord of the harvest, speak to my heart today through Your Word. Align my desires with Your global heartbeat for the nations. Amen.',
-    biblePassage: {
-      book: 'Matthew',
-      chapter: 28,
-      verses: '16-20',
-      text: 'Then the eleven disciples went to Galilee, to the mountain where Jesus had told them to go. When they saw him, they worshiped him; but some doubted. Then Jesus came to them and said, "All authority in heaven and on earth has been given to me. Therefore go and make disciples of all nations, baptizing them in the name of the Father and of the Son and of the Holy Spirit, and teaching them to obey everything I have commanded you. And surely I am with you always, to the very end of the age."'
-    },
-    keyVerse: {
-      text: 'All authority in heaven and on earth has been given to me. Therefore go and make disciples of all nations...',
-      reference: 'Matthew 28:18-19'
-    },
-    readingNotes: [
-      'The Great Commission begins not with our human assignments or skills, but with the majestic declaration of Christ\'s absolute sovereignty: "All authority in heaven and on earth has been given to me." This is the foundational bedrock of all world missions. When missionaries enter closed borders or hostile territories, they do so not under human sponsorship, but under the sovereign authority of the King of Kings.',
-      'The imperative command is not merely to make converts, but to "make disciples of all nations" (panta ta ethne—all people groups and ethnic tribes). This entails relational modeling, holistic baptism into the Triune God, and patient teaching toward practical obedience.',
-      'Christ seals His commission with an invincible promise: "Surely I am with you always, to the very end of the age." Pioneer missionaries like David Livingstone and Hudson Taylor found their ultimate solace in these words. We never go where Jesus has not already gone before us.'
-    ],
-    reflectionQuestions: [
-      'Do you view your daily vocation and calling through the lens of Christ\'s universal authority?',
-      'What is your personal role in discipling the nations: are you a goer, a sender, an intercessor, or a mobilizer?',
-      'How does the reality of Christ\'s abiding presence sustain you when you feel isolated or overwhelmed?'
-    ],
-    prayerOfCommitment: 'Lord Jesus Christ, You hold all power in heaven and on earth. Thank You that You have called us into the glorious labor of the harvest. I consecrate my time, resources, and prayers to the unreached peoples of the world. Give me a disciple-maker\'s heart and let Your presence be my constant shield and delight. Amen.',
-    oneYearBibleReading: {
-      morning: 'Jeremiah 31 - 33',
-      evening: 'Hebrews 11'
-    },
-    suGlobalPrayerFocus: 'Pray for Scripture Union staff and volunteers pioneering translated devotional booklets for indigenous languages in the Amazon Basin, Pacific Islands, and rural India.',
-    authorOrSource: 'Scripture Union Encounter with God (In-Depth Expository Guide)',
-    tags: ['Great Commission', 'Discipleship', 'Frontier Missions', 'Authority of Christ']
   },
   {
     id: 'su-dg-2026-09-24',

@@ -203,7 +203,7 @@ function MainAppContent() {
                 </span>
                 <span className="hidden md:inline-flex text-[10px] font-mono text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-500/30 items-center gap-1.5">
                   <Database className="w-3 h-3 text-emerald-400" />
-                  Cloud SQL (PostgreSQL · europe-west1 · temporal-student-6k76w)
+                  Firebase Realtime Database (prayercloud-e341d)
                 </span>
               </div>
               <div className="text-[10px] text-slate-400 font-mono">

@@ -89,7 +89,7 @@ export const MissionaryHubPage: React.FC<MissionaryHubPageProps> = ({
               Missionary Hub
             </h1>
             <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
-              Command console unifying the <strong>Frontier Map</strong>, <strong>Live Watches</strong>, <strong>Prayer Board</strong>, and <strong>195 Sovereign Nations</strong> for strategic pioneer gospel advance.
+              Command console unifying the <strong>Frontier Map</strong>, <strong>Live Watches</strong>, <strong>Prayer Board</strong>, <strong>195 Sovereign Nations</strong>, and <strong>Chatroom</strong> for strategic pioneer gospel advance.
             </p>
           </div>
 
@@ -187,7 +187,7 @@ export const MissionaryHubPage: React.FC<MissionaryHubPageProps> = ({
             }`}
           >
             <MessageSquare className="w-4 h-4" />
-            <span>Field Chat</span>
+            <span>Chatroom</span>
           </button>
 
         </div>

@@ -2,9 +2,9 @@ import React from 'react';
 import {
   Globe,
   Compass,
-  MessageSquare,
   MapPin,
-  BookOpen
+  BookOpen,
+  FileText
 } from 'lucide-react';
 
 interface BottomNavbarProps {
@@ -20,8 +20,8 @@ export const BottomNavbar: React.FC<BottomNavbarProps> = ({
     { id: 'home', label: 'Home', icon: Globe },
     { id: 'devotionals', label: 'Devotional & Bible', icon: BookOpen, badge: 'SU Daily' },
     { id: 'missionary-hub', label: 'Missionary Hub', icon: Compass, badge: 'Hub' },
-    { id: 'chat', label: 'Chatroom', icon: MessageSquare, badge: 'Live' },
-    { id: 'countries', label: 'Countries', icon: MapPin },
+    { id: 'reports', label: 'Breakthroughs', icon: FileText },
+    { id: 'countries', label: '195 Nations', icon: MapPin },
   ];
 
   const handleNavClick = (pageId: string) => {
@@ -39,9 +39,8 @@ export const BottomNavbar: React.FC<BottomNavbarProps> = ({
           const Icon = tab.icon;
           const isActive =
             currentPage === tab.id ||
-            (tab.id === 'conferences' && (currentPage === 'calls' || currentPage === 'events')) ||
-            (tab.id === 'missionary-hub' && (currentPage === 'hub')) ||
-            (tab.id === 'chat' && (currentPage === 'chatroom'));
+            (tab.id === 'missionary-hub' && (currentPage === 'hub' || currentPage === 'map' || currentPage === 'chat' || currentPage === 'chatroom' || currentPage === 'conferences' || currentPage === 'calls' || currentPage === 'prayer-requests')) ||
+            (tab.id === 'devotionals' && (currentPage === 'devotional-hub' || currentPage === 'bible' || currentPage === 'devotional'));
 
           return (
             <button
@@ -55,18 +54,10 @@ export const BottomNavbar: React.FC<BottomNavbarProps> = ({
             >
               <div className="relative">
                 <Icon className={`w-4 h-4 sm:w-4 sm:h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
-                {tab.badge && tab.badge === 'Live' && (
-                  <span className="absolute -top-1 -right-2 flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-                  </span>
-                )}
               </div>
               <span className="whitespace-nowrap leading-none tracking-tight">{tab.label}</span>
               {tab.badge && (
-                <span className={`hidden sm:inline-block text-[9px] font-extrabold px-1.5 py-0.2 rounded-full leading-tight ${
-                  tab.badge === 'Live' ? 'bg-red-600 text-white' : 'bg-emerald-700/80 text-emerald-100'
-                }`}>
+                <span className="hidden sm:inline-block text-[9px] font-extrabold px-1.5 py-0.2 rounded-full leading-tight bg-emerald-700/80 text-emerald-100">
                   {tab.badge}
                 </span>
               )}
@@ -77,4 +68,3 @@ export const BottomNavbar: React.FC<BottomNavbarProps> = ({
     </nav>
   );
 };
-

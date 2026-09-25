@@ -282,7 +282,7 @@ export interface AuditLog {
   details: string;
 }
 
-export type SUDevotionalEdition = 'Daily Guide' | 'Daily Power' | 'Encounter with God';
+export type SUDevotionalEdition = 'Daily Guide';
 
 export interface SUDailyDevotional {
   id: string;
