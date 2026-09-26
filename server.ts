@@ -154,11 +154,15 @@ app.post('/api/auth/register', async (req: Request, res: Response) => {
       return res.status(400).json({ success: false, error: 'Email is required' });
     }
     const finalUid = uid || `usr-${Date.now()}`;
+    // Security: Only admins can assign Admin/Super Admin roles from the admin panel. Public registration roles cannot be Admin.
+    const isSeedAdmin = finalUid === 'usr-admin-1' || email.toLowerCase() === 'admin@prayercloud.org';
+    const safeRole = (role === 'Super Admin' || role === 'Admin') && !isSeedAdmin ? 'Prayer Warrior' : (role || 'Prayer Warrior');
+
     const user = await getOrCreateUser(finalUid, email, fullName, {
       username,
       phoneNumber,
       country,
-      role,
+      role: safeRole,
       avatarUrl,
       bio,
     });

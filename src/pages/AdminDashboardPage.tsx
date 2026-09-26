@@ -1837,8 +1837,9 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = () => {
                               <option value="Admin">Admin</option>
                               <option value="Missionary">Missionary</option>
                               <option value="Pastor">Pastor</option>
+                              <option value="Evangelist">Evangelist</option>
+                              <option value="Prayer Warrior">Prayer Warrior</option>
                               <option value="Intercessor">Intercessor</option>
-                              <option value="Volunteer">Volunteer</option>
                             </select>
                           </td>
                           <td className="p-3">
@@ -2643,8 +2644,9 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = () => {
                     <option value="Admin">Admin</option>
                     <option value="Super Admin">Super Admin</option>
                     <option value="Pastor">Pastor</option>
+                    <option value="Evangelist">Evangelist</option>
+                    <option value="Prayer Warrior">Prayer Warrior</option>
                     <option value="Intercessor">Intercessor</option>
-                    <option value="Volunteer">Volunteer</option>
                   </select>
                 </div>
                 <div>

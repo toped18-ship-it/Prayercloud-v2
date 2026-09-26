@@ -35,7 +35,7 @@ const PRESET_AVATARS = [
 ];
 
 export const UserProfilePage: React.FC<UserProfilePageProps> = ({ onNavigate }) => {
-  const { currentUser, updateProfile, logout } = useAuth();
+  const { currentUser, updateProfile, logout, isAdmin, isSuperAdmin } = useAuth();
   const { isDarkMode, setThemeMode } = useBranding();
   const [fullName, setFullName] = useState(currentUser?.fullName || '');
   const [bio, setBio] = useState(currentUser?.bio || '');
@@ -211,6 +211,28 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({ onNavigate }) 
           <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Active Global Identifier</div>
         </div>
       </div>
+
+      {/* Super Admin Control Panel Banner for Administrators */}
+      {(isAdmin || isSuperAdmin || currentUser.email?.toLowerCase() === 'admin@prayercloud.org' || currentUser.email?.toLowerCase() === 'dtemitope60@gmail.com') && (
+        <div className="p-5 bg-gradient-to-r from-purple-950/80 to-indigo-950/80 border border-purple-500/50 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg shadow-purple-950/30 animate-fadeIn">
+          <div className="flex items-center gap-3 text-center sm:text-left">
+            <div className="p-2.5 bg-purple-900/60 rounded-xl border border-purple-400/30 text-purple-300">
+              <Shield className="w-6 h-6" />
+            </div>
+            <div>
+              <h4 className="font-bold text-white text-sm">Super Admin Control Center</h4>
+              <p className="text-xs text-purple-200/80">Manage global unreached demographic sync, user accounts, and Cloud SQL.</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => onNavigate ? onNavigate('admin') : (window.location.hash = 'admin')}
+            className="w-full sm:w-auto px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5 active:scale-95 shrink-0"
+          >
+            <span>Launch Admin Dashboard</span>
+          </button>
+        </div>
+      )}
 
       {/* Update confirmation banner */}
       {(saved || photoMessage) && (

@@ -207,6 +207,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return { success: false, error: 'This username is already taken.' };
     }
 
+    // Enforce role security: Registration only allows non-admin roles. Admins must assign admin roles.
+    const allowedRegRoles: UserRole[] = ['Prayer Warrior', 'Missionary', 'Pastor', 'Evangelist', 'Intercessor'];
+    const safeRole: UserRole = allowedRegRoles.includes(data.role) ? data.role : 'Prayer Warrior';
+
     const newUserId = `usr-${Date.now()}`;
     const newUser: User = {
       id: newUserId,
@@ -215,9 +219,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       email: data.email,
       phoneNumber: data.phoneNumber || '',
       country: data.country || 'Global',
-      role: data.role || 'Prayer Warrior',
+      role: safeRole,
       avatarUrl: '',
-      bio: `Dedicated ${data.role} committed to fulfilling the Great Commission.`,
+      bio: `Dedicated ${safeRole} committed to fulfilling the Great Commission.`,
       isVerified: true,
       isActive: true,
       mustChangePassword: false,
@@ -294,12 +298,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     currentUser?.role === 'Admin' ||
     currentUser?.role === 'Super Admin' ||
     currentUser?.email?.toLowerCase() === 'admin@prayercloud.org' ||
+    currentUser?.email?.toLowerCase() === 'dtemitope60@gmail.com' ||
     currentUser?.id === 'usr-admin-1' ||
     currentUser?.username?.toLowerCase() === 'admin' ||
-    currentUser?.username?.toLowerCase() === 'superadmin';
+    currentUser?.username?.toLowerCase() === 'superadmin' ||
+    currentUser?.username?.toLowerCase() === 'administrator';
   const isSuperAdmin =
     currentUser?.role === 'Super Admin' ||
     currentUser?.email?.toLowerCase() === 'admin@prayercloud.org' ||
+    currentUser?.email?.toLowerCase() === 'dtemitope60@gmail.com' ||
     currentUser?.id === 'usr-admin-1';
 
   return (

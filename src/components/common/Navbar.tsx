@@ -5,9 +5,11 @@ import {
   ChevronLeft,
   ChevronRight,
   Plus,
-  BookOpen
+  BookOpen,
+  Shield
 } from 'lucide-react';
 import { useBranding } from '../../context/ThemeAndBrandingContext';
+import { useAuth } from '../../context/AuthContext';
 import { PrayerCloudLogo } from './PrayerCloudLogo';
 import { NotificationBell } from './NotificationBell';
 
@@ -26,6 +28,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onLaunchInstantCall
 }) => {
   const { branding } = useBranding();
+  const { currentUser, isAdmin, isSuperAdmin } = useAuth();
   
   const [presenceStatus, setPresenceStatus] = useState<'available' | 'in-meeting' | 'away' | 'dnd'>('available');
   const [showStatusMenu, setShowStatusMenu] = useState(false);
@@ -123,6 +126,22 @@ export const Navbar: React.FC<NavbarProps> = ({
             
             {/* System Notifications Bell */}
             <NotificationBell onNavigate={handleNavClick} />
+
+            {/* Admin Control Portal Button for Admins */}
+            {(isAdmin || isSuperAdmin || currentUser?.email?.toLowerCase() === 'admin@prayercloud.org' || currentUser?.email?.toLowerCase() === 'dtemitope60@gmail.com') && (
+              <button
+                onClick={() => handleNavClick('admin')}
+                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all shadow-sm ${
+                  currentPage === 'admin'
+                    ? 'bg-purple-600 text-white shadow-purple-500/30'
+                    : 'bg-purple-950/80 hover:bg-purple-900 border border-purple-500/50 text-purple-200 hover:text-white'
+                }`}
+                title="Super Admin Control Panel"
+              >
+                <Shield className="w-3.5 h-3.5 text-purple-400" />
+                <span>Admin</span>
+              </button>
+            )}
 
             {/* Quick SU Devotional & Bible Hub Button - Compact */}
             <button

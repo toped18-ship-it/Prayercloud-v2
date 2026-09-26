@@ -60,10 +60,12 @@ export const AuthPages: React.FC<AuthPagesProps> = ({ mode, onNavigate }) => {
         res.user &&
         (res.user.role === 'Super Admin' ||
           res.user.role === 'Admin' ||
-          res.user.email === 'admin@prayercloud.org' ||
+          res.user.email?.toLowerCase() === 'admin@prayercloud.org' ||
+          res.user.email?.toLowerCase() === 'dtemitope60@gmail.com' ||
           identifier.toLowerCase() === 'admin' ||
           identifier.toLowerCase() === 'superadmin' ||
-          identifier.toLowerCase() === 'administrator')
+          identifier.toLowerCase() === 'administrator' ||
+          identifier.toLowerCase() === 'dtemitope60@gmail.com')
       ) {
         onNavigate('admin');
       } else {
@@ -314,7 +316,6 @@ export const AuthPages: React.FC<AuthPagesProps> = ({ mode, onNavigate }) => {
                     <option value="Pastor">Pastor</option>
                     <option value="Evangelist">Evangelist</option>
                     <option value="Intercessor">Intercessor</option>
-                    <option value="Admin">Administrator</option>
                   </select>
                 </div>
               </div>
