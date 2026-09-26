@@ -49,7 +49,8 @@ import {
   FolderOpen,
   Camera,
   Upload,
-  Image as ImageIcon
+  Image as ImageIcon,
+  MessageSquare
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useBranding } from '../context/ThemeAndBrandingContext';
@@ -499,13 +500,28 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onExitTo
     
     if (
       confirm(
-        `🚨 PRODUCTION LAUNCH RESET:\n\nAre you sure you want to purge all ${nonAdminCount} non-admin directory records?\n\nThis will reset the user registry to ZERO so incoming users can register and use the app from scratch. Your Super Admin account will remain active.`
+        `🚨 PRODUCTION LAUNCH RESET:\n\nAre you sure you want to purge all ${nonAdminCount} non-admin directory records and clean all chatrooms?\n\nThis will reset the user registry to ZERO and remove demo messages from chat channels so incoming users can register and use the app from scratch. Your Super Admin account will remain active.`
       )
     ) {
       const res = storage.purgeNonAdminUsers();
       reloadData();
-      setUpdateSuccessMessage(`🚀 Launch Reset Complete: Purged ${res.purgedCount} directory accounts from database. User directory is now ready for live registrations!`);
+      setUpdateSuccessMessage(`🚀 Launch Reset Complete: Purged ${res.purgedCount} directory accounts and cleaned all chatrooms. System is now fresh for live production!`);
       setTimeout(() => setUpdateSuccessMessage(null), 6000);
+    }
+  };
+
+  const handlePurgeChatroomDemoData = () => {
+    if (
+      confirm(
+        '💬 UPDATE CHATROOMS:\n\nAre you sure you want to remove all demo users and demo messages from all chat channels?\n\nThis will clear all seed transmissions and remove demo accounts from channel member lists, leaving chatrooms clean for real mission updates.'
+      )
+    ) {
+      const res = storage.purgeChatroomDemoData();
+      reloadData();
+      setUpdateSuccessMessage(
+        `✅ Chatrooms Updated: Removed ${res.purgedMessagesCount} demo messages and cleaned member lists across ${res.updatedRoomsCount} channels!`
+      );
+      setTimeout(() => setUpdateSuccessMessage(null), 5000);
     }
   };
 
@@ -762,7 +778,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onExitTo
   // ----------------------------------------------------
   if (!currentUser || !isAdmin) {
     return (
-      <div className="min-h-screen bg-[#0b0e17] text-white flex items-center justify-center p-4">
+      <div className="min-h-[70vh] bg-[#0b0e17] text-white flex items-center justify-center p-4">
         <div className="w-full max-w-md bg-[#121724] border border-blue-900/50 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-blue-950/80 space-y-6 relative overflow-hidden">
           {/* Top Security Glow Badge */}
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500 via-amber-500 to-blue-500"></div>
@@ -880,9 +896,9 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onExitTo
   // MAIN ADMIN CONSOLE (AUTHENTICATED ADMINISTRATOR)
   // ----------------------------------------------------
   return (
-    <div className="min-h-screen bg-[#0c101a] text-slate-100 pb-24">
+    <div className="min-h-screen bg-[#0c101a] text-slate-100 pb-24 rounded-2xl">
       {/* Top Header Command Bar */}
-      <header className="sticky top-0 z-30 bg-[#121725]/95 backdrop-blur-md border-b border-[#1f293d] px-4 py-2.5 shadow-lg">
+      <header className="sticky top-0 z-30 bg-[#121725]/95 backdrop-blur-md border-b border-[#1f293d] px-4 py-2.5 shadow-lg rounded-t-2xl">
         <div className="max-w-[1700px] mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3">
           
           {/* Left Title & Security Badge */}
@@ -896,7 +912,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onExitTo
                   PRAYER CLOUD <span className="text-amber-400">ADMIN CONTROL CENTER</span>
                 </h1>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-950 text-red-300 border border-red-800 uppercase tracking-wider">
-                  {currentUser.role}
+                  {currentUser?.role || 'Super Admin'}
                 </span>
               </div>
               <p className="text-[11px] text-slate-400 hidden sm:block">
@@ -1060,7 +1076,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onExitTo
                 <span className="text-[10px] text-slate-400 font-mono">Auto-Sync Interval: {autoSyncInterval}</span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
                 <button
                   onClick={triggerAutoDemographicSync}
                   disabled={isUpdatingStats}
@@ -1089,6 +1105,21 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onExitTo
                     </div>
                   </div>
                   <ChevronRight className="w-3.5 h-3.5 text-red-400" />
+                </button>
+
+                <button
+                  onClick={handlePurgeChatroomDemoData}
+                  className="p-3.5 bg-gradient-to-r from-cyan-950/80 to-[#0e2730] hover:from-cyan-900 hover:to-cyan-950 border border-cyan-500/50 rounded-xl text-left font-bold text-xs text-cyan-200 hover:text-white shadow-md shadow-cyan-950/40 flex items-center justify-between group transition-all"
+                  title="Clean chatrooms: remove demo users and messages"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <MessageSquare className="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform" />
+                    <div>
+                      <div>Clean Chatrooms</div>
+                      <div className="text-[10px] font-normal text-cyan-300">Remove demo users & msgs</div>
+                    </div>
+                  </div>
+                  <ChevronRight className="w-3.5 h-3.5 text-cyan-400" />
                 </button>
 
                 <button
@@ -1165,7 +1196,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onExitTo
                   <div className="flex justify-end">
                     <button
                       onClick={() => {
-                        storage.logAudit(currentUser.id, currentUser.fullName, 'UPDATE_EMERGENCY_BANNER', 'Global Notice', emergencyAlertText);
+                        storage.logAudit(currentUser?.id || 'admin', currentUser?.fullName || 'Super Admin', 'UPDATE_EMERGENCY_BANNER', 'Global Notice', emergencyAlertText);
                         alert('Emergency broadcast settings updated.');
                       }}
                       className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5"
@@ -1670,7 +1701,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onExitTo
                 </select>
               </div>
 
-              <div className="flex items-center gap-2 w-full sm:w-auto">
+              <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
                 <button
                   onClick={handlePurgeAllNonAdminUsers}
                   className="w-full sm:w-auto px-3.5 py-2 bg-red-950/80 hover:bg-red-900 border border-red-500/50 text-red-200 hover:text-white text-xs font-bold rounded-xl shadow-sm transition-all flex items-center justify-center gap-1.5 active:scale-95"
@@ -1678,6 +1709,15 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onExitTo
                 >
                   <Trash2 className="w-3.5 h-3.5 text-red-400" />
                   <span>Reset Users to Zero (Launch Mode)</span>
+                </button>
+
+                <button
+                  onClick={handlePurgeChatroomDemoData}
+                  className="w-full sm:w-auto px-3.5 py-2 bg-cyan-950/80 hover:bg-cyan-900 border border-cyan-500/50 text-cyan-200 hover:text-white text-xs font-bold rounded-xl shadow-sm transition-all flex items-center justify-center gap-1.5 active:scale-95"
+                  title="Remove demo users and demo messages from all chat channels"
+                >
+                  <MessageSquare className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>Clean Chatrooms</span>
                 </button>
 
                 <button
@@ -1755,7 +1795,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onExitTo
                               <KeyRound className="w-3 h-3" />
                               <span>Reset Pass</span>
                             </button>
-                            {user.id !== currentUser.id && user.role !== 'Super Admin' && (
+                            {user.id !== currentUser?.id && user.role !== 'Super Admin' && (
                               <button
                                 onClick={() => handleDeleteUser(user.id, user.fullName)}
                                 className="px-2.5 py-1 bg-red-950/70 hover:bg-red-800 border border-red-500/40 text-red-200 hover:text-white rounded-lg text-[10px] font-bold transition-all inline-flex items-center gap-1 active:scale-95 shadow-xs"

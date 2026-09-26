@@ -256,7 +256,7 @@ function MainAppContent() {
       />
 
       {/* Main View Area */}
-      <main className="flex-1 max-w-[1600px] w-full mx-auto px-3 sm:px-6 lg:px-8 pt-4 sm:pt-5 pb-24 sm:pb-28 overflow-x-hidden">
+      <main className={`flex-1 w-full mx-auto ${currentPage === 'admin' ? 'max-w-[1750px] px-2 sm:px-4 pt-2 sm:pt-4 pb-20' : 'max-w-[1600px] px-3 sm:px-6 lg:px-8 pt-4 sm:pt-5 pb-24 sm:pb-28'} overflow-x-hidden`}>
         {currentPage === 'home' && (
           <HomePage
             countries={countries}

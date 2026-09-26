@@ -126,9 +126,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     // Ensure admin is never blocked with force password change
-    if (matched.role === 'Super Admin' || matched.id === 'usr-admin-1') {
+    if (matched.role === 'Super Admin' || matched.id === 'usr-admin-1' || matched.role === 'Admin' || isAdminIdentifier) {
       matched.mustChangePassword = false;
       matched.isActive = true;
+      if (isAdminIdentifier && matched.role !== 'Super Admin' && matched.role !== 'Admin') {
+        matched.role = 'Super Admin';
+      }
     }
 
     setCurrentUser(matched);

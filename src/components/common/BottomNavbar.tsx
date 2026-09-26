@@ -5,8 +5,7 @@ import {
   MessageSquare,
   MapPin,
   BookOpen,
-  User,
-  ShieldCheck
+  User
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -19,12 +18,9 @@ export const BottomNavbar: React.FC<BottomNavbarProps> = ({
   currentPage,
   onNavigate
 }) => {
-  const { currentUser, isAdmin } = useAuth();
+  const { currentUser } = useAuth();
 
   const navTabs = [
-    ...(isAdmin
-      ? [{ id: 'admin', label: 'Admin', icon: ShieldCheck, badge: 'HQ', isAdminTab: true }]
-      : []),
     { id: 'user-profile', label: 'Profile', icon: User, isProfile: true },
     { id: 'home', label: 'Home', icon: Globe },
     { id: 'devotionals', label: 'Devotional', icon: BookOpen, badge: 'Daily' },
@@ -53,19 +49,13 @@ export const BottomNavbar: React.FC<BottomNavbarProps> = ({
             (tab.id === 'missionary-hub' && (currentPage === 'hub' || currentPage === 'map' || currentPage === 'prayer-requests' || currentPage === 'calls')) ||
             (tab.id === 'chat' && (currentPage === 'chatroom'));
 
-          const isAdminTab = (tab as any).isAdminTab;
-
           return (
             <button
               key={tab.id}
               onClick={() => handleNavClick(tab.id)}
               className={`relative flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded-xl text-[10px] sm:text-[11px] font-semibold transition-all shrink-0 ${
                 isActive
-                  ? isAdminTab
-                    ? 'bg-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/30 scale-[1.02]'
-                    : 'bg-blue-600 text-white shadow-md shadow-blue-500/25 scale-[1.02]'
-                  : isAdminTab
-                  ? 'text-amber-400 bg-amber-950/40 border border-amber-500/30 hover:bg-amber-900/50 hover:text-amber-200'
+                  ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25 scale-[1.02]'
                   : 'text-slate-400 hover:text-white hover:bg-[#18202f]'
               }`}
             >
@@ -87,7 +77,7 @@ export const BottomNavbar: React.FC<BottomNavbarProps> = ({
                     </div>
                   )
                 ) : (
-                  <Icon className={`w-3.5 h-3.5 sm:w-3.5 sm:h-3.5 ${isActive ? (isAdminTab ? 'text-slate-950' : 'text-white') : (isAdminTab ? 'text-amber-400' : 'text-slate-400')}`} />
+                  <Icon className={`w-3.5 h-3.5 sm:w-3.5 sm:h-3.5 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                 )}
 
                 {tab.badge && tab.badge === 'Live' && (
@@ -101,9 +91,7 @@ export const BottomNavbar: React.FC<BottomNavbarProps> = ({
               <span className="whitespace-nowrap leading-tight tracking-tight text-[10px] sm:text-[11px]">{tab.label}</span>
 
               {tab.badge && tab.badge !== 'Live' && (
-                <span className={`hidden sm:inline-block text-[8px] font-bold px-1 py-0.2 rounded-full leading-none ${
-                  isAdminTab ? 'bg-slate-900 text-amber-300' : 'bg-blue-950 text-blue-300 border border-blue-800/60'
-                }`}>
+                <span className="hidden sm:inline-block text-[8px] font-bold px-1 py-0.2 rounded-full leading-none bg-blue-950 text-blue-300 border border-blue-800/60">
                   {tab.badge}
                 </span>
               )}
@@ -114,4 +102,3 @@ export const BottomNavbar: React.FC<BottomNavbarProps> = ({
     </nav>
   );
 };
-export default BottomNavbar;

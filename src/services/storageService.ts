@@ -405,7 +405,16 @@ class StorageService {
 
   // Chat & Real-Time Messages
   public getChatRooms(): ChatRoom[] {
-    return this.get<ChatRoom[]>(STORAGE_KEYS.CHAT_ROOMS, INITIAL_CHAT_ROOMS);
+    const list = this.get<ChatRoom[]>(STORAGE_KEYS.CHAT_ROOMS, INITIAL_CHAT_ROOMS);
+    const isPurged = this.get<boolean>('prayercloud_demo_chat_purged', false);
+    if (isPurged) {
+      const demoUserIds = new Set(['usr-miss-1', 'usr-intercessor-1', 'usr-pastor-1', 'usr-evangelist-1']);
+      return list.map(r => ({
+        ...r,
+        memberIds: (r.memberIds || []).filter(id => !demoUserIds.has(id))
+      }));
+    }
+    return list;
   }
 
   public createChatRoom(room: ChatRoom): void {
@@ -415,13 +424,22 @@ class StorageService {
   }
 
   public getMessages(roomId: string): ChatMessage[] {
-    const all = this.get<Record<string, ChatMessage[]>>(STORAGE_KEYS.MESSAGES, INITIAL_MESSAGES);
+    const isPurged = this.get<boolean>('prayercloud_demo_chat_purged', false);
+    const fallback = isPurged ? {} : INITIAL_MESSAGES;
+    const all = this.get<Record<string, ChatMessage[]>>(STORAGE_KEYS.MESSAGES, fallback);
     const roomMsgs = all[roomId] || [];
+    
+    // If purged, filter out any demo senders
+    const demoUserIds = new Set(['usr-miss-1', 'usr-intercessor-1', 'usr-pastor-1', 'usr-evangelist-1']);
+    
     // Deduplicate in case of race condition or prior double-adds
     const seen = new Set<string>();
     const uniqueList: ChatMessage[] = [];
     for (const msg of roomMsgs) {
       if (msg && msg.id && !seen.has(msg.id)) {
+        if (isPurged && demoUserIds.has(msg.senderId)) {
+          continue;
+        }
         seen.add(msg.id);
         uniqueList.push(msg);
       }
@@ -430,7 +448,9 @@ class StorageService {
   }
 
   public sendMessage(msg: ChatMessage): void {
-    const all = this.get<Record<string, ChatMessage[]>>(STORAGE_KEYS.MESSAGES, INITIAL_MESSAGES);
+    const isPurged = this.get<boolean>('prayercloud_demo_chat_purged', false);
+    const fallback = isPurged ? {} : INITIAL_MESSAGES;
+    const all = this.get<Record<string, ChatMessage[]>>(STORAGE_KEYS.MESSAGES, fallback);
     if (!all[msg.roomId]) {
       all[msg.roomId] = [];
     }
@@ -623,7 +643,28 @@ class StorageService {
     delete creds[userId];
     this.set('prayercloud_credentials_v2', creds);
 
-    this.logAudit('admin', 'Super Admin', 'DELETE_USER', userId, `User account ${userId} deleted from system.`);
+    // Clean user from chat rooms and remove their messages
+    const rooms = this.getChatRooms();
+    const updatedRooms = rooms.map(r => ({
+      ...r,
+      memberIds: (r.memberIds || []).filter(id => id !== userId)
+    }));
+    this.set(STORAGE_KEYS.CHAT_ROOMS, updatedRooms);
+
+    const allMsgs = this.get<Record<string, ChatMessage[]>>(STORAGE_KEYS.MESSAGES, {});
+    let msgsModified = false;
+    for (const roomId in allMsgs) {
+      const origLen = allMsgs[roomId]?.length || 0;
+      allMsgs[roomId] = (allMsgs[roomId] || []).filter(m => m.senderId !== userId);
+      if (allMsgs[roomId].length !== origLen) {
+        msgsModified = true;
+      }
+    }
+    if (msgsModified) {
+      this.set(STORAGE_KEYS.MESSAGES, allMsgs);
+    }
+
+    this.logAudit('admin', 'Super Admin', 'DELETE_USER', userId, `User account ${userId} deleted from system and chat channels.`);
 
     // Sync deletion to Cloud SQL backend
     try {
@@ -648,12 +689,15 @@ class StorageService {
     };
     this.set('prayercloud_credentials_v2', newCreds);
 
+    // Automatically purge demo users and messages from chatrooms
+    this.purgeChatroomDemoData();
+
     this.logAudit(
       'admin',
       'Super Admin',
       'PURGE_USER_DATABASE_FOR_LAUNCH',
-      'Users Table',
-      `Purged ${purgedCount} directory records to reset database for official launch. Primary administrator retained.`
+      'Users Table & Chatrooms',
+      `Purged ${purgedCount} directory records and cleaned all chatrooms for official launch. Primary administrator retained.`
     );
 
     // Sync purge to Cloud SQL backend
@@ -662,6 +706,77 @@ class StorageService {
     } catch {}
 
     return { remainingUsers: adminUsers, purgedCount };
+  }
+
+  // Explicitly purge all demo users and demo messages from chat rooms
+  public purgeChatroomDemoData(): { purgedMessagesCount: number; updatedRoomsCount: number } {
+    const demoUserIds = new Set(['usr-miss-1', 'usr-intercessor-1', 'usr-pastor-1', 'usr-evangelist-1']);
+    const currentUsers = this.getUsers();
+    const adminIds = new Set(
+      currentUsers
+        .filter(u => u.role === 'Super Admin' || u.role === 'Admin' || u.id === 'usr-admin-1' || u.email === 'admin@prayercloud.org' || u.email === 'dtemitope60@gmail.com')
+        .map(u => u.id)
+    );
+
+    // 1. Filter out demo messages from all rooms
+    const allMessages = this.get<Record<string, ChatMessage[]>>(STORAGE_KEYS.MESSAGES, INITIAL_MESSAGES);
+    let purgedMessagesCount = 0;
+    const cleanedMessages: Record<string, ChatMessage[]> = {};
+
+    const rooms = this.get<ChatRoom[]>(STORAGE_KEYS.CHAT_ROOMS, INITIAL_CHAT_ROOMS);
+    for (const room of rooms) {
+      const roomMsgs = allMessages[room.id] || [];
+      const kept = roomMsgs.filter(m => {
+        const isDemo = demoUserIds.has(m.senderId) || (!adminIds.has(m.senderId) && !currentUsers.some(u => u.id === m.senderId));
+        if (isDemo) {
+          purgedMessagesCount++;
+          return false;
+        }
+        return true;
+      });
+      cleanedMessages[room.id] = kept;
+    }
+
+    this.set(STORAGE_KEYS.MESSAGES, cleanedMessages);
+
+    // 2. Remove demo users from room memberIds and reset lastMessage
+    let updatedRoomsCount = 0;
+    const adminIdList = Array.from(adminIds);
+    const defaultAdmin = adminIdList[0] || 'usr-admin-1';
+
+    const updatedRooms = rooms.map(room => {
+      const cleanedMembers = (room.memberIds || []).filter(
+        id => !demoUserIds.has(id) && (adminIds.has(id) || currentUsers.some(u => u.id === id))
+      );
+      if (!cleanedMembers.includes(defaultAdmin)) {
+        cleanedMembers.unshift(defaultAdmin);
+      }
+
+      const roomMsgs = cleanedMessages[room.id] || [];
+      const lastMsg = roomMsgs.length > 0 ? roomMsgs[roomMsgs.length - 1] : null;
+
+      updatedRoomsCount++;
+      return {
+        ...room,
+        memberIds: cleanedMembers,
+        createdBy: adminIds.has(room.createdBy) ? room.createdBy : defaultAdmin,
+        lastMessage: lastMsg ? (lastMsg.type === 'voice_note' ? '🎤 Voice Note' : lastMsg.content) : 'Channel active · Start conversation',
+        lastMessageTime: lastMsg ? 'Recent' : 'Ready'
+      };
+    });
+
+    this.set(STORAGE_KEYS.CHAT_ROOMS, updatedRooms);
+    this.set('prayercloud_demo_chat_purged', true);
+
+    this.logAudit(
+      'admin',
+      'Super Admin',
+      'PURGE_CHATROOM_DEMO_DATA',
+      'Chatrooms & Transmissions',
+      `Purged ${purgedMessagesCount} demo messages and removed demo members across ${updatedRoomsCount} channels.`
+    );
+
+    return { purgedMessagesCount, updatedRoomsCount };
   }
 
   // Prayer Management

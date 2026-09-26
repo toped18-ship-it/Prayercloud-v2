@@ -5,11 +5,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Plus,
-  BookOpen,
-  ShieldCheck
+  BookOpen
 } from 'lucide-react';
 import { useBranding } from '../../context/ThemeAndBrandingContext';
-import { useAuth } from '../../context/AuthContext';
 import { PrayerCloudLogo } from './PrayerCloudLogo';
 
 interface NavbarProps {
@@ -27,7 +25,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   onLaunchInstantCall
 }) => {
   const { branding } = useBranding();
-  const { isAdmin } = useAuth();
   
   const [presenceStatus, setPresenceStatus] = useState<'available' | 'in-meeting' | 'away' | 'dnd'>('available');
   const [showStatusMenu, setShowStatusMenu] = useState(false);
@@ -120,22 +117,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* RIGHT ZONE: Status & Quick Actions */}
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             
-            {/* Quick Admin Portal Button for Authenticated Admins */}
-            {isAdmin && (
-              <button
-                onClick={() => handleNavClick('admin')}
-                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all shadow-xs ${
-                  currentPage === 'admin'
-                    ? 'bg-amber-500 text-slate-950 font-extrabold shadow-amber-500/30'
-                    : 'bg-amber-950/80 hover:bg-amber-900 border border-amber-500/50 text-amber-300 hover:text-white'
-                }`}
-                title="Open Administrative Command Center"
-              >
-                <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-                <span className="font-extrabold text-[10px] sm:text-[11px]">Admin HQ</span>
-              </button>
-            )}
-
             {/* Quick SU Devotional & Bible Hub Button - Compact */}
             <button
               onClick={() => handleNavClick('devotionals')}
