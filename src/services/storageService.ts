@@ -279,7 +279,7 @@ class StorageService {
     return passwordAttempt.length >= 3;
   }
 
-  // Synchronize users between local storage and Google Cloud SQL backend
+  // Synchronize users between local storage, Firestore, and Google Cloud SQL backend
   public async syncUsersFromCloudSql(): Promise<User[]> {
     const localUsers = this.getUsers();
     const mergedMap = new Map<string, User>();
@@ -289,6 +289,25 @@ class StorageService {
 
     let updated = false;
 
+    // 1. Fetch from Firestore Cloud Database
+    try {
+      const firestoreUsers = await firestoreService.getUsersFromFirestore();
+      if (firestoreUsers && firestoreUsers.length > 0) {
+        firestoreUsers.forEach((fu) => {
+          mergedMap.set(fu.id, { ...(mergedMap.get(fu.id) || {}), ...fu });
+        });
+        updated = true;
+      }
+      const firestoreCreds = await firestoreService.getUserCredentialsFromFirestore();
+      if (firestoreCreds && Object.keys(firestoreCreds).length > 0) {
+        const currentCreds = this.getUserCredentials();
+        this.set('prayercloud_credentials_v2', { ...currentCreds, ...firestoreCreds });
+      }
+    } catch (e) {
+      console.warn('Firestore users sync notice:', e);
+    }
+
+    // 2. Fetch from Google Cloud SQL backend API
     try {
       const res = await apiClient.getUsersFromCloudSql();
       if (res && res.success && Array.isArray(res.users)) {

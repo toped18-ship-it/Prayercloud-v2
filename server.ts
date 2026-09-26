@@ -35,6 +35,8 @@ const PORT = process.env.PORT || 3000;
 
 // Dynamic allowed origins list
 const allowedOrigins: string[] = [
+  'https://www.livingtech.name.ng',
+  'http://www.livingtech.name.ng',
   'https://livingtech.name.ng',
   'http://livingtech.name.ng',
   'http://localhost:3000',

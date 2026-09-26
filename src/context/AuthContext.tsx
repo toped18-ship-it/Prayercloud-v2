@@ -88,7 +88,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       cleanId === 'administrator' ||
       cleanId === 'admin@prayercloud.org';
 
-    // 1. Attempt remote Cloud SQL login first
+    // 1. Attempt Firestore Cloud Database Authentication first
+    try {
+      const firestoreRes = await firestoreService.authenticateUser(cleanId, cleanPass);
+      if (firestoreRes?.success && firestoreRes?.user) {
+        const matchedFs = firestoreRes.user;
+        storage.updateUser(matchedFs);
+        storage.setUserPassword(matchedFs.id, cleanPass);
+        setCurrentUser(matchedFs);
+        storage.logAudit(matchedFs.id, matchedFs.fullName, 'USER_LOGIN', 'Auth', `User logged in via Cloud Firestore: ${matchedFs.email}`);
+        
+        // Also sync to Cloud SQL in background
+        apiClient.syncUserToCloudSql({
+          uid: matchedFs.id,
+          email: matchedFs.email,
+          fullName: matchedFs.fullName,
+          username: matchedFs.username,
+          phoneNumber: matchedFs.phoneNumber,
+          country: matchedFs.country,
+          role: matchedFs.role,
+          avatarUrl: matchedFs.avatarUrl,
+          bio: matchedFs.bio
+        }).catch(() => {});
+
+        return { success: true, user: matchedFs };
+      }
+    } catch (e) {
+      console.warn('Firestore cloud authentication check notice:', e);
+    }
+
+    // 2. Attempt remote Cloud SQL API login
     try {
       const cloudRes = await apiClient.login(cleanId, cleanPass);
       if (cloudRes?.success && cloudRes?.user) {
@@ -112,6 +141,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         storage.updateUser(matchedCloud);
         storage.setUserPassword(matchedCloud.id, cleanPass);
+        firestoreService.saveUserWithCredentials(matchedCloud, cleanPass).catch(() => {});
         setCurrentUser(matchedCloud);
         storage.logAudit(matchedCloud.id, matchedCloud.fullName, 'USER_LOGIN', 'Auth', `User logged in via Cloud SQL: ${matchedCloud.email}`);
         return { success: true, user: matchedCloud };
@@ -120,7 +150,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Backend offline or running decoupled; proceed with resilient local storage auth
     }
 
-    // 2. Match in local storage by EXACT email or username
+    // 3. Match in local storage by EXACT email or username
     const users = storage.getUsers();
     let matched = users.find(u => {
       const uEmail = u.email?.toLowerCase();
@@ -234,7 +264,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     storage.updateUser(newUser);
     storage.setUserPassword(newUserId, data.password);
 
-    // Register into Cloud SQL backend and Firestore database simultaneously
+    // Register into Cloud SQL backend and Firestore database simultaneously with credentials
     try {
       await Promise.allSettled([
         apiClient.register({
@@ -247,7 +277,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           role: newUser.role,
           bio: newUser.bio,
         }),
-        firestoreService.syncUserToFirestore(newUser)
+        firestoreService.saveUserWithCredentials(newUser, data.password)
       ]);
     } catch (e) {
       console.warn('Dual database registration notice:', e);
