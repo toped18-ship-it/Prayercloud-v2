@@ -55,6 +55,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { useBranding } from '../context/ThemeAndBrandingContext';
 import { storage } from '../services/storageService';
+import { apiClient, CUSTOM_FRONTEND_DOMAIN, DEFAULT_GOOGLE_CLOUD_BACKEND_URL } from '../services/apiClient';
 import { User, UserRole, Country, PrayerRequest, MissionReport, EventMeeting, MissionaryResource, MeetingRecording } from '../types';
 import { compressAvatarImage } from '../utils/imageUtils';
 
@@ -396,15 +397,11 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = () => {
       
       const res = storage.autoUpdateAllCountryStatistics(currentUser?.id || 'admin', currentUser?.fullName || 'Super Admin');
       
-      // Also notify backend Cloud SQL endpoint
-      fetch('/api/sync/trigger', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          countriesCount: res.updatedCount,
-          upgsCount: res.upgsTotal,
-          interval: autoSyncInterval
-        })
+      // Also notify backend Cloud SQL endpoint via decoupled apiClient
+      apiClient.triggerDemographicsSync({
+        countriesCount: res.updatedCount,
+        upgsCount: res.upgsTotal,
+        interval: autoSyncInterval
       }).catch(e => console.warn('Cloud SQL backend sync trigger note:', e));
 
       reloadData();
@@ -2288,15 +2285,57 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = () => {
 
               <div className="flex items-center gap-2.5">
                 <button
-                  onClick={() => {
-                    setCloudSqlStatus(prev => ({ ...prev, lastPing: new Date().toLocaleTimeString() }));
-                    alert('Cloud SQL database ping successful: Response latency 12ms');
+                  onClick={async () => {
+                    try {
+                      const startTime = Date.now();
+                      const health = await apiClient.checkHealth();
+                      const latency = Date.now() - startTime;
+                      setCloudSqlStatus(prev => ({ ...prev, lastPing: new Date().toLocaleTimeString() }));
+                      alert(`✅ Cloud SQL & Standalone Backend API Online!\n\n• Service: ${health.service || 'Backend API'}\n• Database: ${health.database}\n• CORS Whitelist: ${health.cors?.whitelistedCustomDomain || 'https://livingtech.name.ng'}\n• Latency: ${latency}ms`);
+                    } catch (err: any) {
+                      alert(`Cloud SQL ping response: ${err?.message || err}`);
+                    }
                   }}
                   className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow transition-colors flex items-center gap-1.5"
                 >
                   <Activity className="w-3.5 h-3.5" />
-                  <span>Ping Database</span>
+                  <span>Ping Standalone Backend API</span>
                 </button>
+              </div>
+            </div>
+
+            {/* Decoupled Architecture & CORS Info Banner */}
+            <div className="p-5 bg-[#141a29] border border-blue-900/40 rounded-2xl space-y-3">
+              <div className="flex items-center justify-between pb-2 border-b border-[#222d42]">
+                <div className="flex items-center gap-2">
+                  <Globe className="w-4 h-4 text-sky-400" />
+                  <h4 className="text-xs font-bold text-white uppercase tracking-wider">Decoupled Two-Part Architecture</h4>
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800 text-[10px] font-bold">
+                  CORS Enabled
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                <div className="p-3 bg-[#0d121e] rounded-xl border border-[#222d42] space-y-1">
+                  <div className="text-[10px] font-bold uppercase text-slate-400">Frontend (Client UI)</div>
+                  <div className="font-bold text-emerald-400 font-mono break-all">{CUSTOM_FRONTEND_DOMAIN}</div>
+                  <div className="text-[10px] text-slate-500">Hosted on GitHub Pages · Pure Client SPA</div>
+                </div>
+
+                <div className="p-3 bg-[#0d121e] rounded-xl border border-[#222d42] space-y-1">
+                  <div className="text-[10px] font-bold uppercase text-slate-400">Backend API (Google Cloud)</div>
+                  <div className="font-bold text-blue-400 font-mono text-[11px] truncate" title={DEFAULT_GOOGLE_CLOUD_BACKEND_URL}>
+                    {DEFAULT_GOOGLE_CLOUD_BACKEND_URL}
+                  </div>
+                  <div className="text-[10px] text-slate-500">Standalone Express · Secure Cloud SQL Pool</div>
+                </div>
+
+                <div className="p-3 bg-[#0d121e] rounded-xl border border-[#222d42] space-y-1">
+                  <div className="text-[10px] font-bold uppercase text-slate-400">CORS Whitelist & Preflight</div>
+                  <div className="font-bold text-amber-400 font-mono">Explicitly Whitelisted</div>
+                  <div className="text-[10px] text-slate-500">Accepts requests with credentials & JSON</div>
+                </div>
               </div>
             </div>
 

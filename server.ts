@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import { getLatestSyncStatus, recordSyncExecution, logAuditToDb } from './src/db/sync.ts';
 import { getOrCreateUser, getAllUsersFromDb, recordPrayerRequestInDb, deleteUserFromDb, purgeNonAdminUsersFromDb } from './src/db/users.ts';
 
@@ -13,17 +14,71 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Whitelist of allowed origins for the decoupled architecture
+const allowedOrigins: string[] = [
+  'https://livingtech.name.ng',
+  'http://livingtech.name.ng',
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'http://127.0.0.1:3000',
+  'http://127.0.0.1:5173',
+];
+
+if (process.env.CORS_ALLOWED_ORIGINS) {
+  process.env.CORS_ALLOWED_ORIGINS.split(',').forEach(o => {
+    const trimmed = o.trim();
+    if (trimmed && !allowedOrigins.includes(trimmed)) {
+      allowedOrigins.push(trimmed);
+    }
+  });
+}
+
+// Enable and configure CORS on this standalone Backend API
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow non-browser requests (curl, server-to-server, postman)
+    if (!origin) return callback(null, true);
+
+    // Explicit custom domain on GitHub Pages or local development
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    // Allow Cloud Run apps and GitHub Pages domains
+    if (origin.endsWith('.run.app') || origin.endsWith('.github.io') || origin.includes('livingtech')) {
+      return callback(null, true);
+    }
+
+    console.warn(`[CORS Blocked] Origin not allowed: ${origin}`);
+    return callback(new Error(`CORS error: Origin ${origin} not permitted`));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  optionsSuccessStatus: 204,
+}));
+
+// Preflight options handling for all routes
+app.options('*', cors());
+
 app.use(express.json());
 
 // API Health Check & Cloud SQL Connection Info
 app.get('/api/health', (req: Request, res: Response) => {
   res.json({
     status: 'healthy',
-    database: 'Google Cloud SQL (PostgreSQL)',
+    service: 'PrayerCloud Standalone Cloud SQL Backend API',
+    architecture: 'Decoupled (Frontend on GitHub Pages, Backend on Google Cloud)',
+    database: 'Google Cloud SQL (PostgreSQL 15)',
     region: 'europe-west1',
     engine: 'PostgreSQL 15',
     orm: 'Drizzle ORM',
     pool: 'pg.Pool (Object Configuration)',
+    cors: {
+      enabled: true,
+      whitelistedCustomDomain: 'https://livingtech.name.ng',
+      allowedOrigins: allowedOrigins,
+    },
     timestamp: new Date().toISOString(),
   });
 });
@@ -129,25 +184,50 @@ app.post('/api/prayers', async (req: Request, res: Response) => {
   }
 });
 
-// Vite middleware in development vs Static files in production
+// API: Get prayers from Cloud SQL
+app.get('/api/prayers', async (req: Request, res: Response) => {
+  try {
+    const { db } = await import('./src/db/index.ts');
+    const { prayerRequests } = await import('./src/db/schema.ts');
+    const { desc } = await import('drizzle-orm');
+    const list = await db.select().from(prayerRequests).orderBy(desc(prayerRequests.createdAt)).limit(100);
+    res.json({ success: true, prayers: list });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error?.message || 'Failed to fetch prayers from Cloud SQL' });
+  }
+});
+
+// Standalone Backend API & Optional SPA Serving
 async function startServer() {
-  if (process.env.NODE_ENV !== 'production') {
-    const { createServer: createViteServer } = await import('vite');
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: 'spa',
-    });
-    app.use(vite.middlewares);
-  } else {
-    const distPath = path.resolve(__dirname, 'dist');
-    app.use(express.static(distPath));
-    app.get('*', (req: Request, res: Response) => {
-      res.sendFile(path.join(distPath, 'index.html'));
-    });
+  const isStandaloneApi = process.env.STANDALONE_API === 'true';
+
+  if (!isStandaloneApi) {
+    if (process.env.NODE_ENV !== 'production') {
+      const { createServer: createViteServer } = await import('vite');
+      const vite = await createViteServer({
+        server: { middlewareMode: true },
+        appType: 'spa',
+      });
+      app.use(vite.middlewares);
+    } else {
+      const distPath = path.resolve(__dirname, 'dist');
+      app.use(express.static(distPath));
+      app.get('*', (req: Request, res: Response) => {
+        // If not an API route, send index.html
+        if (!req.path.startsWith('/api')) {
+          res.sendFile(path.join(distPath, 'index.html'));
+        }
+      });
+    }
   }
 
   app.listen(PORT, () => {
-    console.log(`Server listening on http://0.0.0.0:${PORT}`);
+    console.log(`=======================================================`);
+    console.log(`🚀 PrayerCloud Standalone Backend API Online`);
+    console.log(`📡 Listening on http://0.0.0.0:${PORT}`);
+    console.log(`🌐 CORS Whitelisted Frontend: https://livingtech.name.ng`);
+    console.log(`🗄️ Database: Google Cloud SQL (PostgreSQL 15 europe-west1)`);
+    console.log(`=======================================================`);
   });
 }
 
