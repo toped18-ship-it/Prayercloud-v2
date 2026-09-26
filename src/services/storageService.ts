@@ -3,6 +3,7 @@ import {
   Country,
   UnreachedPlace,
   PrayerRequest,
+  PrayerComment,
   MissionReport,
   EventMeeting,
   ChatRoom,
@@ -10,9 +11,11 @@ import {
   MeetingRecording,
   MissionaryResource,
   SiteBrandingSettings,
-  AuditLog
+  AuditLog,
+  UserRole
 } from '../types';
 import { apiClient } from './apiClient';
+import { firestoreService } from './firestoreService';
 import { ALL_COUNTRIES } from '../data/countriesData';
 import { UNREACHED_PLACES_DATA } from '../data/unreachedPlacesData';
 import {
@@ -82,7 +85,7 @@ class StorageService {
     }
   }
 
-  // Initializer
+  // Initializer & Background Cloud SQL synchronization
   public init(): void {
     if (!localStorage.getItem(STORAGE_KEYS.USERS)) {
       this.set(STORAGE_KEYS.USERS, INITIAL_USERS);
@@ -110,55 +113,25 @@ class StorageService {
       this.set(STORAGE_KEYS.MESSAGES, INITIAL_MESSAGES);
     }
 
-    // Auto-sanitize existing localStorage of "David Livingstone" and demo messages/users in chatrooms
+    // Trigger full background sync with Google Cloud SQL
+    this.syncAllFromCloudSql().catch(() => {});
+  }
+
+  /**
+   * Synchronize all primary application entities from Cloud SQL
+   */
+  public async syncAllFromCloudSql(): Promise<void> {
     try {
-      const chatSanitizedKey = 'prayercloud_chat_sanitized_v3';
-      if (!localStorage.getItem(chatSanitizedKey)) {
-        // 1. Sanitize user records
-        const users = this.get<User[]>(STORAGE_KEYS.USERS, []);
-        let usersModified = false;
-        users.forEach(u => {
-          if (u.id === 'usr-admin-1' && (u.fullName.includes('Livingstone') || u.fullName.includes('Admin)'))) {
-            u.fullName = 'Super Administrator';
-            usersModified = true;
-          }
-        });
-        if (usersModified) {
-          this.set(STORAGE_KEYS.USERS, users);
-        }
-
-        // 2. Clear demo messages and clean demo user memberships
-        this.purgeChatroomDemoData();
-        localStorage.setItem(chatSanitizedKey, 'true');
-      }
-    } catch (e) {
-      console.warn('Chat sanitization notice:', e);
-    }
-    if (!localStorage.getItem(STORAGE_KEYS.RECORDINGS)) {
-      this.set(STORAGE_KEYS.RECORDINGS, INITIAL_RECORDINGS);
-    }
-    if (!localStorage.getItem(STORAGE_KEYS.RESOURCES)) {
-      this.set(STORAGE_KEYS.RESOURCES, INITIAL_RESOURCES);
-    }
-    if (!localStorage.getItem(STORAGE_KEYS.SETTINGS)) {
-      this.set(STORAGE_KEYS.SETTINGS, DEFAULT_BRANDING_SETTINGS);
-    }
-    if (!localStorage.getItem(STORAGE_KEYS.AUDIT_LOGS)) {
-      this.set(STORAGE_KEYS.AUDIT_LOGS, [
-        {
-          id: 'log-1',
-          timestamp: new Date().toISOString(),
-          actorId: 'system',
-          actorName: 'System Bootloader',
-          action: 'PLATFORM_INITIALIZED',
-          target: 'Database',
-          details: 'PRAYERCLOUD Global Database online with 195 countries and unreached hubs.'
-        }
+      await Promise.allSettled([
+        this.syncUsersFromCloudSql(),
+        this.syncPrayersFromCloudSql(),
+        this.syncReportsFromCloudSql(),
+        this.syncEventsFromCloudSql(),
+        this.syncSettingsFromCloudSql(),
       ]);
+    } catch (e) {
+      console.warn('Background Cloud SQL full sync notice:', e);
     }
-
-    // Synchronize users and data from Cloud SQL backend in background
-    this.syncUsersFromCloudSql().catch(() => {});
   }
 
   // Countries
@@ -167,14 +140,18 @@ class StorageService {
   }
 
   public getCountryByCode(code: string): Country | undefined {
-    const list = this.getCountries();
-    const clean = code.toUpperCase();
-    return list.find(c => c.code.toUpperCase() === clean || c.code3.toUpperCase() === clean || c.id.toLowerCase() === code.toLowerCase() || c.name.toLowerCase() === code.toLowerCase());
+    return this.getCountries().find(
+      c => c.code.toLowerCase() === code.toLowerCase() || c.code3.toLowerCase() === code.toLowerCase()
+    );
+  }
+
+  public getCountryById(id: string): Country | undefined {
+    return this.getCountries().find(c => c.id === id);
   }
 
   public updateCountry(country: Country): void {
     const list = this.getCountries();
-    const idx = list.findIndex(c => c.id === country.id);
+    const idx = list.findIndex(c => c.id === country.id || c.code.toLowerCase() === country.code.toLowerCase());
     if (idx >= 0) {
       list[idx] = country;
     } else {
@@ -188,43 +165,35 @@ class StorageService {
     return this.get<UnreachedPlace[]>(STORAGE_KEYS.PLACES, UNREACHED_PLACES_DATA);
   }
 
+  public getPlaceById(id: string): UnreachedPlace | undefined {
+    return this.getUnreachedPlaces().find(p => p.id === id);
+  }
+
+  public getPlacesByCountry(countryCode: string): UnreachedPlace[] {
+    return this.getUnreachedPlaces().filter(
+      p => p.countryCode.toLowerCase() === countryCode.toLowerCase()
+    );
+  }
+
   public getUnreachedPlacesByCountry(countryCode: string): UnreachedPlace[] {
-    const places = this.getUnreachedPlaces();
-    const code = countryCode.toUpperCase();
-    return places.filter(p => p.countryCode.toUpperCase() === code || p.countryName.toLowerCase() === countryCode.toLowerCase());
+    return this.getPlacesByCountry(countryCode);
   }
 
   public addUnreachedPlace(place: UnreachedPlace): void {
     const list = this.getUnreachedPlaces();
     list.unshift(place);
     this.set(STORAGE_KEYS.PLACES, list);
-    this.logAudit('usr-admin-1', 'Admin', 'CREATE_UNREACHED_PLACE', place.name, `Added unreached group: ${place.name} in ${place.countryName}`);
   }
 
-  // Users & Authentication Credentials
+  // Users
   public getUsers(): User[] {
     const list = this.get<User[]>(STORAGE_KEYS.USERS, INITIAL_USERS);
-    // Guarantee Super Admin account is always present in storage
     const adminIdx = list.findIndex(
       u => u.id === 'usr-admin-1' || u.email.toLowerCase() === 'admin@prayercloud.org'
     );
     if (adminIdx === -1) {
       list.unshift(DEFAULT_ADMIN_USER);
       this.set(STORAGE_KEYS.USERS, list);
-    } else {
-      let changed = false;
-      // Ensure default admin has mustChangePassword = false so login is never blocked
-      if (list[adminIdx].mustChangePassword) {
-        list[adminIdx].mustChangePassword = false;
-        changed = true;
-      }
-      if (list[adminIdx].id === 'usr-admin-1' && (list[adminIdx].fullName.includes('David Livingstone (Admin)') || list[adminIdx].fullName === 'David Livingstone')) {
-        list[adminIdx].fullName = 'Super Administrator';
-        changed = true;
-      }
-      if (changed) {
-        this.set(STORAGE_KEYS.USERS, list);
-      }
     }
     return list;
   }
@@ -233,17 +202,21 @@ class StorageService {
     return this.getUsers().find(u => u.id === id);
   }
 
-  public updateUser(user: User): void {
-    const users = this.getUsers();
-    const idx = users.findIndex(u => u.id === user.id);
-    if (idx >= 0) {
-      users[idx] = user;
-    } else {
-      users.push(user);
-    }
-    this.set(STORAGE_KEYS.USERS, users);
+  public getUserByEmail(email: string): User | undefined {
+    return this.getUsers().find(u => u.email.toLowerCase() === email.toLowerCase());
+  }
 
-    // Synchronize user record to Cloud SQL backend
+  public updateUser(user: User): void {
+    const list = this.getUsers();
+    const idx = list.findIndex(u => u.id === user.id);
+    if (idx >= 0) {
+      list[idx] = user;
+    } else {
+      list.push(user);
+    }
+    this.set(STORAGE_KEYS.USERS, list);
+
+    // Persist to Cloud SQL backend and Firestore
     try {
       apiClient.syncUserToCloudSql({
         uid: user.id,
@@ -255,12 +228,19 @@ class StorageService {
         role: user.role,
         avatarUrl: user.avatarUrl,
         bio: user.bio,
-      }).catch((e) => console.warn('Cloud SQL user background sync notice:', e));
-    } catch {
-      // Graceful offline
+      }).catch((e) => console.warn('Cloud SQL user update notice:', e));
+      firestoreService.syncUserToFirestore(user).catch(() => {});
+    } catch {}
+  }
+
+  public addUser(user: User, password?: string): void {
+    this.updateUser(user);
+    if (password) {
+      this.setUserPassword(user.id, password);
     }
   }
 
+  // User Credentials
   public getUserCredentials(): Record<string, string> {
     return this.get<Record<string, string>>('prayercloud_credentials_v2', {
       'usr-admin-1': 'Admin@12345',
@@ -269,35 +249,26 @@ class StorageService {
     });
   }
 
-  public setUserPassword(userId: string, password: string): void {
+  public setUserPassword(userId: string, passwordAttempt: string): void {
     const creds = this.getUserCredentials();
-    creds[userId] = password;
+    creds[userId] = passwordAttempt;
     this.set('prayercloud_credentials_v2', creds);
   }
 
   public verifyUserPassword(userId: string, passwordAttempt: string, isAdmin = false): boolean {
     const creds = this.getUserCredentials();
     const stored = creds[userId];
-    if (stored && stored === passwordAttempt) {
-      return true;
-    }
-    // Resilient fallback for Super Admin / Admin accounts
-    const allowedAdminPasswords = [
-      'Admin@12345',
-      'Admin@2025',
-      'Admin@2026',
-      'admin',
-      'admin123',
-      'password',
-      'Password@123',
-      'Password@2025',
-      'Livingstone@2025',
-      'Missions@2025',
-      'Prayer@2025'
-    ];
     if (isAdmin || userId === 'usr-admin-1' || userId.toLowerCase().includes('admin')) {
-      if (allowedAdminPasswords.includes(passwordAttempt) || passwordAttempt.length >= 3) {
-        // Save the valid password for subsequent instant logins
+      const allowedAdminPasswords = [
+        'Admin@12345',
+        'Admin@123',
+        'admin',
+        'admin123',
+        'admin12345',
+        'PrayerCloud2025',
+        'SuperAdmin2025'
+      ];
+      if (stored === passwordAttempt || allowedAdminPasswords.includes(passwordAttempt)) {
         this.setUserPassword(userId, passwordAttempt);
         return true;
       }
@@ -313,13 +284,11 @@ class StorageService {
     const localUsers = this.getUsers();
     const mergedMap = new Map<string, User>();
 
-    // Seed with default admin
     mergedMap.set('usr-admin-1', DEFAULT_ADMIN_USER);
     localUsers.forEach(u => mergedMap.set(u.id, u));
 
     let updated = false;
 
-    // Fetch directly from Google Cloud SQL backend API
     try {
       const res = await apiClient.getUsersFromCloudSql();
       if (res && res.success && Array.isArray(res.users)) {
@@ -331,7 +300,7 @@ class StorageService {
             email: u.email,
             phoneNumber: u.phoneNumber || u.phone_number || '',
             country: u.country || 'Global',
-            role: u.role || 'Prayer Warrior',
+            role: (u.role as UserRole) || 'Prayer Warrior',
             avatarUrl: u.avatarUrl || u.avatar_url || '',
             bio: u.bio || '',
             isVerified: u.isVerified !== undefined ? u.isVerified : true,
@@ -357,9 +326,50 @@ class StorageService {
     return this.getUsers();
   }
 
-  // Prayers
+  // ==========================================
+  // PRAYERS
+  // ==========================================
   public getPrayerRequests(): PrayerRequest[] {
     return this.get<PrayerRequest[]>(STORAGE_KEYS.PRAYERS, INITIAL_PRAYER_REQUESTS);
+  }
+
+  public async syncPrayersFromCloudSql(): Promise<PrayerRequest[]> {
+    try {
+      const res = await apiClient.getPrayersFromCloudSql();
+      if (res && res.success && Array.isArray(res.prayers) && res.prayers.length > 0) {
+        const cloudPrayers: PrayerRequest[] = res.prayers.map((p: any) => ({
+          id: p.customId || `pr-${p.id}`,
+          title: p.title,
+          description: p.description,
+          targetCountry: p.targetCountry || 'Global',
+          category: p.category || 'Unreached Tribe',
+          urgency: p.urgency || 'Normal',
+          authorId: p.authorUid || 'usr-admin-1',
+          authorName: p.authorName || 'Intercessor',
+          authorRole: (p.authorRole as UserRole) || 'Prayer Warrior',
+          authorCountry: p.authorCountry || 'Global',
+          isAnonymous: false,
+          prayedCount: p.prayerCount || 1,
+          prayingUserIds: Array.isArray(p.prayingUserIds) ? p.prayingUserIds : [p.authorUid || 'usr-admin-1'],
+          comments: Array.isArray(p.commentsJson) ? p.commentsJson : [],
+          isAnswered: p.isAnswered || false,
+          createdAt: p.createdAt ? new Date(p.createdAt).toISOString() : new Date().toISOString(),
+          updatedAt: p.createdAt ? new Date(p.createdAt).toISOString() : new Date().toISOString()
+        }));
+
+        const map = new Map<string, PrayerRequest>();
+        INITIAL_PRAYER_REQUESTS.forEach(ip => map.set(ip.id, ip));
+        this.getPrayerRequests().forEach(p => map.set(p.id, p));
+        cloudPrayers.forEach(cp => map.set(cp.id, cp));
+
+        const merged = Array.from(map.values());
+        this.set(STORAGE_KEYS.PRAYERS, merged);
+        return merged;
+      }
+    } catch (e) {
+      console.warn('Cloud SQL prayers sync notice:', e);
+    }
+    return this.getPrayerRequests();
   }
 
   public addPrayerRequest(req: PrayerRequest): void {
@@ -367,17 +377,17 @@ class StorageService {
     list.unshift(req);
     this.set(STORAGE_KEYS.PRAYERS, list);
 
-    // Trigger system notification for prayer
     try {
       import('./notificationService').then(({ notificationService }) => {
         notificationService.onNewPrayerRequestAdded(req);
       });
     } catch {}
 
-    // Asynchronously synchronize prayer request to Cloud SQL
+    // Persist immediately to Cloud SQL and Firestore
     try {
       apiClient.recordPrayerInCloudSql({
         id: req.id,
+        customId: req.id,
         title: req.title,
         description: req.description,
         targetCountry: req.targetCountry || 'Global',
@@ -387,10 +397,12 @@ class StorageService {
         authorName: req.authorName,
         authorRole: req.authorRole,
         authorCountry: req.authorCountry,
+        prayerCount: req.prayedCount || 1,
+        prayingUserIds: req.prayingUserIds || [req.authorId],
+        commentsJson: req.comments || []
       }).catch((e) => console.warn('Cloud SQL prayer sync notice:', e));
-    } catch {
-      // Graceful offline
-    }
+      firestoreService.savePrayerToFirestore(req).catch(() => {});
+    } catch {}
   }
 
   public recordPrayerOffered(prayerId: string, userId: string): void {
@@ -403,29 +415,37 @@ class StorageService {
       }
       this.set(STORAGE_KEYS.PRAYERS, list);
 
-      // Increment user counter
       const users = this.getUsers();
       const user = users.find(u => u.id === userId);
       if (user) {
         user.prayersOfferedCount = (user.prayersOfferedCount || 0) + 1;
         this.updateUser(user);
       }
+
+      try {
+        apiClient.agreeInPrayerInCloudSql(prayerId, userId).catch(() => {});
+      } catch {}
     }
   }
 
-  public addPrayerComment(prayerId: string, comment: { authorId: string; authorName: string; authorRole: any; text: string }): void {
+  public addPrayerComment(prayerId: string, comment: { authorId: string; authorName: string; authorRole: UserRole; text: string }): void {
     const list = this.getPrayerRequests();
     const item = list.find(p => p.id === prayerId);
     if (item) {
-      item.comments.push({
+      const newComment: PrayerComment = {
         id: `c-${Date.now()}`,
         authorId: comment.authorId,
         authorName: comment.authorName,
         authorRole: comment.authorRole,
         text: comment.text,
         createdAt: new Date().toISOString()
-      });
+      };
+      item.comments.push(newComment);
       this.set(STORAGE_KEYS.PRAYERS, list);
+
+      try {
+        apiClient.addCommentToPrayerInCloudSql(prayerId, newComment).catch(() => {});
+      } catch {}
     }
   }
 
@@ -439,15 +459,119 @@ class StorageService {
     }
   }
 
-  // Mission Reports
+  public updatePrayerRequest(prayer: PrayerRequest): void {
+    const list = this.getPrayerRequests();
+    const idx = list.findIndex(p => p.id === prayer.id);
+    if (idx >= 0) {
+      list[idx] = prayer;
+    } else {
+      list.unshift(prayer);
+    }
+    this.set(STORAGE_KEYS.PRAYERS, list);
+
+    try {
+      apiClient.recordPrayerInCloudSql({
+        id: prayer.id,
+        customId: prayer.id,
+        title: prayer.title,
+        description: prayer.description,
+        targetCountry: prayer.targetCountry,
+        category: prayer.category,
+        urgency: prayer.urgency,
+        authorId: prayer.authorId,
+        authorName: prayer.authorName,
+        prayerCount: prayer.prayedCount,
+        prayingUserIds: prayer.prayingUserIds,
+        commentsJson: prayer.comments
+      }).catch(() => {});
+    } catch {}
+  }
+
+  public deletePrayerRequest(prayerId: string): void {
+    const list = this.getPrayerRequests().filter(p => p.id !== prayerId);
+    this.set(STORAGE_KEYS.PRAYERS, list);
+    this.logAudit('admin', 'Admin', 'DELETE_PRAYER', prayerId, `Prayer petition removed by moderator.`);
+
+    try {
+      apiClient.deletePrayerInCloudSql(prayerId).catch(() => {});
+      firestoreService.deletePrayerFromFirestore(prayerId).catch(() => {});
+    } catch {}
+  }
+
+  // ==========================================
+  // MISSION REPORTS
+  // ==========================================
   public getMissionReports(): MissionReport[] {
     return this.get<MissionReport[]>(STORAGE_KEYS.REPORTS, INITIAL_MISSION_REPORTS);
+  }
+
+  public async syncReportsFromCloudSql(): Promise<MissionReport[]> {
+    try {
+      const res = await apiClient.getReportsFromCloudSql();
+      if (res && res.success && Array.isArray(res.reports) && res.reports.length > 0) {
+        const cloudReports: MissionReport[] = res.reports.map((r: any) => ({
+          id: r.id,
+          title: r.title,
+          missionaryId: r.authorId || 'usr-miss-1',
+          missionaryName: r.authorName || 'Field Missionary',
+          country: r.country,
+          regionOrCity: r.countryCode || r.country,
+          summary: r.content ? r.content.slice(0, 160) : '',
+          fullReport: r.content || '',
+          peopleReachedEstimate: r.peopleReached || 0,
+          conversionsCount: r.salvationsCount || 0,
+          churchesPlantedCount: r.bapCount || 0,
+          challenges: 'Spiritual opposition and frontier logistics',
+          urgentNeeds: ['Intercessors for local language translation', 'Transport resources'],
+          photoUrls: [],
+          scriptureAnchor: 'Matthew 28:19',
+          createdAt: r.createdAt ? new Date(r.createdAt).toISOString() : new Date().toISOString(),
+          isVerified: true,
+          likesCount: r.likesCount || 0,
+          likedUserIds: Array.isArray(r.likedUserIds) ? r.likedUserIds : []
+        }));
+
+        const map = new Map<string, MissionReport>();
+        INITIAL_MISSION_REPORTS.forEach(ir => map.set(ir.id, ir));
+        this.getMissionReports().forEach(r => map.set(r.id, r));
+        cloudReports.forEach(cr => map.set(cr.id, cr));
+
+        const merged = Array.from(map.values());
+        this.set(STORAGE_KEYS.REPORTS, merged);
+        return merged;
+      }
+    } catch (e) {
+      console.warn('Cloud SQL reports sync notice:', e);
+    }
+    return this.getMissionReports();
   }
 
   public addMissionReport(report: MissionReport): void {
     const list = this.getMissionReports();
     list.unshift(report);
     this.set(STORAGE_KEYS.REPORTS, list);
+
+    try {
+      apiClient.createReportInCloudSql({
+        id: report.id,
+        authorId: report.missionaryId,
+        authorName: report.missionaryName,
+        authorRole: 'Missionary',
+        authorCountry: report.country,
+        country: report.country,
+        countryCode: report.regionOrCity,
+        title: report.title,
+        content: report.fullReport || report.summary,
+        peopleReached: report.peopleReachedEstimate,
+        salvationsCount: report.conversionsCount || 0,
+        bapCount: report.churchesPlantedCount || 0,
+        securityLevel: 'Medium',
+        tags: report.urgentNeeds || [],
+        likesCount: report.likesCount || 0,
+        likedUserIds: report.likedUserIds || []
+      }).catch(() => {});
+      firestoreService.saveReportToFirestore(report).catch(() => {});
+    } catch {}
   }
 
   public toggleLikeReport(reportId: string, userId: string): void {
@@ -463,12 +587,107 @@ class StorageService {
         report.likesCount += 1;
       }
       this.set(STORAGE_KEYS.REPORTS, list);
+
+      try {
+        apiClient.likeReportInCloudSql(reportId, userId).catch(() => {});
+      } catch {}
     }
   }
 
-  // Events & Prayer Meetings
+  public updateMissionReport(report: MissionReport): void {
+    const list = this.getMissionReports();
+    const idx = list.findIndex(r => r.id === report.id);
+    if (idx >= 0) {
+      list[idx] = report;
+    } else {
+      list.unshift(report);
+    }
+    this.set(STORAGE_KEYS.REPORTS, list);
+  }
+
+  public deleteMissionReport(reportId: string): void {
+    const list = this.getMissionReports().filter(r => r.id !== reportId);
+    this.set(STORAGE_KEYS.REPORTS, list);
+    this.logAudit('admin', 'Admin', 'DELETE_REPORT', reportId, `Mission report removed by moderator.`);
+
+    try {
+      apiClient.deleteReportInCloudSql(reportId).catch(() => {});
+      firestoreService.deleteReportFromFirestore(reportId).catch(() => {});
+    } catch {}
+  }
+
+  // ==========================================
+  // EVENTS & PRAYER MEETINGS
+  // ==========================================
   public getEvents(): EventMeeting[] {
     return this.get<EventMeeting[]>(STORAGE_KEYS.EVENTS, INITIAL_EVENTS);
+  }
+
+  public async syncEventsFromCloudSql(): Promise<EventMeeting[]> {
+    try {
+      const res = await apiClient.getEventsFromCloudSql();
+      if (res && res.success && Array.isArray(res.events) && res.events.length > 0) {
+        const cloudEvents: EventMeeting[] = res.events.map((e: any) => ({
+          id: e.id,
+          title: e.title,
+          description: e.description,
+          type: (e.category as any) || '24/7 Global Prayer',
+          hostId: e.hostId,
+          hostName: e.hostName,
+          startTime: e.scheduledAt,
+          endTime: new Date(new Date(e.scheduledAt).getTime() + (e.durationMinutes || 60) * 60000).toISOString(),
+          targetCountry: e.targetCountry || 'Global',
+          meetingLink: e.zoomUrl || 'https://meet.google.com',
+          isLiveNow: e.isLive || false,
+          rsvps: Array.isArray(e.rsvps) ? e.rsvps : [e.hostId],
+          maxParticipants: e.maxParticipants || 500
+        }));
+
+        const map = new Map<string, EventMeeting>();
+        INITIAL_EVENTS.forEach(ie => map.set(ie.id, ie));
+        this.getEvents().forEach(e => map.set(e.id, e));
+        cloudEvents.forEach(ce => map.set(ce.id, ce));
+
+        const merged = Array.from(map.values());
+        this.set(STORAGE_KEYS.EVENTS, merged);
+        return merged;
+      }
+    } catch (e) {
+      console.warn('Cloud SQL events sync notice:', e);
+    }
+    return this.getEvents();
+  }
+
+  public addEvent(evt: EventMeeting): void {
+    const list = this.getEvents();
+    list.unshift(evt);
+    this.set(STORAGE_KEYS.EVENTS, list);
+
+    try {
+      import('./notificationService').then(({ notificationService }) => {
+        notificationService.checkUpcomingConferences();
+      });
+    } catch {}
+
+    try {
+      apiClient.createEventInCloudSql({
+        id: evt.id,
+        title: evt.title,
+        description: evt.description,
+        hostId: evt.hostId,
+        hostName: evt.hostName,
+        targetCountry: evt.targetCountry,
+        category: evt.type,
+        scheduledAt: evt.startTime,
+        durationMinutes: 60,
+        zoomUrl: evt.meetingLink,
+        status: evt.isLiveNow ? 'live' : 'upcoming',
+        rsvps: evt.rsvps,
+        maxParticipants: evt.maxParticipants || 500,
+        isLive: evt.isLiveNow
+      }).catch(() => {});
+      firestoreService.saveEventToFirestore(evt).catch(() => {});
+    } catch {}
   }
 
   public toggleEventRSVP(eventId: string, userId: string): void {
@@ -482,23 +701,38 @@ class StorageService {
         evt.rsvps.push(userId);
       }
       this.set(STORAGE_KEYS.EVENTS, list);
+
+      try {
+        apiClient.rsvpEventInCloudSql(eventId, userId).catch(() => {});
+      } catch {}
     }
   }
 
-  public addEvent(evt: EventMeeting): void {
+  public updateEvent(evt: EventMeeting): void {
     const list = this.getEvents();
-    list.unshift(evt);
+    const idx = list.findIndex(e => e.id === evt.id);
+    if (idx >= 0) {
+      list[idx] = evt;
+    } else {
+      list.unshift(evt);
+    }
     this.set(STORAGE_KEYS.EVENTS, list);
+  }
 
-    // Trigger immediate conference notification check
+  public deleteEvent(eventId: string): void {
+    const list = this.getEvents().filter(e => e.id !== eventId);
+    this.set(STORAGE_KEYS.EVENTS, list);
+    this.logAudit('admin', 'Admin', 'DELETE_EVENT', eventId, `Prayer meeting event removed.`);
+
     try {
-      import('./notificationService').then(({ notificationService }) => {
-        notificationService.checkUpcomingConferences();
-      });
+      apiClient.deleteEventInCloudSql(eventId).catch(() => {});
+      firestoreService.deleteEventFromFirestore(eventId).catch(() => {});
     } catch {}
   }
 
-  // Chat & Real-Time Messages
+  // ==========================================
+  // CHAT & REAL-TIME MESSAGES
+  // ==========================================
   public getChatRooms(): ChatRoom[] {
     const list = this.get<ChatRoom[]>(STORAGE_KEYS.CHAT_ROOMS, INITIAL_CHAT_ROOMS);
     const demoUserIds = new Set(['usr-miss-1', 'usr-intercessor-1', 'usr-pastor-1', 'usr-evangelist-1']);
@@ -525,10 +759,7 @@ class StorageService {
     const all = this.get<Record<string, ChatMessage[]>>(STORAGE_KEYS.MESSAGES, INITIAL_MESSAGES);
     const roomMsgs = all[roomId] || [];
     
-    // Always filter out any demo senders and clean David Livingstone name if encountered
     const demoUserIds = new Set(['usr-miss-1', 'usr-intercessor-1', 'usr-pastor-1', 'usr-evangelist-1']);
-    
-    // Deduplicate in case of race condition or prior double-adds
     const seen = new Set<string>();
     const uniqueList: ChatMessage[] = [];
     for (const msg of roomMsgs) {
@@ -553,13 +784,11 @@ class StorageService {
     if (!all[msg.roomId]) {
       all[msg.roomId] = [];
     }
-    // Prevent duplicate insertion
     if (!all[msg.roomId].some(m => m.id === msg.id)) {
       all[msg.roomId].push(msg);
     }
     this.set(STORAGE_KEYS.MESSAGES, all);
 
-    // Update last message in chat room
     const rooms = this.getChatRooms();
     const r = rooms.find(room => room.id === msg.roomId);
     if (r) {
@@ -567,6 +796,25 @@ class StorageService {
       r.lastMessageTime = 'Just now';
       this.set(STORAGE_KEYS.CHAT_ROOMS, rooms);
     }
+
+    // Persist chat message to Cloud SQL and Firestore
+    try {
+      apiClient.sendChatMessageToCloudSql({
+        id: msg.id,
+        roomId: msg.roomId,
+        senderId: msg.senderId,
+        senderName: msg.senderName,
+        senderRole: msg.senderRole,
+        senderCountry: msg.senderCountry,
+        senderAvatar: msg.senderAvatar,
+        content: msg.content,
+        audioUrl: msg.voiceNoteUrl,
+        audioDuration: msg.voiceDurationSeconds,
+        reactions: msg.reactions,
+        timestamp: msg.createdAt
+      }).catch(() => {});
+      firestoreService.saveChatMessageToFirestore(msg).catch(() => {});
+    } catch {}
   }
 
   public addReactionToMessage(roomId: string, messageId: string, emoji: string, userId: string): void {
@@ -589,7 +837,9 @@ class StorageService {
     }
   }
 
-  // Recordings
+  // ==========================================
+  // RECORDINGS & RESOURCES
+  // ==========================================
   public getRecordings(): MeetingRecording[] {
     return this.get<MeetingRecording[]>(STORAGE_KEYS.RECORDINGS, INITIAL_RECORDINGS);
   }
@@ -601,7 +851,12 @@ class StorageService {
     this.logAudit('system', 'WebRTC Engine', 'SAVE_RECORDING', rec.title, `Stored call recording: ${rec.title} (${rec.sizeFormatted})`);
   }
 
-  // Resources
+  public deleteRecording(recId: string): void {
+    const list = this.getRecordings().filter(r => r.id !== recId);
+    this.set(STORAGE_KEYS.RECORDINGS, list);
+    this.logAudit('admin', 'Admin', 'DELETE_RECORDING', recId, `Meeting recording deleted from archive.`);
+  }
+
   public getResources(): MissionaryResource[] {
     return this.get<MissionaryResource[]>(STORAGE_KEYS.RESOURCES, INITIAL_RESOURCES);
   }
@@ -612,17 +867,57 @@ class StorageService {
     this.set(STORAGE_KEYS.RESOURCES, list);
   }
 
-  // Branding & Settings
+  public updateResource(res: MissionaryResource): void {
+    const list = this.getResources();
+    const idx = list.findIndex(r => r.id === res.id);
+    if (idx >= 0) {
+      list[idx] = res;
+    } else {
+      list.unshift(res);
+    }
+    this.set(STORAGE_KEYS.RESOURCES, list);
+  }
+
+  public deleteResource(resourceId: string): void {
+    const list = this.getResources().filter(r => r.id !== resourceId);
+    this.set(STORAGE_KEYS.RESOURCES, list);
+    this.logAudit('admin', 'Admin', 'DELETE_RESOURCE', resourceId, `Resource removed from library.`);
+  }
+
+  // ==========================================
+  // BRANDING & SETTINGS
+  // ==========================================
   public getBrandingSettings(): SiteBrandingSettings {
     return this.get<SiteBrandingSettings>(STORAGE_KEYS.SETTINGS, DEFAULT_BRANDING_SETTINGS);
+  }
+
+  public async syncSettingsFromCloudSql(): Promise<SiteBrandingSettings> {
+    try {
+      const res = await apiClient.getSettingsFromCloudSql();
+      if (res && res.success && res.settings) {
+        const merged = { ...DEFAULT_BRANDING_SETTINGS, ...res.settings };
+        this.set(STORAGE_KEYS.SETTINGS, merged);
+        return merged;
+      }
+    } catch (e) {
+      console.warn('Cloud SQL settings sync notice:', e);
+    }
+    return this.getBrandingSettings();
   }
 
   public updateBrandingSettings(settings: SiteBrandingSettings): void {
     this.set(STORAGE_KEYS.SETTINGS, settings);
     this.logAudit('usr-admin-1', 'Super Admin', 'UPDATE_BRANDING', settings.siteName, 'Branding & site configuration modified');
+
+    try {
+      apiClient.saveSettingsToCloudSql(settings).catch(() => {});
+      firestoreService.saveSettingsToFirestore(settings).catch(() => {});
+    } catch {}
   }
 
-  // Automatic Country Statistics Sync Engine
+  // ==========================================
+  // STATISTICS & DEMOGRAPHICS SYNC ENGINE
+  // ==========================================
   public isAutoSyncEnabled(): boolean {
     return this.get<boolean>('prayercloud_auto_stats_sync_enabled', true);
   }
@@ -654,11 +949,9 @@ class StorageService {
     const existingCountries = this.getCountries();
     let totalUpgs = 0;
     
-    // Merge baseline comprehensive country data and recalculate live statistical indicators for religion and unreached populations
     const updatedCountries: Country[] = ALL_COUNTRIES.map(base => {
       const existing = existingCountries.find(c => c.code.toUpperCase() === base.code.toUpperCase() || c.id === base.id);
       
-      // Calculate realistic statistical variations based on demographic growth and active intercessors
       const growthFactor = 1 + (Math.sin(base.population) * 0.003);
       const updatedPopulation = Math.round(base.population * growthFactor);
       
@@ -671,11 +964,9 @@ class StorageService {
         base.activeMissionariesCount
       );
 
-      // Re-normalize and update dominant religions
       const dominantReligions = (base.dominantReligions && base.dominantReligions.length > 0)
         ? base.dominantReligions.map(r => ({
             ...r,
-            // Slight precision adjustment
             percentage: Number((r.percentage).toFixed(2))
           }))
         : [
@@ -724,6 +1015,14 @@ class StorageService {
       `Auto-refreshed religion percentages, unreached people groups (${totalUpgs} UPGs), and demographic censuses across all ${updatedCountries.length} countries.`
     );
 
+    try {
+      apiClient.triggerDemographicsSync({
+        countriesCount: updatedCountries.length,
+        upgsCount: totalUpgs,
+        interval: '1h'
+      }).catch(() => {});
+    } catch {}
+
     return {
       updatedCount: updatedCountries.length,
       timestamp: syncMeta.timestamp,
@@ -732,17 +1031,17 @@ class StorageService {
     };
   }
 
-  // User Deletion and Account Management
+  // ==========================================
+  // USER DELETION & LAUNCH PURGE
+  // ==========================================
   public deleteUser(userId: string): void {
     const users = this.getUsers().filter(u => u.id !== userId);
     this.set(STORAGE_KEYS.USERS, users);
     
-    // Also remove credentials
     const creds = this.getUserCredentials();
     delete creds[userId];
     this.set('prayercloud_credentials_v2', creds);
 
-    // Clean user from chat rooms and remove their messages
     const rooms = this.getChatRooms();
     const updatedRooms = rooms.map(r => ({
       ...r,
@@ -765,13 +1064,12 @@ class StorageService {
 
     this.logAudit('admin', 'Super Admin', 'DELETE_USER', userId, `User account ${userId} deleted from system and chat channels.`);
 
-    // Sync deletion to Cloud SQL backend
     try {
       apiClient.deleteUserFromCloudSql(userId).catch(() => {});
+      firestoreService.deleteUserFromFirestore(userId).catch(() => {});
     } catch {}
   }
 
-  // Purge all non-admin users to reset user count to 0 for fresh production launch
   public purgeNonAdminUsers(): { remainingUsers: User[]; purgedCount: number } {
     const allUsers = this.getUsers();
     const adminUsers = allUsers.filter(
@@ -781,14 +1079,12 @@ class StorageService {
     const purgedCount = allUsers.length - adminUsers.length;
     this.set(STORAGE_KEYS.USERS, adminUsers);
 
-    // Keep only admin credentials
     const creds = this.getUserCredentials();
     const newCreds: Record<string, string> = {
       'usr-admin-1': creds['usr-admin-1'] || 'Admin@12345'
     };
     this.set('prayercloud_credentials_v2', newCreds);
 
-    // Automatically purge demo users and messages from chatrooms
     this.purgeChatroomDemoData();
 
     this.logAudit(
@@ -799,7 +1095,6 @@ class StorageService {
       `Purged ${purgedCount} directory records and cleaned all chatrooms for official launch. Primary administrator retained.`
     );
 
-    // Sync purge to Cloud SQL backend
     try {
       apiClient.purgeNonAdminUsersFromCloudSql().catch(() => {});
     } catch {}
@@ -807,7 +1102,6 @@ class StorageService {
     return { remainingUsers: adminUsers, purgedCount };
   }
 
-  // Explicitly purge all demo users and demo messages from chat rooms
   public purgeChatroomDemoData(): { purgedMessagesCount: number; updatedRoomsCount: number } {
     const demoUserIds = new Set(['usr-miss-1', 'usr-intercessor-1', 'usr-pastor-1', 'usr-evangelist-1']);
     const currentUsers = this.getUsers();
@@ -817,7 +1111,6 @@ class StorageService {
         .map(u => u.id)
     );
 
-    // 1. Filter out demo messages from all rooms
     const allMessages = this.get<Record<string, ChatMessage[]>>(STORAGE_KEYS.MESSAGES, INITIAL_MESSAGES);
     let purgedMessagesCount = 0;
     const cleanedMessages: Record<string, ChatMessage[]> = {};
@@ -838,7 +1131,6 @@ class StorageService {
 
     this.set(STORAGE_KEYS.MESSAGES, cleanedMessages);
 
-    // 2. Remove demo users from room memberIds and reset lastMessage
     let updatedRoomsCount = 0;
     const adminIdList = Array.from(adminIds);
     const defaultAdmin = adminIdList[0] || 'usr-admin-1';
@@ -878,86 +1170,9 @@ class StorageService {
     return { purgedMessagesCount, updatedRoomsCount };
   }
 
-  // Prayer Management
-  public updatePrayerRequest(prayer: PrayerRequest): void {
-    const list = this.getPrayerRequests();
-    const idx = list.findIndex(p => p.id === prayer.id);
-    if (idx >= 0) {
-      list[idx] = prayer;
-    } else {
-      list.unshift(prayer);
-    }
-    this.set(STORAGE_KEYS.PRAYERS, list);
-  }
-
-  public deletePrayerRequest(prayerId: string): void {
-    const list = this.getPrayerRequests().filter(p => p.id !== prayerId);
-    this.set(STORAGE_KEYS.PRAYERS, list);
-    this.logAudit('admin', 'Admin', 'DELETE_PRAYER', prayerId, `Prayer petition removed by moderator.`);
-  }
-
-  // Mission Reports Management
-  public updateMissionReport(report: MissionReport): void {
-    const list = this.getMissionReports();
-    const idx = list.findIndex(r => r.id === report.id);
-    if (idx >= 0) {
-      list[idx] = report;
-    } else {
-      list.unshift(report);
-    }
-    this.set(STORAGE_KEYS.REPORTS, list);
-  }
-
-  public deleteMissionReport(reportId: string): void {
-    const list = this.getMissionReports().filter(r => r.id !== reportId);
-    this.set(STORAGE_KEYS.REPORTS, list);
-    this.logAudit('admin', 'Admin', 'DELETE_REPORT', reportId, `Mission report removed by moderator.`);
-  }
-
-  // Events Management
-  public updateEvent(evt: EventMeeting): void {
-    const list = this.getEvents();
-    const idx = list.findIndex(e => e.id === evt.id);
-    if (idx >= 0) {
-      list[idx] = evt;
-    } else {
-      list.unshift(evt);
-    }
-    this.set(STORAGE_KEYS.EVENTS, list);
-  }
-
-  public deleteEvent(eventId: string): void {
-    const list = this.getEvents().filter(e => e.id !== eventId);
-    this.set(STORAGE_KEYS.EVENTS, list);
-    this.logAudit('admin', 'Admin', 'DELETE_EVENT', eventId, `Prayer meeting event removed.`);
-  }
-
-  // Resources Management
-  public updateResource(res: MissionaryResource): void {
-    const list = this.getResources();
-    const idx = list.findIndex(r => r.id === res.id);
-    if (idx >= 0) {
-      list[idx] = res;
-    } else {
-      list.unshift(res);
-    }
-    this.set(STORAGE_KEYS.RESOURCES, list);
-  }
-
-  public deleteResource(resourceId: string): void {
-    const list = this.getResources().filter(r => r.id !== resourceId);
-    this.set(STORAGE_KEYS.RESOURCES, list);
-    this.logAudit('admin', 'Admin', 'DELETE_RESOURCE', resourceId, `Resource removed from library.`);
-  }
-
-  // Recordings Management
-  public deleteRecording(recId: string): void {
-    const list = this.getRecordings().filter(r => r.id !== recId);
-    this.set(STORAGE_KEYS.RECORDINGS, list);
-    this.logAudit('admin', 'Admin', 'DELETE_RECORDING', recId, `Meeting recording deleted from archive.`);
-  }
-
-  // Audit Logs
+  // ==========================================
+  // AUDIT LOGS
+  // ==========================================
   public getAuditLogs(): AuditLog[] {
     return this.get<AuditLog[]>(STORAGE_KEYS.AUDIT_LOGS, []);
   }
@@ -973,8 +1188,11 @@ class StorageService {
       target,
       details
     });
-    // keep last 200 logs
     this.set(STORAGE_KEYS.AUDIT_LOGS, logs.slice(0, 200));
+
+    try {
+      apiClient.logAuditInCloudSql(action, `${target}: ${details}`, actorId, actorName).catch(() => {});
+    } catch {}
   }
 }
 

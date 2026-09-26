@@ -4,7 +4,26 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import { getLatestSyncStatus, recordSyncExecution, logAuditToDb } from './src/db/sync.ts';
-import { getOrCreateUser, getAllUsersFromDb, recordPrayerRequestInDb, deleteUserFromDb, purgeNonAdminUsersFromDb } from './src/db/users.ts';
+import { getOrCreateUser, getAllUsersFromDb, deleteUserFromDb, purgeNonAdminUsersFromDb } from './src/db/users.ts';
+import {
+  getAllPrayersFromDb,
+  createPrayerInDb,
+  agreePrayerInDb,
+  addCommentToPrayerInDb,
+  deletePrayerFromDb,
+  getAllReportsFromDb,
+  createReportInDb,
+  likeReportInDb,
+  deleteReportFromDb,
+  getAllEventsFromDb,
+  createEventInDb,
+  rsvpEventInDb,
+  deleteEventFromDb,
+  getChatMessagesFromDb,
+  createChatMessageInDb,
+  getSiteSettingsFromDb,
+  saveSiteSettingsToDb
+} from './src/db/entities.ts';
 
 dotenv.config();
 
@@ -14,7 +33,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Whitelist of allowed origins for the decoupled architecture
+// Dynamic allowed origins list
 const allowedOrigins: string[] = [
   'https://livingtech.name.ng',
   'http://livingtech.name.ng',
@@ -33,7 +52,7 @@ if (process.env.CORS_ALLOWED_ORIGINS) {
   });
 }
 
-// Enable and configure CORS on this standalone Backend API
+// Open and permissive CORS middleware for standalone / decoupled deployment
 app.use(cors({
   origin: (origin, callback) => {
     // Whitelist and accept requests from the custom domain, GitHub Pages, Cloud Run, localhost, and any client
@@ -68,14 +87,16 @@ app.options('*', (req: Request, res: Response) => {
   res.sendStatus(204);
 });
 
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 
-// API Health Check & Cloud SQL Connection Info
+// ==========================================
+// 1. SYSTEM & HEALTH ENDPOINTS
+// ==========================================
 app.get('/api/health', (req: Request, res: Response) => {
   res.json({
     status: 'healthy',
     service: 'PrayerCloud Standalone Cloud SQL Backend API',
-    architecture: 'Decoupled (Frontend on GitHub Pages, Backend on Google Cloud)',
+    architecture: 'Decoupled (Frontend on Custom Domain / GitHub Pages, Backend on Google Cloud)',
     database: 'Google Cloud SQL (PostgreSQL 15)',
     region: 'europe-west1',
     engine: 'PostgreSQL 15',
@@ -90,7 +111,9 @@ app.get('/api/health', (req: Request, res: Response) => {
   });
 });
 
-// API: Authentication Login via Cloud SQL
+// ==========================================
+// 2. AUTHENTICATION & USERS
+// ==========================================
 app.post('/api/auth/login', async (req: Request, res: Response) => {
   try {
     const { identifier, password } = req.body || {};
@@ -98,7 +121,6 @@ app.post('/api/auth/login', async (req: Request, res: Response) => {
       return res.status(400).json({ success: false, error: 'Identifier is required' });
     }
     const cleanId = String(identifier).trim().toLowerCase();
-    const cleanPass = String(password || '').trim();
 
     const isAdminIdentifier =
       cleanId === 'admin' ||
@@ -146,7 +168,6 @@ app.post('/api/auth/login', async (req: Request, res: Response) => {
   }
 });
 
-// API: Authentication Register via Cloud SQL
 app.post('/api/auth/register', async (req: Request, res: Response) => {
   try {
     const { uid, email, fullName, username, phoneNumber, country, role, avatarUrl, bio } = req.body || {};
@@ -173,29 +194,6 @@ app.post('/api/auth/register', async (req: Request, res: Response) => {
   }
 });
 
-// API: Get Cloud SQL Database Sync Status
-app.get('/api/sync/status', async (req: Request, res: Response) => {
-  try {
-    const status = await getLatestSyncStatus();
-    res.json({ success: true, data: status });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error?.message || 'Failed to fetch sync status' });
-  }
-});
-
-// API: Trigger & Record Demographic Synchronization to Cloud SQL
-app.post('/api/sync/trigger', async (req: Request, res: Response) => {
-  try {
-    const { countriesCount, upgsCount, interval } = req.body || {};
-    const recorded = await recordSyncExecution(countriesCount || 195, upgsCount || 7420, interval || '1h');
-    await logAuditToDb('DEMOGRAPHICS_SYNC_TRIGGERED', `Cloud SQL demographic sync triggered for ${countriesCount || 195} countries.`);
-    res.json({ success: true, record: recorded });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error?.message || 'Failed to record sync execution' });
-  }
-});
-
-// API: Synchronize User Profile to Cloud SQL Database
 app.post('/api/users/sync', async (req: Request, res: Response) => {
   try {
     const { uid, email, fullName, username, phoneNumber, country, role, avatarUrl, bio } = req.body || {};
@@ -216,7 +214,6 @@ app.post('/api/users/sync', async (req: Request, res: Response) => {
   }
 });
 
-// API: Get Users from Cloud SQL
 app.get('/api/users', async (req: Request, res: Response) => {
   try {
     const list = await getAllUsersFromDb();
@@ -226,7 +223,6 @@ app.get('/api/users', async (req: Request, res: Response) => {
   }
 });
 
-// API: Delete single user from Cloud SQL
 app.delete('/api/users/:uid', async (req: Request, res: Response) => {
   try {
     const { uid } = req.params;
@@ -241,7 +237,6 @@ app.delete('/api/users/:uid', async (req: Request, res: Response) => {
   }
 });
 
-// API: Purge all demo/non-admin users to reset for fresh launch
 app.post('/api/users/purge-non-admins', async (req: Request, res: Response) => {
   try {
     const deleted = await purgeNonAdminUsersFromDb();
@@ -252,42 +247,293 @@ app.post('/api/users/purge-non-admins', async (req: Request, res: Response) => {
   }
 });
 
-// API: Record Prayer in Cloud SQL
+// ==========================================
+// 3. PRAYER REQUESTS & PETITIONS
+// ==========================================
+app.get('/api/prayers', async (req: Request, res: Response) => {
+  try {
+    const list = await getAllPrayersFromDb();
+    res.json({ success: true, prayers: list });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error?.message || 'Failed to fetch prayers' });
+  }
+});
+
 app.post('/api/prayers', async (req: Request, res: Response) => {
   try {
-    const { id, title, description, countryCode, targetCountry, category, urgency, authorId, authorName, authorRole, authorCountry } = req.body || {};
+    const {
+      id,
+      customId,
+      title,
+      description,
+      targetCountry,
+      category,
+      urgency,
+      authorId,
+      authorName,
+      authorRole,
+      authorCountry,
+      prayerCount,
+      prayingUserIds,
+      commentsJson
+    } = req.body || {};
+
     if (!title || !description || !authorId) {
       return res.status(400).json({ success: false, error: 'title, description, and authorId are required' });
     }
-    const prayer = await recordPrayerRequestInDb({
-      id: id || `pr-${Date.now()}`,
+
+    const prayer = await createPrayerInDb({
+      id,
+      customId: customId || id,
       title,
       description,
-      targetCountry: targetCountry || 'Global',
-      urgency: urgency || 'Medium',
+      targetCountry,
+      category,
+      urgency,
       authorId,
       authorName: authorName || 'Intercessor',
+      authorRole,
+      authorCountry,
+      prayerCount,
+      prayingUserIds,
+      commentsJson,
     });
+    await logAuditToDb('PRAYER_CREATED', `New prayer petition submitted: ${title}`, authorId, authorName);
     res.json({ success: true, prayer });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error?.message || 'Failed to save prayer to Cloud SQL' });
   }
 });
 
-// API: Get prayers from Cloud SQL
-app.get('/api/prayers', async (req: Request, res: Response) => {
+app.post('/api/prayers/:customId/agree', async (req: Request, res: Response) => {
   try {
-    const { db } = await import('./src/db/index.ts');
-    const { prayerRequests } = await import('./src/db/schema.ts');
-    const { desc } = await import('drizzle-orm');
-    const list = await db.select().from(prayerRequests).orderBy(desc(prayerRequests.createdAt)).limit(100);
-    res.json({ success: true, prayers: list });
+    const { customId } = req.params;
+    const { userId } = req.body || {};
+    if (!userId) {
+      return res.status(400).json({ success: false, error: 'userId is required' });
+    }
+    const updated = await agreePrayerInDb(customId, userId);
+    res.json({ success: true, prayer: updated });
   } catch (error: any) {
-    res.status(500).json({ success: false, error: error?.message || 'Failed to fetch prayers from Cloud SQL' });
+    res.status(500).json({ success: false, error: error?.message || 'Failed to agree in prayer' });
   }
 });
 
-// Standalone Backend API & Optional SPA Serving
+app.post('/api/prayers/:customId/comments', async (req: Request, res: Response) => {
+  try {
+    const { customId } = req.params;
+    const { comment } = req.body || {};
+    if (!comment) {
+      return res.status(400).json({ success: false, error: 'comment object is required' });
+    }
+    const updated = await addCommentToPrayerInDb(customId, comment);
+    res.json({ success: true, prayer: updated });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error?.message || 'Failed to add comment to prayer' });
+  }
+});
+
+app.delete('/api/prayers/:customId', async (req: Request, res: Response) => {
+  try {
+    const { customId } = req.params;
+    const deleted = await deletePrayerFromDb(customId);
+    res.json({ success: true, deleted });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error?.message || 'Failed to delete prayer' });
+  }
+});
+
+// ==========================================
+// 4. MISSION REPORTS
+// ==========================================
+app.get('/api/reports', async (req: Request, res: Response) => {
+  try {
+    const list = await getAllReportsFromDb();
+    res.json({ success: true, reports: list });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error?.message || 'Failed to fetch mission reports' });
+  }
+});
+
+app.post('/api/reports', async (req: Request, res: Response) => {
+  try {
+    const reportData = req.body || {};
+    if (!reportData.title || !reportData.content || !reportData.authorId || !reportData.country) {
+      return res.status(400).json({ success: false, error: 'title, content, authorId, and country are required' });
+    }
+    const created = await createReportInDb(reportData);
+    await logAuditToDb('MISSION_REPORT_CREATED', `Field report published: ${reportData.title}`, reportData.authorId, reportData.authorName);
+    res.json({ success: true, report: created });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error?.message || 'Failed to create report' });
+  }
+});
+
+app.post('/api/reports/:id/like', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req.body || {};
+    if (!userId) {
+      return res.status(400).json({ success: false, error: 'userId is required' });
+    }
+    const updated = await likeReportInDb(id, userId);
+    res.json({ success: true, report: updated });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error?.message || 'Failed to like report' });
+  }
+});
+
+app.delete('/api/reports/:id', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const deleted = await deleteReportFromDb(id);
+    res.json({ success: true, deleted });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error?.message || 'Failed to delete report' });
+  }
+});
+
+// ==========================================
+// 5. EVENT MEETINGS & PRAYER SUMMITS
+// ==========================================
+app.get('/api/events', async (req: Request, res: Response) => {
+  try {
+    const list = await getAllEventsFromDb();
+    res.json({ success: true, events: list });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error?.message || 'Failed to fetch events' });
+  }
+});
+
+app.post('/api/events', async (req: Request, res: Response) => {
+  try {
+    const eventData = req.body || {};
+    if (!eventData.title || !eventData.description || !eventData.scheduledAt || !eventData.hostId) {
+      return res.status(400).json({ success: false, error: 'title, description, scheduledAt, and hostId are required' });
+    }
+    const created = await createEventInDb(eventData);
+    await logAuditToDb('EVENT_CREATED', `Prayer event scheduled: ${eventData.title}`, eventData.hostId, eventData.hostName);
+    res.json({ success: true, event: created });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error?.message || 'Failed to create event' });
+  }
+});
+
+app.post('/api/events/:id/rsvp', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req.body || {};
+    if (!userId) {
+      return res.status(400).json({ success: false, error: 'userId is required' });
+    }
+    const updated = await rsvpEventInDb(id, userId);
+    res.json({ success: true, event: updated });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error?.message || 'Failed to RSVP to event' });
+  }
+});
+
+app.delete('/api/events/:id', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const deleted = await deleteEventFromDb(id);
+    res.json({ success: true, deleted });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error?.message || 'Failed to delete event' });
+  }
+});
+
+// ==========================================
+// 6. CHAT MESSAGES & REALTIME COMMUNICATION
+// ==========================================
+app.get('/api/chat/messages', async (req: Request, res: Response) => {
+  try {
+    const { roomId } = req.query as { roomId?: string };
+    const list = await getChatMessagesFromDb(roomId);
+    res.json({ success: true, messages: list });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error?.message || 'Failed to fetch chat messages' });
+  }
+});
+
+app.post('/api/chat/messages', async (req: Request, res: Response) => {
+  try {
+    const msgData = req.body || {};
+    if (!msgData.roomId || !msgData.senderId || !msgData.content) {
+      return res.status(400).json({ success: false, error: 'roomId, senderId, and content are required' });
+    }
+    const created = await createChatMessageInDb(msgData);
+    res.json({ success: true, message: created });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error?.message || 'Failed to save chat message' });
+  }
+});
+
+// ==========================================
+// 7. SITE SETTINGS & BRANDING
+// ==========================================
+app.get('/api/settings', async (req: Request, res: Response) => {
+  try {
+    const settings = await getSiteSettingsFromDb();
+    res.json({ success: true, settings });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error?.message || 'Failed to fetch site settings' });
+  }
+});
+
+app.post('/api/settings', async (req: Request, res: Response) => {
+  try {
+    const settingsObj = req.body || {};
+    const updated = await saveSiteSettingsToDb(settingsObj);
+    await logAuditToDb('SETTINGS_UPDATED', `Global site settings updated in Cloud SQL`, 'admin', 'Super Admin');
+    res.json({ success: true, settings: updated });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error?.message || 'Failed to save site settings' });
+  }
+});
+
+// ==========================================
+// 8. DEMOGRAPHICS & SYNC STATUS
+// ==========================================
+app.get('/api/sync/status', async (req: Request, res: Response) => {
+  try {
+    const status = await getLatestSyncStatus();
+    res.json({ success: true, data: status });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error?.message || 'Failed to fetch sync status' });
+  }
+});
+
+app.post('/api/sync/trigger', async (req: Request, res: Response) => {
+  try {
+    const { countriesCount, upgsCount, interval } = req.body || {};
+    const recorded = await recordSyncExecution(countriesCount || 195, upgsCount || 7420, interval || '1h');
+    await logAuditToDb('DEMOGRAPHICS_SYNC_TRIGGERED', `Cloud SQL demographic sync triggered for ${countriesCount || 195} countries.`);
+    res.json({ success: true, record: recorded });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error?.message || 'Failed to record sync execution' });
+  }
+});
+
+// ==========================================
+// 9. AUDIT LOGS
+// ==========================================
+app.post('/api/audit', async (req: Request, res: Response) => {
+  try {
+    const { action, details, actorId, actorName } = req.body || {};
+    if (!action) {
+      return res.status(400).json({ success: false, error: 'action is required' });
+    }
+    const logged = await logAuditToDb(action, details || '', actorId || 'system', actorName || 'User');
+    res.json({ success: true, log: logged });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error?.message || 'Failed to write audit log' });
+  }
+});
+
+// ==========================================
+// 10. SERVER STARTUP & STATIC SPA SERVING
+// ==========================================
 async function startServer() {
   const isStandaloneApi = process.env.STANDALONE_API === 'true';
 
@@ -313,7 +559,7 @@ async function startServer() {
 
   app.listen(PORT, () => {
     console.log(`=======================================================`);
-    console.log(`🚀 PrayerCloud Standalone Backend API Online`);
+    console.log(`🚀 PrayerCloud Backend API Online with Full SQL Persistence`);
     console.log(`📡 Listening on http://0.0.0.0:${PORT}`);
     console.log(`🌐 CORS Whitelisted Frontend: https://livingtech.name.ng`);
     console.log(`🗄️ Database: Google Cloud SQL (PostgreSQL 15 europe-west1)`);

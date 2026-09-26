@@ -1,0 +1,46 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile with roles and credentials in PrayerCloud",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "fullName": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string" },
+        "country": { "type": "string" },
+        "prayersOfferedCount": { "type": "number" }
+      },
+      "required": ["id", "email", "role"]
+    },
+    "PrayerRequest": {
+      "title": "PrayerRequest",
+      "description": "Global prayer petitions and intercession needs",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "targetCountry": { "type": "string" },
+        "authorId": { "type": "string" },
+        "prayedCount": { "type": "number" }
+      },
+      "required": ["id", "title", "description", "authorId"]
+    }
+  },
+  "firestore": {
+    "users": {
+      "entity": "UserProfile",
+      "schema": {
+        "$ref": "#/entities/UserProfile"
+      }
+    },
+    "prayers": {
+      "entity": "PrayerRequest",
+      "schema": {
+        "$ref": "#/entities/PrayerRequest"
+      }
+    }
+  }
+}

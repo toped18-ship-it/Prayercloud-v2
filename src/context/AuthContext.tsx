@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, UserRole } from '../types';
 import { storage, DEFAULT_ADMIN_USER } from '../services/storageService';
 import { apiClient } from '../services/apiClient';
+import { firestoreService } from '../services/firestoreService';
 
 interface AuthContextType {
   currentUser: User | null;
@@ -233,20 +234,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     storage.updateUser(newUser);
     storage.setUserPassword(newUserId, data.password);
 
-    // Register into Cloud SQL backend
+    // Register into Cloud SQL backend and Firestore database simultaneously
     try {
-      await apiClient.register({
-        uid: newUser.id,
-        email: newUser.email,
-        fullName: newUser.fullName,
-        username: newUser.username,
-        phoneNumber: newUser.phoneNumber,
-        country: newUser.country,
-        role: newUser.role,
-        bio: newUser.bio,
-      });
+      await Promise.allSettled([
+        apiClient.register({
+          uid: newUser.id,
+          email: newUser.email,
+          fullName: newUser.fullName,
+          username: newUser.username,
+          phoneNumber: newUser.phoneNumber,
+          country: newUser.country,
+          role: newUser.role,
+          bio: newUser.bio,
+        }),
+        firestoreService.syncUserToFirestore(newUser)
+      ]);
     } catch (e) {
-      console.warn('Cloud SQL registration notice:', e);
+      console.warn('Dual database registration notice:', e);
     }
 
     setCurrentUser(newUser);

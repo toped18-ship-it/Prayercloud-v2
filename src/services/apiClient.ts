@@ -1,11 +1,11 @@
 /**
  * Standalone Google Cloud Backend API Client
  * 
- * Routes all database requests from the frontend (hosted on GitHub Pages / https://livingtech.name.ng)
+ * Routes all database requests from the frontend (hosted on Custom Domains, GitHub Pages, etc.)
  * to the standalone Google Cloud backend API securely via CORS-enabled HTTP fetch calls.
  */
 
-// Default Google Cloud Run deployment URLs for the PrayerCloud backend API
+// Production Google Cloud Run backend deployment URLs for PrayerCloud
 export const DEV_GOOGLE_CLOUD_BACKEND_URL =
   'https://ais-dev-2riwkkrxe5tdz6cwpjkvyl-20126573867.europe-west1.run.app';
 
@@ -17,6 +17,31 @@ export const DEFAULT_GOOGLE_CLOUD_BACKEND_URL = DEV_GOOGLE_CLOUD_BACKEND_URL;
 export const CUSTOM_FRONTEND_DOMAIN = 'https://livingtech.name.ng';
 
 const BACKEND_URL_STORAGE_KEY = 'prayercloud_backend_api_url';
+
+/**
+ * Resolves dynamic environment variables from Vite or React runtime
+ */
+export function getEnvBackendUrl(): string {
+  // Check Vite env
+  try {
+    if (typeof import.meta !== 'undefined' && import.meta.env) {
+      if (import.meta.env.VITE_API_URL) return String(import.meta.env.VITE_API_URL).trim();
+      if (import.meta.env.VITE_BACKEND_API_URL) return String(import.meta.env.VITE_BACKEND_API_URL).trim();
+      if (import.meta.env.REACT_APP_API_URL) return String(import.meta.env.REACT_APP_API_URL).trim();
+    }
+  } catch (_) {}
+
+  // Check Node/Process env if defined in build
+  try {
+    if (typeof process !== 'undefined' && process.env) {
+      if (process.env.VITE_API_URL) return String(process.env.VITE_API_URL).trim();
+      if (process.env.REACT_APP_API_URL) return String(process.env.REACT_APP_API_URL).trim();
+      if (process.env.API_URL) return String(process.env.API_URL).trim();
+    }
+  } catch (_) {}
+
+  return '';
+}
 
 /**
  * Gets the current configured or active backend API URL
@@ -48,10 +73,8 @@ export function setCustomBackendUrl(url: string): void {
  * Returns the list of potential backend candidate endpoints for automatic failover
  */
 export function getBackendCandidates(): string[] {
+  const envUrl = getEnvBackendUrl().replace(/\/+$/, '');
   const custom = getCustomBackendUrl();
-  const envUrl = typeof import.meta !== 'undefined' && import.meta.env?.VITE_BACKEND_API_URL
-    ? import.meta.env.VITE_BACKEND_API_URL.replace(/\/+$/, '')
-    : '';
 
   const list: string[] = [];
   if (custom) list.push(custom);
@@ -77,9 +100,8 @@ export function getApiBaseUrl(): string {
   const custom = getCustomBackendUrl();
   if (custom) return custom;
 
-  if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_BACKEND_API_URL) {
-    return import.meta.env.VITE_BACKEND_API_URL.replace(/\/+$/, '');
-  }
+  const envUrl = getEnvBackendUrl();
+  if (envUrl) return envUrl.replace(/\/+$/, '');
 
   if (typeof window !== 'undefined' && window.location) {
     const hostname = window.location.hostname;
@@ -249,7 +271,7 @@ export const apiClient = {
   },
 
   async getUsersFromCloudSql() {
-    return this.get('/api/users');
+    return this.get<{ success: boolean; users: any[] }>('/api/users');
   },
 
   async deleteUserFromCloudSql(uid: string) {
@@ -260,21 +282,81 @@ export const apiClient = {
     return this.post('/api/users/purge-non-admins');
   },
 
-  async recordPrayerInCloudSql(prayerData: {
-    id: string;
-    title: string;
-    description: string;
-    targetCountry?: string;
-    category?: string;
-    urgency?: string;
-    authorId: string;
-    authorName?: string;
-    authorRole?: string;
-    authorCountry?: string;
-  }) {
+  // Prayers
+  async getPrayersFromCloudSql() {
+    return this.get<{ success: boolean; prayers: any[] }>('/api/prayers');
+  },
+
+  async recordPrayerInCloudSql(prayerData: any) {
     return this.post('/api/prayers', prayerData);
   },
 
+  async agreeInPrayerInCloudSql(customId: string, userId: string) {
+    return this.post(`/api/prayers/${encodeURIComponent(customId)}/agree`, { userId });
+  },
+
+  async addCommentToPrayerInCloudSql(customId: string, comment: any) {
+    return this.post(`/api/prayers/${encodeURIComponent(customId)}/comments`, { comment });
+  },
+
+  async deletePrayerInCloudSql(customId: string) {
+    return this.delete(`/api/prayers/${encodeURIComponent(customId)}`);
+  },
+
+  // Reports
+  async getReportsFromCloudSql() {
+    return this.get<{ success: boolean; reports: any[] }>('/api/reports');
+  },
+
+  async createReportInCloudSql(reportData: any) {
+    return this.post('/api/reports', reportData);
+  },
+
+  async likeReportInCloudSql(reportId: string, userId: string) {
+    return this.post(`/api/reports/${encodeURIComponent(reportId)}/like`, { userId });
+  },
+
+  async deleteReportInCloudSql(reportId: string) {
+    return this.delete(`/api/reports/${encodeURIComponent(reportId)}`);
+  },
+
+  // Events
+  async getEventsFromCloudSql() {
+    return this.get<{ success: boolean; events: any[] }>('/api/events');
+  },
+
+  async createEventInCloudSql(eventData: any) {
+    return this.post('/api/events', eventData);
+  },
+
+  async rsvpEventInCloudSql(eventId: string, userId: string) {
+    return this.post(`/api/events/${encodeURIComponent(eventId)}/rsvp`, { userId });
+  },
+
+  async deleteEventInCloudSql(eventId: string) {
+    return this.delete(`/api/events/${encodeURIComponent(eventId)}`);
+  },
+
+  // Chat
+  async getChatMessagesFromCloudSql(roomId?: string) {
+    const query = roomId ? `?roomId=${encodeURIComponent(roomId)}` : '';
+    return this.get<{ success: boolean; messages: any[] }>(`/api/chat/messages${query}`);
+  },
+
+  async sendChatMessageToCloudSql(msgData: any) {
+    return this.post('/api/chat/messages', msgData);
+  },
+
+  // Settings & Branding
+  async getSettingsFromCloudSql() {
+    return this.get<{ success: boolean; settings: any }>('/api/settings');
+  },
+
+  async saveSettingsToCloudSql(settings: any) {
+    return this.post('/api/settings', settings);
+  },
+
+  // Demographics Sync
   async triggerDemographicsSync(params: {
     countriesCount?: number;
     upgsCount?: number;
@@ -286,4 +368,9 @@ export const apiClient = {
   async getSyncStatus() {
     return this.get('/api/sync/status');
   },
+
+  // Audit Logs
+  async logAuditInCloudSql(action: string, details?: string, actorId?: string, actorName?: string) {
+    return this.post('/api/audit', { action, details, actorId, actorName });
+  }
 };
