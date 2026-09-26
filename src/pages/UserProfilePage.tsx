@@ -183,6 +183,42 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({ onNavigate }) 
         </button>
       </div>
 
+      {/* Direct Administrative Console Launch Banner for Admins */}
+      {(currentUser.role === 'Super Admin' ||
+        currentUser.role === 'Admin' ||
+        currentUser.email === 'admin@prayercloud.org' ||
+        currentUser.email === 'dtemitope60@gmail.com' ||
+        currentUser.id === 'usr-admin-1') && (
+        <div className="p-4 sm:p-5 bg-gradient-to-r from-[#171f30] via-[#1c2842] to-[#121826] border-2 border-amber-500/60 rounded-3xl shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-fadeIn">
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/50 flex items-center justify-center text-amber-400 font-black shadow-inner shrink-0">
+              <Shield className="w-6 h-6 text-amber-400" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="font-extrabold text-sm sm:text-base text-white font-display">
+                  ADMINISTRATIVE CONTROL CENTER
+                </h2>
+                <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 uppercase tracking-wider">
+                  HQ Access
+                </span>
+              </div>
+              <p className="text-xs text-slate-300 mt-0.5">
+                Manage global users, demographic automations, unreached hubs, security and database configurations.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => onNavigate && onNavigate('admin')}
+            className="w-full sm:w-auto px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-2 active:scale-95 shrink-0"
+          >
+            <Shield className="w-4 h-4 text-slate-950" />
+            <span>Open Admin Panel</span>
+          </button>
+        </div>
+      )}
+
       {/* Field Metrics */}
       <div className="grid grid-cols-2 gap-4">
         <div className="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm text-center">

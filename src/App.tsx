@@ -101,17 +101,16 @@ function MainAppContent() {
       const path = window.location.pathname.toLowerCase();
       if (path === '/admin' || hash === 'admin' || hash.startsWith('admin')) {
         setCurrentPage('admin');
-      } else if (currentPage === 'admin' && path !== '/admin' && !hash.startsWith('admin')) {
-        setCurrentPage('home');
       }
     };
+    handleUrlSync();
     window.addEventListener('hashchange', handleUrlSync);
     window.addEventListener('popstate', handleUrlSync);
     return () => {
       window.removeEventListener('hashchange', handleUrlSync);
       window.removeEventListener('popstate', handleUrlSync);
     };
-  }, [currentPage]);
+  }, []);
 
   // Automatic onboarding tour on first launch
   useEffect(() => {
