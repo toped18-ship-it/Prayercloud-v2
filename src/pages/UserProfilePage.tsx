@@ -62,17 +62,24 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({ onNavigate }) 
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.startsWith('image/')) {
-      alert('Please choose an image file (PNG, JPG, or WebP).');
+    const isImage = file.type.startsWith('image/') || /\.(jpe?g|png|webp|gif|bmp|heic|heif|svg)$/i.test(file.name);
+    if (!isImage) {
+      setPhotoMessage('Please select a valid image file (PNG, JPG, or WebP).');
+      setTimeout(() => setPhotoMessage(null), 3000);
+      if (e.target) e.target.value = '';
       return;
     }
 
     setIsProcessingPhoto(true);
-    setPhotoMessage(null);
+    setPhotoMessage('Optimizing and saving photo...');
 
     try {
       // Compress to high quality compact format (< 40KB) to ensure reliable storage
       const optimizedDataUrl = await compressAvatarImage(file, 360, 360, 0.85);
+      if (!optimizedDataUrl) {
+        throw new Error('Image conversion produced empty result');
+      }
+
       setAvatarUrl(optimizedDataUrl);
       
       // Immediately save to profile and persist
@@ -86,10 +93,12 @@ export const UserProfilePage: React.FC<UserProfilePageProps> = ({ onNavigate }) 
         setPhotoMessage(null);
       }, 3500);
     } catch (err) {
-      console.error('Photo optimization failed:', err);
-      alert('Could not process this image. Please try another image file.');
+      console.error('Photo optimization error:', err);
+      setPhotoMessage('Could not process this image. Please try another photo.');
+      setTimeout(() => setPhotoMessage(null), 3500);
     } finally {
       setIsProcessingPhoto(false);
+      if (e.target) e.target.value = '';
     }
   };
 

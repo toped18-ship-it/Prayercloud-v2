@@ -1,6 +1,7 @@
 import React from 'react';
 import { Cloud, Heart, Globe, Shield, Sparkles, Mail, Lock } from 'lucide-react';
 import { useBranding } from '../../context/ThemeAndBrandingContext';
+import { PrayerCloudLogo } from './PrayerCloudLogo';
 
 interface FooterProps {
   onNavigate: (page: string, param?: string) => void;
@@ -24,11 +25,12 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           {/* Brand Col */}
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-sky-400 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
-                <Cloud className="w-4 h-4 fill-white/20" />
+              <div className="w-8 h-8 rounded-xl bg-[#0e121b] border border-[#253046] flex items-center justify-center p-1 shadow-md shadow-blue-950/60">
+                <PrayerCloudLogo size="sm" />
               </div>
-              <span className="font-display font-extrabold text-xl text-white tracking-tight">
-                {branding.siteName || 'PRAYERCLOUD'}
+              <span className="font-display font-extrabold text-xl tracking-tight">
+                <span className="text-white">PRAYER</span>
+                <span className="text-amber-400">CLOUD</span>
               </span>
             </div>
             <p className="text-xs text-slate-400 leading-relaxed max-w-sm">

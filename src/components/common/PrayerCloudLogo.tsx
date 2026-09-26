@@ -53,25 +53,25 @@ export const PrayerCloudLogo: React.FC<PrayerCloudLogoProps> = ({
             <feDropShadow dx="-2" dy="6" stdDeviation="4" floodColor="#030712" floodOpacity="0.45" />
           </filter>
 
-          {/* Royal Blue Front Face */}
+          {/* Royal Blue Front Face - Enhanced Luminance for High Contrast */}
           <linearGradient id={`blueFront-${size}`} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#1e40af" />
-            <stop offset="50%" stopColor="#1d4ed8" />
-            <stop offset="100%" stopColor="#1e3a8a" />
-          </linearGradient>
-
-          {/* Blue Top Bevel Highlight */}
-          <linearGradient id={`blueTop-${size}`} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#3b82f6" />
-            <stop offset="60%" stopColor="#2563eb" />
+            <stop offset="0%" stopColor="#60a5fa" />
+            <stop offset="35%" stopColor="#3b82f6" />
             <stop offset="100%" stopColor="#1d4ed8" />
           </linearGradient>
 
-          {/* Blue Left 3D Extrusion Shadow */}
+          {/* Blue Top Bevel Highlight - Bright Specular Sheen */}
+          <linearGradient id={`blueTop-${size}`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#dbeafe" />
+            <stop offset="50%" stopColor="#93c5fd" />
+            <stop offset="100%" stopColor="#3b82f6" />
+          </linearGradient>
+
+          {/* Blue Left 3D Extrusion Shadow - Clear Definition without Blackout */}
           <linearGradient id={`blueSide-${size}`} x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#172554" />
-            <stop offset="60%" stopColor="#0f172a" />
-            <stop offset="100%" stopColor="#020617" />
+            <stop offset="0%" stopColor="#2563eb" />
+            <stop offset="50%" stopColor="#1e40af" />
+            <stop offset="100%" stopColor="#1e3a8a" />
           </linearGradient>
 
           {/* Vivid Golden Yellow Front */}
@@ -102,26 +102,26 @@ export const PrayerCloudLogo: React.FC<PrayerCloudLogoProps> = ({
           {/* 3D P Top Bar - Top Bevel */}
           <path d="M 145 80 L 295 80 Q 370 80 375 130 L 335 150 Q 325 118 280 118 L 138 118 Z" fill={`url(#blueTop-${size})`} />
           {/* 3D P Top Bar - Front Face */}
-          <path d="M 135 118 L 295 118 Q 365 118 365 170 Q 365 220 310 220 L 255 220 L 255 260 L 315 260 Q 405 260 405 170 Q 405 75 295 75 L 135 75 Z" fill={`url(#blueFront-${size})`} />
+          <path d="M 135 118 L 295 118 Q 365 118 365 170 Q 365 220 310 220 L 255 220 L 255 260 L 315 260 Q 405 260 405 170 Q 405 75 295 75 L 135 75 Z" fill={`url(#blueFront-${size})`} stroke="#93c5fd" strokeWidth="1" strokeOpacity="0.6" />
 
-          {/* Embossed Yellow 'PRAYER CLOUD' Text on Top Bar */}
+          {/* Embossed Bright 'PRAYER' Text on Top Bar */}
           <text
             x="170"
             y="104"
-            fill="#fde047"
+            fill="#ffffff"
             fontFamily="'Montserrat', 'Arial Black', sans-serif"
-            fontSize="20"
+            fontSize="21"
             fontWeight="900"
-            letterSpacing="2.2"
+            letterSpacing="2.5"
             transform="rotate(1.5 170 104)"
           >
-            PRAYER CLOUD
+            PRAYER
           </text>
 
           {/* Blue Vertical Stem - Left 3D Extruded Block Shadow */}
           <path d="M 138 150 L 165 130 L 165 365 L 138 385 Z" fill={`url(#blueSide-${size})`} />
           {/* Blue Vertical Stem - Front Face Pillar */}
-          <rect x="165" y="130" width="82" height="235" rx="3" fill={`url(#blueFront-${size})`} />
+          <rect x="165" y="130" width="82" height="235" rx="3" fill={`url(#blueFront-${size})`} stroke="#93c5fd" strokeWidth="1" strokeOpacity="0.6" />
           {/* Blue Vertical Stem - Bottom 3D Facet */}
           <path d="M 138 385 L 165 365 L 247 365 L 220 385 Z" fill={`url(#blueSide-${size})`} />
 
@@ -156,10 +156,10 @@ export const PrayerCloudLogo: React.FC<PrayerCloudLogoProps> = ({
       {showText && (
         <div className="flex flex-col leading-none">
           <div className="flex items-center gap-1.5">
-            <span className={`font-black font-display tracking-tight text-slate-900 dark:text-white ${currentSize.text}`}>
+            <span className={`font-black font-display tracking-tight text-white ${currentSize.text}`}>
               PRAYER
             </span>
-            <span className={`font-black font-display tracking-tight text-amber-500 ${currentSize.text}`}>
+            <span className={`font-black font-display tracking-tight text-amber-400 ${currentSize.text}`}>
               CLOUD
             </span>
           </div>

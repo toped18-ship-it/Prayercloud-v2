@@ -43,7 +43,7 @@ const STORAGE_KEYS = {
 
 export const DEFAULT_ADMIN_USER: User = {
   id: 'usr-admin-1',
-  fullName: 'David Livingstone (Admin)',
+  fullName: 'Super Administrator',
   username: 'admin',
   email: 'admin@prayercloud.org',
   phoneNumber: '+1-800-PRAY-NOW',
@@ -107,6 +107,31 @@ class StorageService {
     }
     if (!localStorage.getItem(STORAGE_KEYS.MESSAGES)) {
       this.set(STORAGE_KEYS.MESSAGES, INITIAL_MESSAGES);
+    }
+
+    // Auto-sanitize existing localStorage of "David Livingstone" and demo messages/users in chatrooms
+    try {
+      const chatSanitizedKey = 'prayercloud_chat_sanitized_v3';
+      if (!localStorage.getItem(chatSanitizedKey)) {
+        // 1. Sanitize user records
+        const users = this.get<User[]>(STORAGE_KEYS.USERS, []);
+        let usersModified = false;
+        users.forEach(u => {
+          if (u.id === 'usr-admin-1' && (u.fullName.includes('Livingstone') || u.fullName.includes('Admin)'))) {
+            u.fullName = 'Super Administrator';
+            usersModified = true;
+          }
+        });
+        if (usersModified) {
+          this.set(STORAGE_KEYS.USERS, users);
+        }
+
+        // 2. Clear demo messages and clean demo user memberships
+        this.purgeChatroomDemoData();
+        localStorage.setItem(chatSanitizedKey, 'true');
+      }
+    } catch (e) {
+      console.warn('Chat sanitization notice:', e);
     }
     if (!localStorage.getItem(STORAGE_KEYS.RECORDINGS)) {
       this.set(STORAGE_KEYS.RECORDINGS, INITIAL_RECORDINGS);
@@ -183,9 +208,17 @@ class StorageService {
       list.unshift(DEFAULT_ADMIN_USER);
       this.set(STORAGE_KEYS.USERS, list);
     } else {
+      let changed = false;
       // Ensure admin has mustChangePassword = false so login is never blocked
       if (list[adminIdx].mustChangePassword) {
         list[adminIdx].mustChangePassword = false;
+        changed = true;
+      }
+      if (list[adminIdx].fullName.includes('Livingstone') || list[adminIdx].fullName.includes('David')) {
+        list[adminIdx].fullName = 'Super Administrator';
+        changed = true;
+      }
+      if (changed) {
         this.set(STORAGE_KEYS.USERS, list);
       }
     }
@@ -281,6 +314,13 @@ class StorageService {
     const list = this.getPrayerRequests();
     list.unshift(req);
     this.set(STORAGE_KEYS.PRAYERS, list);
+
+    // Trigger system notification for prayer
+    try {
+      import('./notificationService').then(({ notificationService }) => {
+        notificationService.onNewPrayerRequestAdded(req);
+      });
+    } catch {}
 
     // Asynchronously synchronize prayer request to Cloud SQL
     try {
@@ -401,20 +441,30 @@ class StorageService {
     const list = this.getEvents();
     list.unshift(evt);
     this.set(STORAGE_KEYS.EVENTS, list);
+
+    // Trigger immediate conference notification check
+    try {
+      import('./notificationService').then(({ notificationService }) => {
+        notificationService.checkUpcomingConferences();
+      });
+    } catch {}
   }
 
   // Chat & Real-Time Messages
   public getChatRooms(): ChatRoom[] {
     const list = this.get<ChatRoom[]>(STORAGE_KEYS.CHAT_ROOMS, INITIAL_CHAT_ROOMS);
-    const isPurged = this.get<boolean>('prayercloud_demo_chat_purged', false);
-    if (isPurged) {
-      const demoUserIds = new Set(['usr-miss-1', 'usr-intercessor-1', 'usr-pastor-1', 'usr-evangelist-1']);
-      return list.map(r => ({
+    const demoUserIds = new Set(['usr-miss-1', 'usr-intercessor-1', 'usr-pastor-1', 'usr-evangelist-1']);
+    return list.map(r => {
+      const filteredMembers = (r.memberIds || []).filter(id => !demoUserIds.has(id));
+      if (!filteredMembers.includes('usr-admin-1')) {
+        filteredMembers.unshift('usr-admin-1');
+      }
+      return {
         ...r,
-        memberIds: (r.memberIds || []).filter(id => !demoUserIds.has(id))
-      }));
-    }
-    return list;
+        memberIds: filteredMembers,
+        createdBy: demoUserIds.has(r.createdBy) ? 'usr-admin-1' : r.createdBy
+      };
+    });
   }
 
   public createChatRoom(room: ChatRoom): void {
@@ -424,12 +474,10 @@ class StorageService {
   }
 
   public getMessages(roomId: string): ChatMessage[] {
-    const isPurged = this.get<boolean>('prayercloud_demo_chat_purged', false);
-    const fallback = isPurged ? {} : INITIAL_MESSAGES;
-    const all = this.get<Record<string, ChatMessage[]>>(STORAGE_KEYS.MESSAGES, fallback);
+    const all = this.get<Record<string, ChatMessage[]>>(STORAGE_KEYS.MESSAGES, INITIAL_MESSAGES);
     const roomMsgs = all[roomId] || [];
     
-    // If purged, filter out any demo senders
+    // Always filter out any demo senders and clean David Livingstone name if encountered
     const demoUserIds = new Set(['usr-miss-1', 'usr-intercessor-1', 'usr-pastor-1', 'usr-evangelist-1']);
     
     // Deduplicate in case of race condition or prior double-adds
@@ -437,8 +485,11 @@ class StorageService {
     const uniqueList: ChatMessage[] = [];
     for (const msg of roomMsgs) {
       if (msg && msg.id && !seen.has(msg.id)) {
-        if (isPurged && demoUserIds.has(msg.senderId)) {
+        if (demoUserIds.has(msg.senderId)) {
           continue;
+        }
+        if (msg.senderName && (msg.senderName.includes('Livingstone') || msg.senderName.includes('David'))) {
+          msg.senderName = 'Super Administrator';
         }
         seen.add(msg.id);
         uniqueList.push(msg);

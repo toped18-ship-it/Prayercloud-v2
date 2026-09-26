@@ -58,11 +58,9 @@ import { storage } from '../services/storageService';
 import { User, UserRole, Country, PrayerRequest, MissionReport, EventMeeting, MissionaryResource, MeetingRecording } from '../types';
 import { compressAvatarImage } from '../utils/imageUtils';
 
-interface AdminDashboardPageProps {
-  onExitToPublic?: () => void;
-}
+interface AdminDashboardPageProps {}
 
-export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onExitToPublic }) => {
+export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = () => {
   const { currentUser, isAdmin, isSuperAdmin, login, logout, updateProfile } = useAuth();
   const { branding, updateBranding } = useBranding();
 
@@ -254,17 +252,47 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onExitTo
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.startsWith('image/')) {
-      alert('Please choose an image file (PNG, JPG, or WebP).');
+    const isImage = file.type.startsWith('image/') || /\.(jpe?g|png|webp|gif|bmp|heic|heif|svg)$/i.test(file.name);
+    if (!isImage) {
+      setUpdateSuccessMessage('Please choose an image file (PNG, JPG, or WebP).');
+      setTimeout(() => setUpdateSuccessMessage(null), 3000);
+      if (e.target) e.target.value = '';
       return;
     }
 
     try {
       const compressed = await compressAvatarImage(file, 360, 360, 0.85);
+      if (!compressed) {
+        throw new Error('Image conversion returned empty');
+      }
+
       setAdminAvatarUrl(compressed);
+
+      // Auto persist avatar immediately
+      if (currentUser) {
+        const updatedUser: User = {
+          ...currentUser,
+          avatarUrl: compressed
+        };
+        storage.updateUser(updatedUser);
+        updateProfile({ avatarUrl: compressed });
+        storage.logAudit(
+          currentUser.id,
+          currentUser.fullName,
+          'UPDATE_ADMIN_PHOTO',
+          'Administrator Profile',
+          'Administrator uploaded a new identification photo.'
+        );
+      }
+
+      setUpdateSuccessMessage('Administrator profile photo updated and saved successfully.');
+      setTimeout(() => setUpdateSuccessMessage(null), 3500);
     } catch (err) {
       console.error('Admin photo optimization failed:', err);
-      alert('Could not process this image file. Please try another.');
+      setUpdateSuccessMessage('Could not process this image file. Please try another.');
+      setTimeout(() => setUpdateSuccessMessage(null), 3500);
+    } finally {
+      if (e.target) e.target.value = '';
     }
   };
 
@@ -878,13 +906,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onExitTo
           </form>
 
           <div className="pt-4 border-t border-[#1f2738] flex items-center justify-between text-[11px] text-slate-400">
-            <button
-              type="button"
-              onClick={onExitToPublic}
-              className="hover:text-white transition-colors flex items-center gap-1"
-            >
-              <span>← Return to Public App</span>
-            </button>
+            <span className="text-slate-400 font-medium">Administrative Command Portal</span>
             <span className="text-slate-500 font-mono text-[10px]">Cloud SQL: europe-west1</span>
           </div>
         </div>
@@ -929,18 +951,6 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onExitTo
               <span className="font-semibold text-slate-300">Cloud SQL:</span>
               <span className="font-mono text-emerald-400">PostgreSQL (europe-west1)</span>
             </div>
-
-            {/* Quick Public App Return */}
-            {onExitToPublic && (
-              <button
-                onClick={onExitToPublic}
-                className="px-3 py-1 bg-[#1c2438] hover:bg-[#25304a] text-slate-300 hover:text-white border border-[#2b3954] text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5"
-                title="View live user application"
-              >
-                <Eye className="w-3.5 h-3.5 text-blue-400" />
-                <span>Live App</span>
-              </button>
-            )}
 
             {/* Admin Logout */}
             <button

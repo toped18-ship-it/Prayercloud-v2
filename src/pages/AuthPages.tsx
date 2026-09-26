@@ -114,9 +114,9 @@ export const AuthPages: React.FC<AuthPagesProps> = ({ mode, onNavigate }) => {
             <PrayerCloudLogo size="md" />
           </div>
           <div>
-            <div className="flex items-center justify-center gap-1.5 text-xl sm:text-2xl font-black font-display text-slate-900 dark:text-white tracking-tight">
-              <span>PRAYER</span>
-              <span className="text-amber-500">CLOUD</span>
+            <div className="flex items-center justify-center gap-2 text-2xl sm:text-3xl font-black font-display tracking-tight">
+              <span className="text-white drop-shadow-md">PRAYER</span>
+              <span className="text-amber-400 drop-shadow-md">CLOUD</span>
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 max-w-xs mx-auto">
               {mode === 'login'
@@ -227,17 +227,6 @@ export const AuthPages: React.FC<AuthPagesProps> = ({ mode, onNavigate }) => {
                 <span>{isLoading ? 'Authenticating...' : 'Sign In to Platform'}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
-
-              <div className="pt-2 text-center border-t border-slate-100 dark:border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => onNavigate('admin')}
-                  className="text-[11px] text-slate-500 hover:text-blue-500 dark:text-slate-400 dark:hover:text-blue-400 font-semibold inline-flex items-center gap-1 transition-colors"
-                >
-                  <Shield className="w-3.5 h-3.5 text-amber-500" />
-                  <span>Authorized Administrator? Login straight to Admin Panel →</span>
-                </button>
-              </div>
             </form>
           ) : (
             /* Register Form */

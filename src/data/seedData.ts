@@ -13,7 +13,7 @@ import {
 export const INITIAL_USERS: User[] = [
   {
     id: 'usr-admin-1',
-    fullName: 'David Livingstone (Admin)',
+    fullName: 'Super Administrator',
     username: 'admin',
     email: 'admin@prayercloud.org',
     phoneNumber: '+1-800-PRAY-NOW',
@@ -277,7 +277,7 @@ export const INITIAL_EVENTS: EventMeeting[] = [
     description: 'Interactive strategy and logistical briefing between African and international mission directors on opening 5 new gospel stations across Chad, Niger, and Mali.',
     type: 'Mission Strategy Summit',
     hostId: 'usr-admin-1',
-    hostName: 'David Livingstone (Admin)',
+    hostName: 'Super Administrator',
     startTime: '2026-09-25T14:00:00Z',
     endTime: '2026-09-25T16:00:00Z',
     targetCountry: 'Niger',
@@ -312,11 +312,11 @@ export const INITIAL_CHAT_ROOMS: ChatRoom[] = [
     description: 'High-level missionary collaboration, strategic coordination, and worldwide prayer alerts.',
     type: 'global',
     isPrivate: false,
-    memberIds: ['usr-admin-1', 'usr-miss-1', 'usr-intercessor-1', 'usr-pastor-1', 'usr-evangelist-1'],
+    memberIds: ['usr-admin-1'],
     createdBy: 'usr-admin-1',
     createdAt: '2025-01-01T00:00:00Z',
-    lastMessage: 'All teams please review the updated security protocol for the Sahel mission.',
-    lastMessageTime: '10 mins ago'
+    lastMessage: 'Channel active · Start conversation',
+    lastMessageTime: 'Ready'
   },
   {
     id: 'room-1040-watch',
@@ -324,11 +324,11 @@ export const INITIAL_CHAT_ROOMS: ChatRoom[] = [
     description: 'Dedicated to the least-reached latitude belt between 10 and 40 degrees north.',
     type: 'strategy',
     isPrivate: false,
-    memberIds: ['usr-admin-1', 'usr-miss-1', 'usr-intercessor-1'],
+    memberIds: ['usr-admin-1'],
     createdBy: 'usr-admin-1',
     createdAt: '2025-01-05T00:00:00Z',
-    lastMessage: 'Audio Bibles ready for distribution in southern border crossings.',
-    lastMessageTime: '45 mins ago'
+    lastMessage: 'Channel active · Start conversation',
+    lastMessageTime: 'Ready'
   },
   {
     id: 'room-country-afghanistan',
@@ -337,11 +337,11 @@ export const INITIAL_CHAT_ROOMS: ChatRoom[] = [
     type: 'country',
     countryCode: 'AF',
     isPrivate: false,
-    memberIds: ['usr-admin-1', 'usr-miss-1', 'usr-intercessor-1'],
-    createdBy: 'usr-miss-1',
+    memberIds: ['usr-admin-1'],
+    createdBy: 'usr-admin-1',
     createdAt: '2025-01-10T00:00:00Z',
-    lastMessage: 'Praise God! The three interrogated brothers have returned home safely!',
-    lastMessageTime: '2 hours ago'
+    lastMessage: 'Channel active · Start conversation',
+    lastMessageTime: 'Ready'
   },
   {
     id: 'room-country-india',
@@ -350,59 +350,15 @@ export const INITIAL_CHAT_ROOMS: ChatRoom[] = [
     type: 'country',
     countryCode: 'IN',
     isPrivate: false,
-    memberIds: ['usr-admin-1', 'usr-pastor-1', 'usr-intercessor-1'],
-    createdBy: 'usr-pastor-1',
+    memberIds: ['usr-admin-1'],
+    createdBy: 'usr-admin-1',
     createdAt: '2025-01-12T00:00:00Z',
-    lastMessage: 'New discovery Bible study initiated in northern Bihar village.',
-    lastMessageTime: '4 hours ago'
+    lastMessage: 'Channel active · Start conversation',
+    lastMessageTime: 'Ready'
   }
 ];
 
-export const INITIAL_MESSAGES: Record<string, ChatMessage[]> = {
-  'room-global-strategy': [
-    {
-      id: 'msg-1',
-      roomId: 'room-global-strategy',
-      senderId: 'usr-admin-1',
-      senderName: 'David Livingstone (Admin)',
-      senderRole: 'Super Admin',
-      senderCountry: 'United Kingdom',
-      content: 'Welcome beloved co-laborers to the PRAYERCLOUD Frontier Strategy Room! Let us lift up Jesus in every unreached nation.',
-      type: 'text',
-      createdAt: '2026-09-23T10:00:00Z',
-      isPinned: true,
-      reactions: [
-        { emoji: '🙏', count: 12, userIds: ['usr-intercessor-1', 'usr-miss-1'] },
-        { emoji: '🔥', count: 8, userIds: ['usr-pastor-1'] }
-      ]
-    },
-    {
-      id: 'msg-2',
-      roomId: 'room-global-strategy',
-      senderId: 'usr-intercessor-1',
-      senderName: 'Deborah Grace Alabi',
-      senderRole: 'Intercessor',
-      senderCountry: 'Nigeria',
-      content: 'Amen! The 24/7 Prayer Watch is currently covering the horn of Africa and Yemen. The atmosphere of intercession is heavy with glory.',
-      type: 'text',
-      createdAt: '2026-09-23T10:15:00Z',
-      reactions: [{ emoji: '🙌', count: 6, userIds: ['usr-admin-1'] }]
-    },
-    {
-      id: 'msg-3',
-      roomId: 'room-global-strategy',
-      senderId: 'usr-miss-1',
-      senderName: 'Pastor Johnathan Bae',
-      senderRole: 'Missionary',
-      senderCountry: 'South Korea',
-      content: 'Here is a quick audio update from our field team regarding the mountain pass outreach:',
-      type: 'voice_note',
-      voiceDurationSeconds: 42,
-      createdAt: '2026-09-23T10:30:00Z',
-      reactions: [{ emoji: '❤️', count: 5, userIds: ['usr-intercessor-1'] }]
-    }
-  ]
-};
+export const INITIAL_MESSAGES: Record<string, ChatMessage[]> = {};
 
 export const INITIAL_RECORDINGS: MeetingRecording[] = [
   {
@@ -423,7 +379,7 @@ export const INITIAL_RECORDINGS: MeetingRecording[] = [
     id: 'rec-2',
     title: 'Frontier Missionary Strategy: Overcoming Hostile Terrain in the Sahel',
     callType: 'voice',
-    hostName: 'David Livingstone (Admin)',
+    hostName: 'Super Administrator',
     countryFocus: 'Niger / Sahara',
     date: '2026-09-20',
     durationFormatted: '48 min',

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { APIProvider } from '@vis.gl/react-google-maps';
-import { Shield, Globe, Database, ArrowLeft } from 'lucide-react';
+import { Shield, Globe, Database } from 'lucide-react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeAndBrandingProvider } from './context/ThemeAndBrandingContext';
 import { storage } from './services/storageService';
@@ -17,6 +17,7 @@ import { CreatePrayerModal } from './components/prayer/CreatePrayerModal';
 import { AppSplashScreen } from './components/common/AppSplashScreen';
 import { GoogleMapsQuotaBanner } from './components/common/GoogleMapsQuotaBanner';
 import { VideoConferenceRoom } from './components/calls/VideoConferenceRoom';
+import { NotificationToastContainer } from './components/common/NotificationToastContainer';
 
 // Pages
 import { HomePage } from './pages/HomePage';
@@ -188,44 +189,8 @@ function MainAppContent() {
   if (currentPage === 'admin') {
     return (
       <div className="min-h-screen w-full max-w-full overflow-x-hidden flex flex-col bg-[#0b0e14] text-slate-100 antialiased font-sans transition-colors selection:bg-blue-600 selection:text-white">
-        {/* Isolated Command Topbar */}
-        <header className="sticky top-0 z-50 w-full bg-[#111622] border-b border-[#1f2738] px-3 sm:px-6 py-2.5 flex items-center justify-between shadow-xl">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-700/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-black shadow-inner shrink-0">
-              <Shield className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-extrabold text-sm text-white tracking-tight">PRAYER CLOUD</span>
-                <span className="text-[10px] font-bold text-amber-400 bg-amber-950/80 px-2 py-0.5 rounded border border-amber-500/30 uppercase tracking-wider">
-                  Admin Console
-                </span>
-                <span className="hidden md:inline-flex text-[10px] font-mono text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-500/30 items-center gap-1.5">
-                  <Database className="w-3 h-3 text-emerald-400" />
-                  Firebase Realtime Database (prayercloud-e341d)
-                </span>
-              </div>
-              <div className="text-[10px] text-slate-400 font-mono">
-                Secure Isolated Console · URL: <span className="text-amber-400 font-bold">/admin</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 sm:gap-3">
-            <button
-              onClick={() => navigateTo('home')}
-              className="px-3.5 sm:px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 hover:text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm"
-              title="Return to public application (/)"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Exit to Public UI (/)</span>
-            </button>
-          </div>
-        </header>
-
-        {/* Standalone Admin Portal Body */}
-        <main className="flex-1 w-full max-w-[1600px] mx-auto px-3 sm:px-6 lg:px-8 py-6">
-          <AdminDashboardPage onExitToPublic={() => navigateTo('home')} />
+        <main className="flex-1 w-full max-w-[1700px] mx-auto p-2 sm:p-4">
+          <AdminDashboardPage />
         </main>
       </div>
     );
@@ -246,17 +211,19 @@ function MainAppContent() {
         />
       )}
       
-      {/* Top Bar Navigation */}
-      <Navbar
-        currentPage={currentPage}
-        onNavigate={navigateTo}
-        onOpenSearch={() => setSearchOpen(true)}
-        onRestartTour={() => setIsOnboardingOpen(true)}
-        onLaunchInstantCall={handleLaunchInstantMeeting}
-      />
+      {/* Top Bar Navigation - hidden during admin session */}
+      {currentPage !== 'admin' && (
+        <Navbar
+          currentPage={currentPage}
+          onNavigate={navigateTo}
+          onOpenSearch={() => setSearchOpen(true)}
+          onRestartTour={() => setIsOnboardingOpen(true)}
+          onLaunchInstantCall={handleLaunchInstantMeeting}
+        />
+      )}
 
       {/* Main View Area */}
-      <main className={`flex-1 w-full mx-auto ${currentPage === 'admin' ? 'max-w-[1750px] px-2 sm:px-4 pt-2 sm:pt-4 pb-20' : 'max-w-[1600px] px-3 sm:px-6 lg:px-8 pt-4 sm:pt-5 pb-24 sm:pb-28'} overflow-x-hidden`}>
+      <main className={`flex-1 w-full mx-auto ${currentPage === 'admin' ? 'max-w-[1750px] px-2 sm:px-4 pt-2 sm:pt-4 pb-4' : 'max-w-[1600px] px-3 sm:px-6 lg:px-8 pt-4 sm:pt-5 pb-24 sm:pb-28'} overflow-x-hidden`}>
         {currentPage === 'home' && (
           <HomePage
             countries={countries}
@@ -349,7 +316,7 @@ function MainAppContent() {
         )}
 
         {currentPage === 'admin' && (
-          <AdminDashboardPage onExitToPublic={() => navigateTo('home')} />
+          <AdminDashboardPage />
         )}
 
         {currentPage === 'login' && (
@@ -374,11 +341,13 @@ function MainAppContent() {
         {/* Footer only on homepage */}
         {currentPage === 'home' && <Footer onNavigate={navigateTo} />}
 
-      {/* Docked Global Bottom Navigation Bar */}
-      <BottomNavbar
-        currentPage={currentPage}
-        onNavigate={navigateTo}
-      />
+      {/* Docked Global Bottom Navigation Bar - hidden during admin session */}
+      {currentPage !== 'admin' && (
+        <BottomNavbar
+          currentPage={currentPage}
+          onNavigate={navigateTo}
+        />
+      )}
 
       {/* Modals and Overlays */}
       <GlobalSearchModal
@@ -401,6 +370,9 @@ function MainAppContent() {
         onSuccess={refreshData}
         initialCountry={createPrayerContext}
       />
+
+      {/* Real-time System Notification Toast Alerts */}
+      <NotificationToastContainer onNavigate={navigateTo} />
     </div>
   );
 }

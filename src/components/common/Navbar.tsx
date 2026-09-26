@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { useBranding } from '../../context/ThemeAndBrandingContext';
 import { PrayerCloudLogo } from './PrayerCloudLogo';
+import { NotificationBell } from './NotificationBell';
 
 interface NavbarProps {
   currentPage: string;
@@ -63,16 +64,19 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div className="w-7 h-7 rounded-lg bg-[#0e121b] border border-[#253046] flex items-center justify-center p-0.5 shadow-sm shadow-blue-950/60 group-hover:scale-105 transition-transform shrink-0">
                 <PrayerCloudLogo size="sm" />
               </div>
-              <div className="hidden sm:block">
+              <div className="flex flex-col justify-center">
                 <div className="flex items-center gap-1">
-                  <span className="font-extrabold text-xs tracking-tight text-white group-hover:text-amber-400 transition-colors">
-                    PRAYER CLOUD
+                  <span className="font-black text-xs sm:text-sm tracking-tight text-white">
+                    PRAYER
                   </span>
-                  <span className="text-[9px] font-bold text-amber-400 uppercase tracking-wider bg-amber-950/80 px-1 py-0.2 rounded border border-amber-500/30">
+                  <span className="font-black text-xs sm:text-sm tracking-tight text-amber-400">
+                    CLOUD
+                  </span>
+                  <span className="hidden xs:inline-block text-[9px] font-bold text-amber-400 uppercase tracking-wider bg-amber-950/80 px-1 py-0.2 rounded border border-amber-500/30">
                     Live
                   </span>
                 </div>
-                <div className="text-[9px] text-slate-400 font-semibold leading-none truncate max-w-[160px]">
+                <div className="hidden sm:block text-[9px] text-slate-400 font-semibold leading-none truncate max-w-[160px]">
                   {branding.siteName || 'Global Intercession Platform'}
                 </div>
               </div>
@@ -117,6 +121,9 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* RIGHT ZONE: Status & Quick Actions */}
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             
+            {/* System Notifications Bell */}
+            <NotificationBell onNavigate={handleNavClick} />
+
             {/* Quick SU Devotional & Bible Hub Button - Compact */}
             <button
               onClick={() => handleNavClick('devotionals')}
