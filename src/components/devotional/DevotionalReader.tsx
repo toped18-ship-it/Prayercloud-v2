@@ -16,8 +16,7 @@ import {
   Award,
   Heart
 } from 'lucide-react';
-import { SUDailyDevotional } from '../../types';
-import { SU_DAILY_DEVOTIONALS } from '../../data/devotionalsData';
+import { SUDailyDevotional, SUDevotionalEdition } from '../../types';
 import { bibleService } from '../../services/bibleService';
 
 interface DevotionalReaderProps {
@@ -49,59 +48,130 @@ export const DevotionalReader: React.FC<DevotionalReaderProps> = ({
     bibleService.recordDevotionalRead(devotional.date);
   };
 
+  const todayStr = bibleService.getTodayDateString();
+  const isToday = devotional.date === todayStr;
+
   // Date step
   const handleDateStep = (direction: 'prev' | 'next') => {
-    const currentIdx = SU_DAILY_DEVOTIONALS.findIndex(d => d.id === devotional.id);
-    if (direction === 'prev' && currentIdx > 0) {
-      onSelectDevotional(SU_DAILY_DEVOTIONALS[currentIdx - 1]);
-      setHasPrayedCommitment(false);
-    } else if (direction === 'next' && currentIdx < SU_DAILY_DEVOTIONALS.length - 1) {
-      onSelectDevotional(SU_DAILY_DEVOTIONALS[currentIdx + 1]);
-      setHasPrayedCommitment(false);
-    }
+    const targetDate = bibleService.shiftDate(devotional.date, direction === 'next' ? 1 : -1);
+    const nextDevo = bibleService.getDevotionalByDate(targetDate, devotional.edition);
+    onSelectDevotional(nextDevo);
+    setHasPrayedCommitment(false);
+  };
+
+  const handleJumpToToday = () => {
+    const todayDevo = bibleService.getTodayDevotional(devotional.edition);
+    onSelectDevotional(todayDevo);
+    setHasPrayedCommitment(false);
+  };
+
+  const handleDateChange = (newDateStr: string) => {
+    if (!newDateStr) return;
+    const targetDevo = bibleService.getDevotionalByDate(newDateStr, devotional.edition);
+    onSelectDevotional(targetDevo);
+    setHasPrayedCommitment(false);
+  };
+
+  const handleEditionChange = (newEdition: SUDevotionalEdition) => {
+    const updated = bibleService.getDevotionalByDate(devotional.date, newEdition);
+    onSelectDevotional(updated);
   };
 
   return (
     <div className="space-y-6">
       
-      {/* Date Navigation Bar */}
-      <div className="bg-white dark:bg-[#161b26] rounded-2xl border border-slate-200 dark:border-[#262f43] p-3 sm:p-4 shadow-sm flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center font-bold">
-            <Flame className="w-4 h-4 fill-current" />
+      {/* Date Navigation & Edition Bar */}
+      <div className="bg-white dark:bg-[#161b26] rounded-2xl border border-slate-200 dark:border-[#262f43] p-3 sm:p-4 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center font-bold shrink-0">
+            <Flame className="w-5 h-5 fill-current" />
           </div>
           <div>
-            <div className="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white">
-              Daily Guide
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-extrabold text-sm text-slate-900 dark:text-white">
+                {devotional.edition || 'Daily Guide'}
+              </span>
+              {isToday ? (
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-500 dark:text-emerald-400 text-[10px] font-extrabold flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Today's Reading
+                </span>
+              ) : (
+                <button
+                  onClick={handleJumpToToday}
+                  className="px-2.5 py-0.5 rounded-full bg-[#0e71eb]/15 hover:bg-[#0e71eb]/25 border border-[#0e71eb]/30 text-[#0e71eb] dark:text-blue-400 text-[10px] font-extrabold flex items-center gap-1 transition-all"
+                  title="Return to today's daily devotional"
+                >
+                  <Calendar className="w-3 h-3" />
+                  <span>Jump to Today</span>
+                </button>
+              )}
             </div>
-            <div className="text-[11px] text-slate-500 dark:text-slate-400">
-              Scripture Union Daily Reading
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+              <span>Scripture Union Worldwide</span>
+              <span>·</span>
+              <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Updates Daily</span>
             </div>
           </div>
         </div>
 
-        {/* Date Selector and Stepper */}
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => handleDateStep('prev')}
-            className="p-2 rounded-xl bg-slate-100 dark:bg-[#1f2738] hover:bg-slate-200 dark:hover:bg-[#252f44] text-slate-600 dark:text-slate-300 transition-colors"
-            title="Previous Devotional"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-
-          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-[#1a2130] rounded-xl border border-slate-200 dark:border-[#2a3449] text-xs font-semibold text-slate-800 dark:text-slate-200">
-            <Calendar className="w-3.5 h-3.5 text-blue-500" />
-            <span>{new Date(devotional.date + 'T00:00:00').toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</span>
+        {/* Edition selector and Date controls */}
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Edition switcher pills */}
+          <div className="flex items-center p-1 bg-slate-100 dark:bg-[#1a2130] rounded-xl border border-slate-200 dark:border-[#2a3449] text-xs">
+            {(['Daily Guide', 'Daily Power', 'Encounter with God'] as SUDevotionalEdition[]).map(ed => (
+              <button
+                key={ed}
+                onClick={() => handleEditionChange(ed)}
+                className={`px-2.5 py-1 rounded-lg font-bold text-[11px] transition-all ${
+                  (devotional.edition || 'Daily Guide') === ed
+                    ? 'bg-amber-500 text-slate-950 shadow-sm'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                {ed === 'Daily Guide' ? 'Daily Guide' : ed === 'Daily Power' ? 'Youth Power' : 'Encounter'}
+              </button>
+            ))}
           </div>
 
-          <button
-            onClick={() => handleDateStep('next')}
-            className="p-2 rounded-xl bg-slate-100 dark:bg-[#1f2738] hover:bg-slate-200 dark:hover:bg-[#252f44] text-slate-600 dark:text-slate-300 transition-colors"
-            title="Next Devotional"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
+          {/* Stepper with Previous, Calendar Date Picker, and Next */}
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => handleDateStep('prev')}
+              className="p-2 rounded-xl bg-slate-100 dark:bg-[#1f2738] hover:bg-slate-200 dark:hover:bg-[#252f44] text-slate-600 dark:text-slate-300 transition-colors"
+              title="Previous Day"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+
+            {/* Date Display with Hidden native Datepicker for 1-click select */}
+            <label className="relative flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-[#1a2130] hover:bg-slate-200 dark:hover:bg-[#222b3d] rounded-xl border border-slate-200 dark:border-[#2a3449] text-xs font-semibold text-slate-800 dark:text-slate-200 cursor-pointer transition-colors">
+              <Calendar className="w-3.5 h-3.5 text-blue-500" />
+              <span>
+                {new Date(devotional.date + 'T12:00:00').toLocaleDateString(undefined, {
+                  weekday: 'short',
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric'
+                })}
+              </span>
+              <input
+                type="date"
+                value={devotional.date}
+                onChange={e => handleDateChange(e.target.value)}
+                className="absolute inset-0 opacity-0 cursor-pointer w-full"
+                title="Select any date"
+              />
+            </label>
+
+            <button
+              onClick={() => handleDateStep('next')}
+              className="p-2 rounded-xl bg-slate-100 dark:bg-[#1f2738] hover:bg-slate-200 dark:hover:bg-[#252f44] text-slate-600 dark:text-slate-300 transition-colors"
+              title="Next Day"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
 

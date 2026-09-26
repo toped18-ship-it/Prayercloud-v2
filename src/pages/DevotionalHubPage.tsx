@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   BookOpen,
   Calendar,
@@ -16,7 +16,7 @@ import {
   Bookmark
 } from 'lucide-react';
 import { SUDailyDevotional } from '../types';
-import { SU_DAILY_DEVOTIONALS } from '../data/devotionalsData';
+import { bibleService } from '../services/bibleService';
 import { DevotionalReader } from '../components/devotional/DevotionalReader';
 import { IntegratedBibleReader } from '../components/devotional/IntegratedBibleReader';
 import { DevotionalJournal } from '../components/devotional/DevotionalJournal';
@@ -32,11 +32,67 @@ export const DevotionalHubPage: React.FC<DevotionalHubPageProps> = ({
   onNavigate
 }) => {
   const [activeTab, setActiveTab] = useState<'devotional' | 'bible' | 'split' | 'journal' | 'plan'>(initialTab);
-  const [currentDevotional, setCurrentDevotional] = useState<SUDailyDevotional>(() => SU_DAILY_DEVOTIONALS[0]);
   
-  // Bible navigation state
-  const [bibleBook, setBibleBook] = useState<string>(currentDevotional.biblePassage.book || 'Acts');
-  const [bibleChapter, setBibleChapter] = useState<number>(currentDevotional.biblePassage.chapter || 4);
+  // Always initialize with today's active devotional immediately
+  const [currentDevotional, setCurrentDevotional] = useState<SUDailyDevotional>(() => {
+    return bibleService.getTodayDevotional();
+  });
+  
+  // Track if user manually stepped to another date
+  const [userSelectedManualDate, setUserSelectedManualDate] = useState<boolean>(false);
+
+  // Bible navigation state synchronized with the devotional passage
+  const [bibleBook, setBibleBook] = useState<string>(currentDevotional.biblePassage.book || 'John');
+  const [bibleChapter, setBibleChapter] = useState<number>(currentDevotional.biblePassage.chapter || 7);
+
+  // Auto-update immediately when a new day arrives or tab gains focus
+  useEffect(() => {
+    let lastCheckedDay = bibleService.getTodayDateString();
+
+    const checkForNewDay = () => {
+      const freshDay = bibleService.getTodayDateString();
+      if (freshDay !== lastCheckedDay) {
+        lastCheckedDay = freshDay;
+        // Day has rolled over! If user wasn't browsing an old date manually, update immediately to today's reading
+        if (!userSelectedManualDate) {
+          const freshDevotional = bibleService.getTodayDevotional(currentDevotional.edition);
+          setCurrentDevotional(freshDevotional);
+          setBibleBook(freshDevotional.biblePassage.book);
+          setBibleChapter(freshDevotional.biblePassage.chapter);
+        }
+      }
+    };
+
+    // Check every 10 seconds to catch midnight rollover immediately
+    const timer = setInterval(checkForNewDay, 10000);
+
+    const handleVisibilityOrFocus = () => {
+      if (document.visibilityState === 'visible') {
+        checkForNewDay();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityOrFocus);
+    window.addEventListener('focus', handleVisibilityOrFocus);
+
+    return () => {
+      clearInterval(timer);
+      document.removeEventListener('visibilitychange', handleVisibilityOrFocus);
+      window.removeEventListener('focus', handleVisibilityOrFocus);
+    };
+  }, [userSelectedManualDate, currentDevotional.edition]);
+
+  const handleSelectDevotional = (newDevotional: SUDailyDevotional) => {
+    const todayStr = bibleService.getTodayDateString();
+    if (newDevotional.date === todayStr) {
+      setUserSelectedManualDate(false);
+    } else {
+      setUserSelectedManualDate(true);
+    }
+    setCurrentDevotional(newDevotional);
+    setBibleBook(newDevotional.biblePassage.book);
+    setBibleChapter(newDevotional.biblePassage.chapter);
+  };
 
   const handleOpenBiblePassage = (book: string, chapter: number) => {
     setBibleBook(book);
@@ -45,7 +101,7 @@ export const DevotionalHubPage: React.FC<DevotionalHubPageProps> = ({
   };
 
   const handleOpenJournalNote = (devotional: SUDailyDevotional) => {
-    setCurrentDevotional(devotional);
+    handleSelectDevotional(devotional);
     setActiveTab('journal');
   };
 
@@ -131,7 +187,7 @@ export const DevotionalHubPage: React.FC<DevotionalHubPageProps> = ({
       {activeTab === 'devotional' && (
         <DevotionalReader
           devotional={currentDevotional}
-          onSelectDevotional={setCurrentDevotional}
+          onSelectDevotional={handleSelectDevotional}
           onOpenBiblePassage={handleOpenBiblePassage}
           onOpenJournalNote={handleOpenJournalNote}
           onToggleSplitBible={() => setActiveTab('split')}
@@ -160,7 +216,7 @@ export const DevotionalHubPage: React.FC<DevotionalHubPageProps> = ({
             </div>
             <DevotionalReader
               devotional={currentDevotional}
-              onSelectDevotional={setCurrentDevotional}
+              onSelectDevotional={handleSelectDevotional}
               onOpenBiblePassage={(b, c) => {
                 setBibleBook(b);
                 setBibleChapter(c);

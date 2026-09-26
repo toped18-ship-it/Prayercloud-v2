@@ -28,6 +28,7 @@ export const ReadingPlanTracker: React.FC<ReadingPlanTrackerProps> = ({
   });
 
   const streak = bibleService.getStreak();
+  const todayStr = bibleService.getTodayDateString();
 
   const toggleDayComplete = (day: number) => {
     const updated = { ...completedDays, [day]: !completedDays[day] };
@@ -74,12 +75,15 @@ export const ReadingPlanTracker: React.FC<ReadingPlanTrackerProps> = ({
         <div className="space-y-3 pt-2">
           {SU_READING_PLANS_2026.map((item) => {
             const isDone = completedDays[item.day];
+            const isToday = item.date === todayStr;
 
             return (
               <div
                 key={item.day}
                 className={`p-4 sm:p-5 rounded-2xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
-                  isDone
+                  isToday
+                    ? 'bg-amber-500/10 border-amber-500/40 shadow-sm'
+                    : isDone
                     ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-500/30'
                     : 'bg-slate-50 dark:bg-[#1a2130] border-slate-200 dark:border-[#2a3449]'
                 }`}
@@ -97,10 +101,16 @@ export const ReadingPlanTracker: React.FC<ReadingPlanTrackerProps> = ({
                   </button>
 
                   <div>
-                    <div className="flex items-center gap-2 text-xs">
+                    <div className="flex items-center gap-2 text-xs flex-wrap">
                       <span className="font-bold text-slate-900 dark:text-white">Day {item.day}</span>
                       <span className="text-slate-400">·</span>
                       <span className="text-slate-500">{item.date}</span>
+                      {isToday && (
+                        <span className="px-2 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-500 dark:text-amber-400 font-extrabold text-[10px] flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                          Today's Plan
+                        </span>
+                      )}
                       <span className="text-amber-500 font-semibold hidden md:inline">({item.theme})</span>
                     </div>
 

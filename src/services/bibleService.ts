@@ -1,6 +1,6 @@
-import { BibleBookMeta, BibleChapterData, BibleHighlight, DevotionalJournalEntry, SUDailyDevotional } from '../types';
+import { BibleBookMeta, BibleChapterData, BibleHighlight, DevotionalJournalEntry, SUDailyDevotional, SUDevotionalEdition } from '../types';
 import { BIBLE_BOOKS, CORE_BIBLE_CHAPTERS } from '../data/bibleData';
-import { SU_DAILY_DEVOTIONALS } from '../data/devotionalsData';
+import { SU_DAILY_DEVOTIONALS, getDevotionalForDate, getTodayDateString, shiftDateString } from '../data/devotionalsData';
 
 const HIGHLIGHTS_KEY = 'prayercloud_bible_highlights_v1';
 const JOURNAL_KEY = 'prayercloud_devotional_journal_v1';
@@ -80,18 +80,27 @@ export const bibleService = {
     return results;
   },
 
+  // Date helper methods
+  getTodayDateString(): string {
+    return getTodayDateString();
+  },
+
+  shiftDate(dateStr: string, days: number): string {
+    return shiftDateString(dateStr, days);
+  },
+
   // SU Devotionals
   getDevotionals(): SUDailyDevotional[] {
     return SU_DAILY_DEVOTIONALS;
   },
 
-  getDevotionalByDate(dateStr: string, edition?: string): SUDailyDevotional | undefined {
-    return SU_DAILY_DEVOTIONALS.find(d => {
-      const matchesDate = d.date === dateStr;
-      if (!matchesDate) return false;
-      if (edition && d.edition !== edition) return false;
-      return true;
-    }) || SU_DAILY_DEVOTIONALS[0];
+  getTodayDevotional(edition: SUDevotionalEdition = 'Daily Guide'): SUDailyDevotional {
+    const today = getTodayDateString();
+    return this.getDevotionalByDate(today, edition);
+  },
+
+  getDevotionalByDate(dateStr: string, edition: SUDevotionalEdition = 'Daily Guide'): SUDailyDevotional {
+    return getDevotionalForDate(dateStr, edition);
   },
 
   // Highlights
