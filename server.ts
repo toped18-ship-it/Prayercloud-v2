@@ -84,11 +84,7 @@ app.post('/api/auth/login', async (req: Request, res: Response) => {
       cleanId === 'admin' ||
       cleanId === 'superadmin' ||
       cleanId === 'administrator' ||
-      cleanId === 'admin@prayercloud.org' ||
-      cleanId === 'dtemitope60@gmail.com' ||
-      cleanId.startsWith('admin@') ||
-      cleanId.includes('livingtech') ||
-      (cleanId.endsWith('@prayercloud.org') && cleanId.includes('admin'));
+      cleanId === 'admin@prayercloud.org';
 
     // Query users from Cloud SQL
     let user: any = null;
@@ -98,7 +94,7 @@ app.post('/api/auth/login', async (req: Request, res: Response) => {
         (u: any) =>
           u.email?.toLowerCase() === cleanId ||
           u.username?.toLowerCase() === cleanId ||
-          u.uid === cleanId
+          u.uid?.toLowerCase() === cleanId
       );
     } catch (e) {
       console.warn('Cloud SQL query notice in login:', e);

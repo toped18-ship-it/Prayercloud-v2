@@ -206,19 +206,19 @@ class StorageService {
     const list = this.get<User[]>(STORAGE_KEYS.USERS, INITIAL_USERS);
     // Guarantee Super Admin account is always present in storage
     const adminIdx = list.findIndex(
-      u => u.role === 'Super Admin' || u.id === 'usr-admin-1' || u.email === 'admin@prayercloud.org'
+      u => u.id === 'usr-admin-1' || u.email.toLowerCase() === 'admin@prayercloud.org'
     );
     if (adminIdx === -1) {
       list.unshift(DEFAULT_ADMIN_USER);
       this.set(STORAGE_KEYS.USERS, list);
     } else {
       let changed = false;
-      // Ensure admin has mustChangePassword = false so login is never blocked
+      // Ensure default admin has mustChangePassword = false so login is never blocked
       if (list[adminIdx].mustChangePassword) {
         list[adminIdx].mustChangePassword = false;
         changed = true;
       }
-      if (list[adminIdx].fullName.includes('Livingstone') || list[adminIdx].fullName.includes('David')) {
+      if (list[adminIdx].id === 'usr-admin-1' && (list[adminIdx].fullName.includes('David Livingstone (Admin)') || list[adminIdx].fullName === 'David Livingstone')) {
         list[adminIdx].fullName = 'Super Administrator';
         changed = true;
       }

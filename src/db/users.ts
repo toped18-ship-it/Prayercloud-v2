@@ -7,11 +7,8 @@ export async function getAllUsersFromDb() {
   try {
     const list = await db.select().from(users).orderBy(desc(users.createdAt));
     return list.map(u => {
-      const isSuperAdminEmail =
-        u.email.toLowerCase() === 'dtemitope60@gmail.com' ||
-        u.email.toLowerCase() === 'admin@prayercloud.org';
-      if (isSuperAdminEmail && u.role !== 'Super Admin') {
-        return { ...u, role: 'Super Admin' };
+      if (u.uid === 'usr-admin-1' || u.email.toLowerCase() === 'admin@prayercloud.org') {
+        return { ...u, role: u.role || 'Super Admin' };
       }
       return u;
     });
@@ -39,8 +36,7 @@ export async function purgeNonAdminUsersFromDb() {
       and(
         ne(users.uid, 'usr-admin-1'),
         ne(users.role, 'Super Admin'),
-        ne(users.email, 'admin@prayercloud.org'),
-        ne(users.email, 'dtemitope60@gmail.com')
+        ne(users.email, 'admin@prayercloud.org')
       )
     ).returning();
     return deleted;
@@ -65,10 +61,8 @@ export async function getOrCreateUser(
   }
 ) {
   try {
-    const isSuperAdminEmail =
-      email.toLowerCase() === 'dtemitope60@gmail.com' ||
-      email.toLowerCase() === 'admin@prayercloud.org';
-    const finalRole = isSuperAdminEmail ? 'Super Admin' : (extra?.role || 'Prayer Warrior');
+    const isAdminAccount = uid === 'usr-admin-1' || email.toLowerCase() === 'admin@prayercloud.org';
+    const finalRole = extra?.role || (isAdminAccount ? 'Super Admin' : 'Prayer Warrior');
 
     const result = await db
       .insert(users)

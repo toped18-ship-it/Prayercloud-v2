@@ -80,30 +80,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return { success: false, error: 'Password details are required to log in.' };
     }
 
-    // Check if user is logging in with an administrator identifier
+    // Dedicated administrative identifiers
     const isAdminIdentifier =
       cleanId === 'admin' ||
       cleanId === 'superadmin' ||
       cleanId === 'administrator' ||
-      cleanId === 'admin@prayercloud.org' ||
-      cleanId === 'dtemitope60@gmail.com' ||
-      cleanId.startsWith('admin@') ||
-      cleanId.includes('livingtech') ||
-      (cleanId.endsWith('@prayercloud.org') && cleanId.includes('admin'));
+      cleanId === 'admin@prayercloud.org';
 
-    // Attempt remote Cloud SQL login first
+    // 1. Attempt remote Cloud SQL login first
     try {
       const cloudRes = await apiClient.login(cleanId, cleanPass);
       if (cloudRes?.success && cloudRes?.user) {
         const u = cloudRes.user;
         const matchedCloud: User = {
           id: u.uid || `usr-${u.id}`,
-          fullName: u.fullName || u.full_name || (isAdminIdentifier ? 'Super Administrator' : cleanId),
+          fullName: u.fullName || u.full_name || cleanId,
           username: u.username || (cleanId.includes('@') ? cleanId.split('@')[0] : cleanId),
-          email: u.email || (cleanId.includes('@') ? cleanId : 'admin@prayercloud.org'),
+          email: u.email || (cleanId.includes('@') ? cleanId : `${cleanId}@prayercloud.org`),
           phoneNumber: u.phoneNumber || u.phone_number || '',
           country: u.country || 'Global',
-          role: (isAdminIdentifier || u.role === 'Super Admin' || u.role === 'Admin') ? 'Super Admin' : (u.role || 'Prayer Warrior'),
+          role: u.role || (isAdminIdentifier ? 'Super Admin' : 'Prayer Warrior'),
           avatarUrl: u.avatarUrl || u.avatar_url || '',
           bio: u.bio || '',
           isVerified: true,
@@ -123,25 +119,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Backend offline or running decoupled; proceed with resilient local storage auth
     }
 
+    // 2. Match in local storage by EXACT email or username
     const users = storage.getUsers();
-
-    // Match by email, username, or admin role
     let matched = users.find(u => {
-      const uEmail = u.email.toLowerCase();
-      const uUser = u.username.toLowerCase();
-      if (uEmail === cleanId || uUser === cleanId) return true;
-      if (isAdminIdentifier && (u.role === 'Super Admin' || u.role === 'Admin' || u.id === 'usr-admin-1' || uEmail === 'admin@prayercloud.org' || uEmail === 'dtemitope60@gmail.com')) {
-        return true;
-      }
-      return false;
+      const uEmail = u.email?.toLowerCase();
+      const uUser = u.username?.toLowerCase();
+      return uEmail === cleanId || uUser === cleanId;
     });
 
     // If an admin identifier is used and no account was found, instantiate the Super Admin user immediately
     if (!matched && isAdminIdentifier) {
       matched = {
         ...DEFAULT_ADMIN_USER,
-        email: cleanId.includes('@') ? cleanId : (cleanId === 'dtemitope60@gmail.com' ? 'dtemitope60@gmail.com' : 'admin@prayercloud.org'),
-        username: cleanId.includes('@') ? cleanId.split('@')[0] : cleanId,
+        email: cleanId.includes('@') ? cleanId : 'admin@prayercloud.org',
+        username: cleanId.includes('@') ? cleanId.split('@')[0] : 'admin',
         role: 'Super Admin',
         isActive: true,
         mustChangePassword: false,
@@ -174,10 +165,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     // Ensure admin is never blocked with force password change
-    if (matched.role === 'Super Admin' || matched.id === 'usr-admin-1' || matched.role === 'Admin' || isAdminIdentifier) {
+    if (matched.role === 'Super Admin' || matched.id === 'usr-admin-1' || matched.role === 'Admin') {
       matched.mustChangePassword = false;
       matched.isActive = true;
-      matched.role = 'Super Admin';
     }
 
     storage.setUserPassword(matched.id, cleanPass);
@@ -241,7 +231,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Register into Cloud SQL backend
     try {
-      apiClient.register({
+      await apiClient.register({
         uid: newUser.id,
         email: newUser.email,
         fullName: newUser.fullName,
@@ -250,9 +240,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         country: newUser.country,
         role: newUser.role,
         bio: newUser.bio,
-      }).catch(e => console.warn('Cloud SQL registration notice:', e));
-    } catch {
-      // Offline fallback
+      });
+    } catch (e) {
+      console.warn('Cloud SQL registration notice:', e);
     }
 
     setCurrentUser(newUser);
@@ -304,14 +294,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     currentUser?.role === 'Admin' ||
     currentUser?.role === 'Super Admin' ||
     currentUser?.email?.toLowerCase() === 'admin@prayercloud.org' ||
-    currentUser?.email?.toLowerCase() === 'dtemitope60@gmail.com' ||
     currentUser?.id === 'usr-admin-1' ||
     currentUser?.username?.toLowerCase() === 'admin' ||
     currentUser?.username?.toLowerCase() === 'superadmin';
   const isSuperAdmin =
     currentUser?.role === 'Super Admin' ||
     currentUser?.email?.toLowerCase() === 'admin@prayercloud.org' ||
-    currentUser?.email?.toLowerCase() === 'dtemitope60@gmail.com' ||
     currentUser?.id === 'usr-admin-1';
 
   return (

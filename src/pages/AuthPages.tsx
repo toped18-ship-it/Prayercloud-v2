@@ -55,16 +55,15 @@ export const AuthPages: React.FC<AuthPagesProps> = ({ mode, onNavigate }) => {
     setIsLoading(false);
 
     if (res.success) {
-      // If user is Admin or Super Admin, immediately route straight to the Admin Control Panel!
+      // If user is Admin or Super Admin, route straight to the Admin Control Panel
       if (
         res.user &&
         (res.user.role === 'Super Admin' ||
           res.user.role === 'Admin' ||
           res.user.email === 'admin@prayercloud.org' ||
-          res.user.email === 'dtemitope60@gmail.com' ||
-          identifier.toLowerCase().includes('admin') ||
+          identifier.toLowerCase() === 'admin' ||
           identifier.toLowerCase() === 'superadmin' ||
-          identifier.toLowerCase() === 'dtemitope60@gmail.com')
+          identifier.toLowerCase() === 'administrator')
       ) {
         onNavigate('admin');
       } else {
