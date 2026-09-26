@@ -45,8 +45,28 @@ app.use(cors({
   optionsSuccessStatus: 204,
 }));
 
+// Fallback CORS headers middleware for all responses
+app.use((req: Request, res: Response, next) => {
+  const origin = req.headers.origin;
+  if (origin) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  } else {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+  next();
+});
+
 // Preflight options handling for all routes
-app.options('*', cors());
+app.options('*', (req: Request, res: Response) => {
+  res.sendStatus(204);
+});
 
 app.use(express.json());
 

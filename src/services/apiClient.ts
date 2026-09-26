@@ -5,52 +5,106 @@
  * to the standalone Google Cloud backend API securely via CORS-enabled HTTP fetch calls.
  */
 
-// Default Google Cloud Run deployment URL for the PrayerCloud backend API
-export const DEFAULT_GOOGLE_CLOUD_BACKEND_URL =
+// Default Google Cloud Run deployment URLs for the PrayerCloud backend API
+export const DEV_GOOGLE_CLOUD_BACKEND_URL =
   'https://ais-dev-2riwkkrxe5tdz6cwpjkvyl-20126573867.europe-west1.run.app';
+
+export const SHARED_GOOGLE_CLOUD_BACKEND_URL =
+  'https://ais-pre-2riwkkrxe5tdz6cwpjkvyl-20126573867.europe-west1.run.app';
+
+export const DEFAULT_GOOGLE_CLOUD_BACKEND_URL = DEV_GOOGLE_CLOUD_BACKEND_URL;
 
 export const CUSTOM_FRONTEND_DOMAIN = 'https://livingtech.name.ng';
 
+const BACKEND_URL_STORAGE_KEY = 'prayercloud_backend_api_url';
+
+/**
+ * Gets the current configured or active backend API URL
+ */
+export function getCustomBackendUrl(): string {
+  if (typeof window !== 'undefined' && window.localStorage) {
+    const saved = localStorage.getItem(BACKEND_URL_STORAGE_KEY);
+    if (saved && saved.trim()) {
+      return saved.trim().replace(/\/+$/, '');
+    }
+  }
+  return '';
+}
+
+/**
+ * Allows updating the active backend API URL dynamically from admin settings
+ */
+export function setCustomBackendUrl(url: string): void {
+  if (typeof window !== 'undefined' && window.localStorage) {
+    if (url && url.trim()) {
+      localStorage.setItem(BACKEND_URL_STORAGE_KEY, url.trim().replace(/\/+$/, ''));
+    } else {
+      localStorage.removeItem(BACKEND_URL_STORAGE_KEY);
+    }
+  }
+}
+
+/**
+ * Returns the list of potential backend candidate endpoints for automatic failover
+ */
+export function getBackendCandidates(): string[] {
+  const custom = getCustomBackendUrl();
+  const envUrl = typeof import.meta !== 'undefined' && import.meta.env?.VITE_BACKEND_API_URL
+    ? import.meta.env.VITE_BACKEND_API_URL.replace(/\/+$/, '')
+    : '';
+
+  const list: string[] = [];
+  if (custom) list.push(custom);
+  if (envUrl && !list.includes(envUrl)) list.push(envUrl);
+  if (!list.includes(DEV_GOOGLE_CLOUD_BACKEND_URL)) list.push(DEV_GOOGLE_CLOUD_BACKEND_URL);
+  if (!list.includes(SHARED_GOOGLE_CLOUD_BACKEND_URL)) list.push(SHARED_GOOGLE_CLOUD_BACKEND_URL);
+
+  // If local or same-origin preview
+  if (typeof window !== 'undefined' && window.location) {
+    const hostname = window.location.hostname;
+    if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.endsWith('.run.app')) {
+      list.unshift('');
+    }
+  }
+
+  return list;
+}
+
 /**
  * Dynamically resolves the base URL for the backend API.
- * - When running on the decoupled GitHub Pages custom domain (https://livingtech.name.ng),
- *   it directs calls to the Google Cloud Backend API.
- * - When an explicit VITE_BACKEND_API_URL env var is supplied, it honors that value.
- * - When running in same-origin dev/Cloud Run mode, uses relative paths or the direct backend URL.
  */
 export function getApiBaseUrl(): string {
-  // 1. Explicit environment variable takes top precedence
+  const custom = getCustomBackendUrl();
+  if (custom) return custom;
+
   if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_BACKEND_API_URL) {
     return import.meta.env.VITE_BACKEND_API_URL.replace(/\/+$/, '');
   }
 
-  // 2. Browser origin inspection
   if (typeof window !== 'undefined' && window.location) {
     const hostname = window.location.hostname;
 
-    // Decoupled frontend custom domain or GitHub Pages
     if (
       hostname === 'livingtech.name.ng' ||
       hostname.endsWith('.github.io') ||
       hostname.includes('livingtech')
     ) {
-      return DEFAULT_GOOGLE_CLOUD_BACKEND_URL.replace(/\/+$/, '');
+      return DEV_GOOGLE_CLOUD_BACKEND_URL.replace(/\/+$/, '');
     }
 
-    // In local development or Cloud Run preview on the same origin, relative path works
     if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.endsWith('.run.app')) {
       return '';
     }
   }
 
-  return DEFAULT_GOOGLE_CLOUD_BACKEND_URL.replace(/\/+$/, '');
+  return DEV_GOOGLE_CLOUD_BACKEND_URL.replace(/\/+$/, '');
 }
 
 /**
  * Builds the full qualified URL for an API endpoint
  */
-export function getApiUrl(path: string): string {
-  const base = getApiBaseUrl();
+export function getApiUrl(path: string, customBase?: string): string {
+  const base = customBase !== undefined ? customBase : getApiBaseUrl();
   const cleanPath = path.startsWith('/') ? path : `/${path}`;
   return `${base}${cleanPath}`;
 }
@@ -73,19 +127,53 @@ export interface ApiHealthResponse {
   timestamp: string;
 }
 
+/**
+ * Performs a fetch request with automatic candidate failover if the primary URL is unreachable
+ */
+async function fetchWithFailover(endpoint: string, options: RequestInit = {}): Promise<Response> {
+  const candidates = getBackendCandidates();
+  let lastError: any = null;
+
+  for (const base of candidates) {
+    try {
+      const url = getApiUrl(endpoint, base);
+      const res = await fetch(url, {
+        ...options,
+        headers: {
+          'Accept': 'application/json',
+          ...(options.headers || {}),
+        },
+      });
+
+      // If we get an HTTP response (even 4xx/5xx), the server is reached
+      if (res.ok || res.status < 500) {
+        if (base && base !== getCustomBackendUrl()) {
+          // Save working URL as active backend
+          setCustomBackendUrl(base);
+        }
+        return res;
+      }
+      lastError = new Error(`HTTP status ${res.status}`);
+    } catch (e: any) {
+      lastError = e;
+      // Try next candidate
+    }
+  }
+
+  throw lastError || new Error(`Failed to reach backend API for ${endpoint}`);
+}
+
 export const apiClient = {
   getApiBaseUrl,
   getApiUrl,
+  getCustomBackendUrl,
+  setCustomBackendUrl,
+  getBackendCandidates,
 
   async get<T = any>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const url = getApiUrl(endpoint);
-    const res = await fetch(url, {
+    const res = await fetchWithFailover(endpoint, {
       ...options,
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        ...(options.headers || {}),
-      },
     });
 
     if (!res.ok) {
@@ -95,13 +183,11 @@ export const apiClient = {
   },
 
   async post<T = any>(endpoint: string, body?: any, options: RequestInit = {}): Promise<T> {
-    const url = getApiUrl(endpoint);
-    const res = await fetch(url, {
+    const res = await fetchWithFailover(endpoint, {
       ...options,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
         ...(options.headers || {}),
       },
       body: body !== undefined ? JSON.stringify(body) : undefined,
@@ -114,14 +200,9 @@ export const apiClient = {
   },
 
   async delete<T = any>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const url = getApiUrl(endpoint);
-    const res = await fetch(url, {
+    const res = await fetchWithFailover(endpoint, {
       ...options,
       method: 'DELETE',
-      headers: {
-        'Accept': 'application/json',
-        ...(options.headers || {}),
-      },
     });
 
     if (!res.ok) {

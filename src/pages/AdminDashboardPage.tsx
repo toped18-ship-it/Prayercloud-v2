@@ -55,7 +55,14 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { useBranding } from '../context/ThemeAndBrandingContext';
 import { storage } from '../services/storageService';
-import { apiClient, CUSTOM_FRONTEND_DOMAIN, DEFAULT_GOOGLE_CLOUD_BACKEND_URL } from '../services/apiClient';
+import {
+  apiClient,
+  CUSTOM_FRONTEND_DOMAIN,
+  DEFAULT_GOOGLE_CLOUD_BACKEND_URL,
+  getCustomBackendUrl,
+  setCustomBackendUrl,
+  getApiBaseUrl
+} from '../services/apiClient';
 import { User, UserRole, Country, PrayerRequest, MissionReport, EventMeeting, MissionaryResource, MeetingRecording } from '../types';
 import { compressAvatarImage } from '../utils/imageUtils';
 
@@ -79,6 +86,9 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = () => {
   const [resourcesList, setResourcesList] = useState<MissionaryResource[]>(() => storage.getResources());
   const [recordingsList, setRecordingsList] = useState<MeetingRecording[]>(() => storage.getRecordings());
   const [auditLogs, setAuditLogs] = useState(() => storage.getAuditLogs());
+  const [isSyncingUsers, setIsSyncingUsers] = useState(false);
+  const [customBackendApiInput, setCustomBackendApiInput] = useState(() => getApiBaseUrl());
+  const [saveBackendUrlMsg, setSaveBackendUrlMsg] = useState<string | null>(null);
 
   // Search & Filter States
   const [userSearch, setUserSearch] = useState('');
@@ -221,7 +231,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = () => {
   ];
 
   // Refresh lists
-  const reloadData = () => {
+  const reloadData = async () => {
     setUsers(storage.getUsers());
     setCountriesList(storage.getCountries());
     setPrayersList(storage.getPrayerRequests());
@@ -230,11 +240,42 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = () => {
     setResourcesList(storage.getResources());
     setRecordingsList(storage.getRecordings());
     setAuditLogs(storage.getAuditLogs());
+
+    try {
+      setIsSyncingUsers(true);
+      const synced = await storage.syncUsersFromCloudSql();
+      if (synced && synced.length > 0) {
+        setUsers(synced);
+      }
+    } catch (e) {
+      console.warn('Roster sync notice:', e);
+    } finally {
+      setIsSyncingUsers(false);
+    }
   };
 
   useEffect(() => {
     reloadData();
+
+    const handleStorageUpdate = () => {
+      setUsers(storage.getUsers());
+      setPrayersList(storage.getPrayerRequests());
+      setAuditLogs(storage.getAuditLogs());
+    };
+    window.addEventListener('prayercloud_storage_update', handleStorageUpdate);
+    return () => window.removeEventListener('prayercloud_storage_update', handleStorageUpdate);
   }, []);
+
+  // Fetch fresh Cloud SQL data on tab switch
+  useEffect(() => {
+    if (activeTab === 'users' || activeTab === 'cloudsql' || activeTab === 'overview') {
+      storage.syncUsersFromCloudSql().then(synced => {
+        if (synced && synced.length > 0) {
+          setUsers(synced);
+        }
+      }).catch(() => {});
+    }
+  }, [activeTab]);
 
   // Synchronize admin profile state if currentUser changes
   useEffect(() => {
@@ -1710,6 +1751,24 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = () => {
 
               <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
                 <button
+                  onClick={async () => {
+                    setIsSyncingUsers(true);
+                    try {
+                      const synced = await storage.syncUsersFromCloudSql();
+                      setUsers(synced);
+                    } finally {
+                      setIsSyncingUsers(false);
+                    }
+                  }}
+                  disabled={isSyncingUsers}
+                  className="w-full sm:w-auto px-3.5 py-2 bg-blue-950/80 hover:bg-blue-900 border border-blue-500/50 text-blue-200 hover:text-white text-xs font-bold rounded-xl shadow-sm transition-all flex items-center justify-center gap-1.5 active:scale-95"
+                  title="Sync roster directly from Google Cloud SQL and cloud databases"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 text-blue-400 ${isSyncingUsers ? 'animate-spin' : ''}`} />
+                  <span>{isSyncingUsers ? 'Syncing...' : 'Sync with Cloud SQL'}</span>
+                </button>
+
+                <button
                   onClick={handlePurgeAllNonAdminUsers}
                   className="w-full sm:w-auto px-3.5 py-2 bg-red-950/80 hover:bg-red-900 border border-red-500/50 text-red-200 hover:text-white text-xs font-bold rounded-xl shadow-sm transition-all flex items-center justify-center gap-1.5 active:scale-95"
                   title="Purge non-admin records to reset user count to 0 for official launch"
@@ -2304,16 +2363,64 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = () => {
               </div>
             </div>
 
-            {/* Decoupled Architecture & CORS Info Banner */}
-            <div className="p-5 bg-[#141a29] border border-blue-900/40 rounded-2xl space-y-3">
+            {/* Decoupled Architecture & Backend Configuration */}
+            <div className="p-5 bg-[#141a29] border border-blue-900/40 rounded-2xl space-y-4">
               <div className="flex items-center justify-between pb-2 border-b border-[#222d42]">
                 <div className="flex items-center gap-2">
                   <Globe className="w-4 h-4 text-sky-400" />
-                  <h4 className="text-xs font-bold text-white uppercase tracking-wider">Decoupled Two-Part Architecture</h4>
+                  <h4 className="text-xs font-bold text-white uppercase tracking-wider">Decoupled Two-Part Architecture & Cloud Connection</h4>
                 </div>
                 <span className="px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800 text-[10px] font-bold">
                   CORS Enabled
                 </span>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                  <div className="flex-1">
+                    <label className="block text-[11px] font-semibold text-slate-300 mb-1">
+                      Active Google Cloud Backend API URL
+                    </label>
+                    <input
+                      type="text"
+                      value={customBackendApiInput}
+                      onChange={(e) => setCustomBackendApiInput(e.target.value)}
+                      placeholder="e.g. https://ais-pre-2riwkkrxe5tdz6cwpjkvyl-20126573867.europe-west1.run.app"
+                      className="w-full px-3.5 py-2 bg-[#0c101a] border border-[#222d42] focus:border-blue-500 rounded-xl text-xs font-mono text-emerald-300 outline-none"
+                    />
+                  </div>
+                  <div className="sm:self-end flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCustomBackendUrl(customBackendApiInput);
+                        setSaveBackendUrlMsg('Backend URL saved!');
+                        setTimeout(() => setSaveBackendUrlMsg(null), 3000);
+                      }}
+                      className="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow transition-colors shrink-0"
+                    >
+                      Save URL
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCustomBackendApiInput(DEFAULT_GOOGLE_CLOUD_BACKEND_URL);
+                        setCustomBackendUrl(DEFAULT_GOOGLE_CLOUD_BACKEND_URL);
+                        setSaveBackendUrlMsg('Reset to default Cloud URL!');
+                        setTimeout(() => setSaveBackendUrlMsg(null), 3000);
+                      }}
+                      className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl border border-slate-700 transition-colors shrink-0"
+                    >
+                      Reset Default
+                    </button>
+                  </div>
+                </div>
+
+                {saveBackendUrlMsg && (
+                  <div className="text-xs text-emerald-400 font-medium">
+                    ✓ {saveBackendUrlMsg}
+                  </div>
+                )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
@@ -2325,8 +2432,8 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = () => {
 
                 <div className="p-3 bg-[#0d121e] rounded-xl border border-[#222d42] space-y-1">
                   <div className="text-[10px] font-bold uppercase text-slate-400">Backend API (Google Cloud)</div>
-                  <div className="font-bold text-blue-400 font-mono text-[11px] truncate" title={DEFAULT_GOOGLE_CLOUD_BACKEND_URL}>
-                    {DEFAULT_GOOGLE_CLOUD_BACKEND_URL}
+                  <div className="font-bold text-blue-400 font-mono text-[11px] truncate" title={customBackendApiInput || DEFAULT_GOOGLE_CLOUD_BACKEND_URL}>
+                    {customBackendApiInput || DEFAULT_GOOGLE_CLOUD_BACKEND_URL}
                   </div>
                   <div className="text-[10px] text-slate-500">Standalone Express · Secure Cloud SQL Pool</div>
                 </div>

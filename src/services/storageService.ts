@@ -243,7 +243,7 @@ class StorageService {
     }
     this.set(STORAGE_KEYS.USERS, users);
 
-    // Asynchronously synchronize user record to Cloud SQL backend
+    // Synchronize user record to Cloud SQL backend
     try {
       apiClient.syncUserToCloudSql({
         uid: user.id,
@@ -308,44 +308,52 @@ class StorageService {
     return passwordAttempt.length >= 3;
   }
 
-  // Synchronize users between local storage and Cloud SQL backend
+  // Synchronize users between local storage and Google Cloud SQL backend
   public async syncUsersFromCloudSql(): Promise<User[]> {
+    const localUsers = this.getUsers();
+    const mergedMap = new Map<string, User>();
+
+    // Seed with default admin
+    mergedMap.set('usr-admin-1', DEFAULT_ADMIN_USER);
+    localUsers.forEach(u => mergedMap.set(u.id, u));
+
+    let updated = false;
+
+    // Fetch directly from Google Cloud SQL backend API
     try {
       const res = await apiClient.getUsersFromCloudSql();
       if (res && res.success && Array.isArray(res.users)) {
-        const dbUsers: User[] = res.users.map((u: any) => ({
-          id: u.uid || `usr-${u.id}`,
-          fullName: u.fullName || u.full_name || 'Global Intercessor',
-          username: u.username || (u.email ? u.email.split('@')[0] : 'user'),
-          email: u.email,
-          phoneNumber: u.phoneNumber || u.phone_number || '',
-          country: u.country || 'Global',
-          role: u.role || 'Prayer Warrior',
-          avatarUrl: u.avatarUrl || u.avatar_url || '',
-          bio: u.bio || '',
-          isVerified: u.isVerified !== undefined ? u.isVerified : true,
-          isActive: u.isActive !== undefined ? u.isActive : true,
-          mustChangePassword: false,
-          joinedAt: u.joinedAt || u.joined_at || new Date().toISOString(),
-          prayersOfferedCount: u.prayersOfferedCount || u.prayers_offered_count || 0,
-        }));
-
-        const localUsers = this.getUsers();
-        const mergedMap = new Map<string, User>();
-
-        // Seed with default admin
-        mergedMap.set('usr-admin-1', DEFAULT_ADMIN_USER);
-
-        localUsers.forEach(u => mergedMap.set(u.id, u));
-        dbUsers.forEach(u => mergedMap.set(u.id, { ...(mergedMap.get(u.id) || {}), ...u }));
-
-        const mergedList = Array.from(mergedMap.values());
-        this.set(STORAGE_KEYS.USERS, mergedList);
-        return mergedList;
+        res.users.forEach((u: any) => {
+          const userObj: User = {
+            id: u.uid || `usr-${u.id}`,
+            fullName: u.fullName || u.full_name || 'Global Intercessor',
+            username: u.username || (u.email ? u.email.split('@')[0] : 'user'),
+            email: u.email,
+            phoneNumber: u.phoneNumber || u.phone_number || '',
+            country: u.country || 'Global',
+            role: u.role || 'Prayer Warrior',
+            avatarUrl: u.avatarUrl || u.avatar_url || '',
+            bio: u.bio || '',
+            isVerified: u.isVerified !== undefined ? u.isVerified : true,
+            isActive: u.isActive !== undefined ? u.isActive : true,
+            mustChangePassword: false,
+            joinedAt: u.joinedAt || u.joined_at || new Date().toISOString(),
+            prayersOfferedCount: u.prayersOfferedCount || u.prayers_offered_count || 0,
+          };
+          mergedMap.set(userObj.id, { ...(mergedMap.get(userObj.id) || {}), ...userObj });
+        });
+        updated = true;
       }
     } catch (e) {
       console.warn('Cloud SQL users sync notice:', e);
     }
+
+    if (updated || mergedMap.size > localUsers.length) {
+      const mergedList = Array.from(mergedMap.values());
+      this.set(STORAGE_KEYS.USERS, mergedList);
+      return mergedList;
+    }
+
     return this.getUsers();
   }
 

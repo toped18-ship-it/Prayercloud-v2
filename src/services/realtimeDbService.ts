@@ -85,6 +85,30 @@ export const realtimeDbService = {
   },
 
   // Users Synchronization
+  async syncUserToRtdb(user: User): Promise<void> {
+    try {
+      const userRef = ref(rtdb, `users/${user.id}`);
+      await set(userRef, {
+        id: user.id,
+        fullName: user.fullName,
+        username: user.username,
+        email: user.email,
+        phoneNumber: user.phoneNumber || '',
+        country: user.country || 'Global',
+        role: user.role || 'Prayer Warrior',
+        avatarUrl: user.avatarUrl || '',
+        bio: user.bio || '',
+        isVerified: user.isVerified ?? true,
+        isActive: user.isActive ?? true,
+        joinedAt: user.joinedAt || new Date().toISOString(),
+        prayersOfferedCount: user.prayersOfferedCount || 0,
+        updatedAt: new Date().toISOString(),
+      });
+    } catch (error) {
+      console.warn('Firebase RTDB syncUser error:', error);
+    }
+  },
+
   async getOrCreateUser(uid: string, email: string, fullName?: string): Promise<Partial<User>> {
     const userRef = ref(rtdb, `users/${uid}`);
     try {
