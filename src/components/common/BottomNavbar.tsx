@@ -5,32 +5,40 @@ import {
   MessageSquare,
   MapPin,
   BookOpen,
-  User
+  User,
+  Sparkles
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 interface BottomNavbarProps {
   currentPage: string;
   onNavigate: (page: string, param?: string) => void;
+  onOpenGeminiAI?: () => void;
 }
 
 export const BottomNavbar: React.FC<BottomNavbarProps> = ({
   currentPage,
-  onNavigate
+  onNavigate,
+  onOpenGeminiAI
 }) => {
   const { currentUser } = useAuth();
 
   const navTabs = [
     { id: 'user-profile', label: 'Profile', icon: User, isProfile: true },
     { id: 'home', label: 'Home', icon: Globe },
+    { id: 'gemini-ai', label: 'Gemini AI', icon: Sparkles, isAction: true, badge: 'AI' },
     { id: 'devotionals', label: 'Devotional', icon: BookOpen, badge: 'Daily' },
     { id: 'missionary-hub', label: 'Hub', icon: Compass },
     { id: 'chat', label: 'Chat', icon: MessageSquare, badge: 'Live' },
     { id: 'countries', label: 'Countries', icon: MapPin }
   ];
 
-  const handleNavClick = (pageId: string) => {
-    onNavigate(pageId);
+  const handleNavClick = (tab: any) => {
+    if (tab.id === 'gemini-ai' && onOpenGeminiAI) {
+      onOpenGeminiAI();
+      return;
+    }
+    onNavigate(tab.id);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -52,7 +60,7 @@ export const BottomNavbar: React.FC<BottomNavbarProps> = ({
           return (
             <button
               key={tab.id}
-              onClick={() => handleNavClick(tab.id)}
+              onClick={() => handleNavClick(tab)}
               className={`relative flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded-xl text-[10px] sm:text-[11px] font-semibold transition-all shrink-0 ${
                 isActive
                   ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25 scale-[1.02]'

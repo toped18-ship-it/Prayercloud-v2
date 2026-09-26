@@ -1,20 +1,19 @@
 /**
- * Standalone Google Cloud Backend API Client
+ * Robust Standalone & Same-Origin Backend API Client
  * 
- * Routes all database requests from the frontend (hosted on Custom Domains, GitHub Pages, etc.)
- * to the standalone Google Cloud backend API securely via CORS-enabled HTTP fetch calls.
+ * Supports both same-origin deployments (e.g. Custom Domain mapped directly to backend)
+ * and decoupled multi-origin environments with automatic failover and Firestore dual-sync.
  */
 
-// Production Google Cloud Run backend deployment URLs for PrayerCloud
 export const DEV_GOOGLE_CLOUD_BACKEND_URL =
   'https://ais-dev-2riwkkrxe5tdz6cwpjkvyl-20126573867.europe-west1.run.app';
 
 export const SHARED_GOOGLE_CLOUD_BACKEND_URL =
   'https://ais-pre-2riwkkrxe5tdz6cwpjkvyl-20126573867.europe-west1.run.app';
 
-export const DEFAULT_GOOGLE_CLOUD_BACKEND_URL = DEV_GOOGLE_CLOUD_BACKEND_URL;
+export const DEFAULT_GOOGLE_CLOUD_BACKEND_URL = '';
 
-export const CUSTOM_FRONTEND_DOMAIN = 'https://livingtech.name.ng';
+export const CUSTOM_FRONTEND_DOMAIN = 'https://www.livingtech.name.ng';
 
 const BACKEND_URL_STORAGE_KEY = 'prayercloud_backend_api_url';
 
@@ -22,7 +21,6 @@ const BACKEND_URL_STORAGE_KEY = 'prayercloud_backend_api_url';
  * Resolves dynamic environment variables from Vite or React runtime
  */
 export function getEnvBackendUrl(): string {
-  // Check Vite env
   try {
     if (typeof import.meta !== 'undefined' && import.meta.env) {
       if (import.meta.env.VITE_API_URL) return String(import.meta.env.VITE_API_URL).trim();
@@ -31,7 +29,6 @@ export function getEnvBackendUrl(): string {
     }
   } catch (_) {}
 
-  // Check Node/Process env if defined in build
   try {
     if (typeof process !== 'undefined' && process.env) {
       if (process.env.VITE_API_URL) return String(process.env.VITE_API_URL).trim();
@@ -44,7 +41,7 @@ export function getEnvBackendUrl(): string {
 }
 
 /**
- * Gets the current configured or active backend API URL
+ * Gets the configured backend API URL from localStorage if manually set
  */
 export function getCustomBackendUrl(): string {
   if (typeof window !== 'undefined' && window.localStorage) {
@@ -57,7 +54,7 @@ export function getCustomBackendUrl(): string {
 }
 
 /**
- * Allows updating the active backend API URL dynamically from admin settings
+ * Sets a custom backend API URL in localStorage
  */
 export function setCustomBackendUrl(url: string): void {
   if (typeof window !== 'undefined' && window.localStorage) {
@@ -70,27 +67,35 @@ export function setCustomBackendUrl(url: string): void {
 }
 
 /**
- * Returns the list of potential backend candidate endpoints for automatic failover
+ * Returns prioritized backend candidate endpoints for automatic failover
  */
 export function getBackendCandidates(): string[] {
-  const envUrl = getEnvBackendUrl().replace(/\/+$/, '');
+  const candidates: string[] = [];
+
+  // 1. Same-origin relative path is always first choice for custom domains (e.g. www.livingtech.name.ng/api/...)
+  candidates.push('');
+
+  // 2. Explicitly configured backend URL in localStorage
   const custom = getCustomBackendUrl();
-
-  const list: string[] = [];
-  if (custom) list.push(custom);
-  if (envUrl && !list.includes(envUrl)) list.push(envUrl);
-  if (!list.includes(DEV_GOOGLE_CLOUD_BACKEND_URL)) list.push(DEV_GOOGLE_CLOUD_BACKEND_URL);
-  if (!list.includes(SHARED_GOOGLE_CLOUD_BACKEND_URL)) list.push(SHARED_GOOGLE_CLOUD_BACKEND_URL);
-
-  // If local or same-origin preview
-  if (typeof window !== 'undefined' && window.location) {
-    const hostname = window.location.hostname;
-    if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.endsWith('.run.app')) {
-      list.unshift('');
-    }
+  if (custom && !candidates.includes(custom)) {
+    candidates.unshift(custom);
   }
 
-  return list;
+  // 3. Environment variable if provided
+  const envUrl = getEnvBackendUrl().replace(/\/+$/, '');
+  if (envUrl && !candidates.includes(envUrl)) {
+    candidates.push(envUrl);
+  }
+
+  // 4. Cloud URLs
+  if (!candidates.includes(SHARED_GOOGLE_CLOUD_BACKEND_URL)) {
+    candidates.push(SHARED_GOOGLE_CLOUD_BACKEND_URL);
+  }
+  if (!candidates.includes(DEV_GOOGLE_CLOUD_BACKEND_URL)) {
+    candidates.push(DEV_GOOGLE_CLOUD_BACKEND_URL);
+  }
+
+  return candidates;
 }
 
 /**
@@ -103,23 +108,8 @@ export function getApiBaseUrl(): string {
   const envUrl = getEnvBackendUrl();
   if (envUrl) return envUrl.replace(/\/+$/, '');
 
-  if (typeof window !== 'undefined' && window.location) {
-    const hostname = window.location.hostname;
-
-    if (
-      hostname === 'livingtech.name.ng' ||
-      hostname.endsWith('.github.io') ||
-      hostname.includes('livingtech')
-    ) {
-      return DEV_GOOGLE_CLOUD_BACKEND_URL.replace(/\/+$/, '');
-    }
-
-    if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.endsWith('.run.app')) {
-      return '';
-    }
-  }
-
-  return DEV_GOOGLE_CLOUD_BACKEND_URL.replace(/\/+$/, '');
+  // Default to relative root ('') so that any custom domain or dev server hits /api on its own host
+  return '';
 }
 
 /**
@@ -128,7 +118,8 @@ export function getApiBaseUrl(): string {
 export function getApiUrl(path: string, customBase?: string): string {
   const base = customBase !== undefined ? customBase : getApiBaseUrl();
   const cleanPath = path.startsWith('/') ? path : `/${path}`;
-  return `${base}${cleanPath}`;
+  if (!base) return cleanPath;
+  return `${base.replace(/\/+$/, '')}${cleanPath}`;
 }
 
 export interface ApiHealthResponse {
@@ -167,10 +158,9 @@ async function fetchWithFailover(endpoint: string, options: RequestInit = {}): P
         },
       });
 
-      // If we get an HTTP response (even 4xx/5xx), the server is reached
-      if (res.ok || res.status < 500) {
-        if (base && base !== getCustomBackendUrl()) {
-          // Save working URL as active backend
+      // If we get an HTTP response (even 4xx), the server is reached
+      if (res.ok || (res.status >= 200 && res.status < 500)) {
+        if (base && base !== getCustomBackendUrl() && base !== '') {
           setCustomBackendUrl(base);
         }
         return res;
@@ -178,7 +168,6 @@ async function fetchWithFailover(endpoint: string, options: RequestInit = {}): P
       lastError = new Error(`HTTP status ${res.status}`);
     } catch (e: any) {
       lastError = e;
-      // Try next candidate
     }
   }
 

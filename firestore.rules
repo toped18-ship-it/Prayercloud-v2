@@ -1,45 +1,49 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Helper function to check if user is authenticated
-    function isAuthenticated() {
-      return request.auth != null;
-    }
-
-    // Helper function to check if user is accessing their own document
-    function isOwner(userId) {
-      return isAuthenticated() && request.auth.uid == userId;
-    }
-
-    // Default allow read for public documents, write for authenticated users
+    // Users collection - Allow read and write for registration, profiles, and sync
     match /users/{userId} {
-      allow read: if true;
-      allow write: if isAuthenticated();
+      allow read, write: if true;
     }
 
+    // Credentials collection - Allow profile credentials sync & authentication
+    match /credentials/{userId} {
+      allow read, write: if true;
+    }
+
+    // Prayer requests collection - Public prayer requests, comments, prayer counters
     match /prayers/{prayerId} {
-      allow read: if true;
-      allow write: if isAuthenticated();
+      allow read, write: if true;
     }
 
+    // Mission reports collection - Missionary dispatches, likes, updates
     match /reports/{reportId} {
-      allow read: if true;
-      allow write: if isAuthenticated();
+      allow read, write: if true;
     }
 
+    // Events and live watches collection - Global summits, video watch rsvps
     match /events/{eventId} {
-      allow read: if true;
-      allow write: if isAuthenticated();
+      allow read, write: if true;
     }
 
+    // Real-time Chatroom messages
     match /chat_messages/{messageId} {
-      allow read: if true;
-      allow write: if isAuthenticated();
+      allow read, write: if true;
     }
 
+    // Site settings & Branding customizer
     match /settings/{settingId} {
-      allow read: if true;
-      allow write: if isAuthenticated();
+      allow read, write: if true;
+    }
+
+    // Audit logs & Activity monitoring
+    match /audit_logs/{logId} {
+      allow read, write: if true;
+    }
+
+    // Default fallback rule for any collection
+    match /{document=**} {
+      allow read, write: if true;
     }
   }
 }

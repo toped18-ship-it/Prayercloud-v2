@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import { GoogleGenAI } from '@google/genai';
 import { getLatestSyncStatus, recordSyncExecution, logAuditToDb } from './src/db/sync.ts';
 import { getOrCreateUser, getAllUsersFromDb, deleteUserFromDb, purgeNonAdminUsersFromDb } from './src/db/users.ts';
 import {
@@ -534,7 +535,118 @@ app.post('/api/audit', async (req: Request, res: Response) => {
 });
 
 // ==========================================
-// 10. SERVER STARTUP & STATIC SPA SERVING
+// 10. GEMINI AI ASSISTANT & GROUNDING ENGINE
+// ==========================================
+app.post('/api/gemini/chat', async (req: Request, res: Response) => {
+  try {
+    const { history, message, model = 'gemini-3.5-flash', systemInstruction, groundingMode = 'none' } = req.body || {};
+
+    if (!message || typeof message !== 'string') {
+      return res.status(400).json({ success: false, error: 'message string is required' });
+    }
+
+    const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || '';
+    const ai = new GoogleGenAI(apiKey ? { apiKey } : {});
+
+    // Validate supported model names strictly
+    const validModels = ['gemini-3.5-flash', 'gemini-3.1-pro-preview', 'gemini-3.1-flash-lite', 'gemini-3.8-flash'];
+    const selectedModel = validModels.includes(model) ? model : 'gemini-3.5-flash';
+
+    // Build multi-turn contents
+    const contents: any[] = [];
+    if (Array.isArray(history)) {
+      history.forEach((h: any) => {
+        if (h.text && (h.role === 'user' || h.role === 'model')) {
+          contents.push({
+            role: h.role,
+            parts: [{ text: h.text }]
+          });
+        }
+      });
+    }
+    contents.push({
+      role: 'user',
+      parts: [{ text: message }]
+    });
+
+    // Configure tools for Search and Maps Grounding
+    const tools: any[] = [];
+    if (groundingMode === 'googleSearch') {
+      tools.push({ googleSearch: {} });
+    } else if (groundingMode === 'googleMaps') {
+      tools.push({ googleMaps: {} });
+    }
+
+    const config: any = {};
+    if (systemInstruction) {
+      config.systemInstruction = systemInstruction;
+    }
+    if (tools.length > 0) {
+      config.tools = tools;
+    }
+
+    const response = await ai.models.generateContent({
+      model: selectedModel,
+      contents,
+      config,
+    });
+
+    const candidate = response.candidates?.[0];
+    const textOutput = response.text || candidate?.content?.parts?.[0]?.text || '';
+
+    // Extract grounding sources
+    const sources: any[] = [];
+    const groundingMeta = candidate?.groundingMetadata;
+    if (groundingMeta) {
+      if (Array.isArray(groundingMeta.groundingChunks)) {
+        groundingMeta.groundingChunks.forEach((chunk: any) => {
+          if (chunk.web?.uri) {
+            sources.push({
+              title: chunk.web.title || 'Web Search Source',
+              url: chunk.web.uri,
+              sourceType: 'web'
+            });
+          }
+          if (chunk.maps) {
+            sources.push({
+              title: chunk.maps.title || 'Google Maps Location',
+              url: chunk.maps.uri || '',
+              sourceType: 'maps'
+            });
+          }
+        });
+      }
+      if (Array.isArray(groundingMeta.webSearchQueries)) {
+        groundingMeta.webSearchQueries.forEach((q: string) => {
+          if (!sources.some(s => s.title === q)) {
+            sources.push({
+              title: `Search Query: "${q}"`,
+              sourceType: 'web'
+            });
+          }
+        });
+      }
+    }
+
+    return res.json({
+      success: true,
+      text: textOutput,
+      sources,
+      modelUsed: selectedModel,
+      groundingMode,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error: any) {
+    console.error('Gemini API Error:', error);
+    return res.status(500).json({
+      success: false,
+      error: error?.message || 'Failed to generate AI response'
+    });
+  }
+});
+
+// ==========================================
+// 11. SERVER STARTUP & STATIC SPA SERVING
 // ==========================================
 async function startServer() {
   const isStandaloneApi = process.env.STANDALONE_API === 'true';

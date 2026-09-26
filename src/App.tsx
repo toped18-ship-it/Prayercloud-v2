@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { APIProvider } from '@vis.gl/react-google-maps';
-import { Shield, Globe, Database } from 'lucide-react';
+import { Shield, Globe, Database, Sparkles } from 'lucide-react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeAndBrandingProvider } from './context/ThemeAndBrandingContext';
-import { storage } from './services/storageService';
+import { firebaseService } from './services/firebase';
 import { Country, UnreachedPlace, PrayerRequest, MissionReport, EventMeeting, MissionaryResource, MeetingRecording } from './types';
 
 // Common Components
@@ -18,6 +18,7 @@ import { AppSplashScreen } from './components/common/AppSplashScreen';
 import { GoogleMapsQuotaBanner } from './components/common/GoogleMapsQuotaBanner';
 import { VideoConferenceRoom } from './components/calls/VideoConferenceRoom';
 import { NotificationToastContainer } from './components/common/NotificationToastContainer';
+import { GeminiMissionsChatModal } from './components/gemini/GeminiMissionsChatModal';
 
 // Pages
 import { HomePage } from './pages/HomePage';
@@ -59,29 +60,52 @@ function MainAppContent() {
   });
   const [pageParam, setPageParam] = useState<string | undefined>(undefined);
 
-  // App Data State
-  const [countries, setCountries] = useState<Country[]>(() => storage.getCountries());
-  const [places, setPlaces] = useState<UnreachedPlace[]>(() => storage.getUnreachedPlaces());
-  const [prayers, setPrayers] = useState<PrayerRequest[]>(() => storage.getPrayerRequests());
-  const [reports, setReports] = useState<MissionReport[]>(() => storage.getMissionReports());
-  const [events, setEvents] = useState<EventMeeting[]>(() => storage.getEvents());
-  const [resources, setResources] = useState<MissionaryResource[]>(() => storage.getResources());
-  const [recordings, setRecordings] = useState<MeetingRecording[]>(() => storage.getRecordings());
+  // App Data State backed by Firestore and persistent cloud sync
+  const [countries, setCountries] = useState<Country[]>(() => firebaseService.getCountries());
+  const [places, setPlaces] = useState<UnreachedPlace[]>(() => firebaseService.getUnreachedPlaces());
+  const [prayers, setPrayers] = useState<PrayerRequest[]>([]);
+  const [reports, setReports] = useState<MissionReport[]>([]);
+  const [events, setEvents] = useState<EventMeeting[]>([]);
+  const [resources, setResources] = useState<MissionaryResource[]>(() => firebaseService.getResources());
+  const [recordings, setRecordings] = useState<MeetingRecording[]>(() => firebaseService.getRecordings());
 
   // Global modals
   const [searchOpen, setSearchOpen] = useState(false);
   const [createPrayerOpen, setCreatePrayerOpen] = useState(false);
   const [createPrayerContext, setCreatePrayerContext] = useState<string>('');
+  const [geminiChatOpen, setGeminiChatOpen] = useState(false);
+  const [geminiInitialTopic, setGeminiInitialTopic] = useState<string>('');
 
-  const refreshData = () => {
-    setCountries(storage.getCountries());
-    setPlaces(storage.getUnreachedPlaces());
-    setPrayers(storage.getPrayerRequests());
-    setReports(storage.getMissionReports());
-    setEvents(storage.getEvents());
-    setResources(storage.getResources());
-    setRecordings(storage.getRecordings());
+  const refreshData = async () => {
+    setCountries(firebaseService.getCountries());
+    setPlaces(firebaseService.getUnreachedPlaces());
+    setResources(firebaseService.getResources());
+    setRecordings(firebaseService.getRecordings());
+
+    const [loadedPrayers, loadedReports, loadedEvents] = await Promise.all([
+      firebaseService.getPrayers(),
+      firebaseService.getReports(),
+      firebaseService.getEvents()
+    ]);
+
+    setPrayers(loadedPrayers);
+    setReports(loadedReports);
+    setEvents(loadedEvents);
   };
+
+  // Load Firestore cloud data & set up real-time prayer listeners
+  useEffect(() => {
+    refreshData();
+
+    // Real-time Firestore subscriptions
+    const unsubPrayers = firebaseService.subscribeToPrayers((realtimePrayers) => {
+      setPrayers(realtimePrayers);
+    });
+
+    return () => {
+      unsubPrayers();
+    };
+  }, []);
 
   // Keyboard shortcut Ctrl+K / Cmd+K for Zoom Global Search
   useEffect(() => {
@@ -156,6 +180,11 @@ function MainAppContent() {
     setCreatePrayerOpen(true);
   };
 
+  const handleOpenGeminiWithContext = (topic = '') => {
+    setGeminiInitialTopic(topic);
+    setGeminiChatOpen(true);
+  };
+
   const handleLaunchInstantMeeting = (customTopic?: string, countryFocus?: string) => {
     setGlobalCallRoom({
       roomTitle: customTopic || `${currentUser?.fullName || 'Operative'}'s Instant Live Watch`,
@@ -219,6 +248,7 @@ function MainAppContent() {
           onOpenSearch={() => setSearchOpen(true)}
           onRestartTour={() => setIsOnboardingOpen(true)}
           onLaunchInstantCall={handleLaunchInstantMeeting}
+          onOpenGeminiAI={() => handleOpenGeminiWithContext()}
         />
       )}
 
@@ -246,8 +276,8 @@ function MainAppContent() {
 
         {currentPage === 'country' && pageParam && (
           <CountryDetailPage
-            country={storage.getCountryByCode(pageParam) || countries[0]}
-            unreachedPlaces={storage.getUnreachedPlacesByCountry(pageParam)}
+            country={firebaseService.getCountryByCode(pageParam) || countries[0]}
+            unreachedPlaces={firebaseService.getUnreachedPlacesByCountry(pageParam)}
             prayers={prayers}
             onBack={() => navigateTo('countries')}
             onSelectPlace={(placeId) => navigateTo('unreached-places', placeId)}
@@ -338,14 +368,33 @@ function MainAppContent() {
         )}
       </main>
 
-        {/* Footer only on homepage */}
-        {currentPage === 'home' && <Footer onNavigate={navigateTo} />}
+      {/* Floating Gemini Missions Intelligence Action Beacon */}
+      {currentPage !== 'admin' && (
+        <div className="fixed bottom-16 sm:bottom-6 right-4 sm:right-6 z-30 flex items-center">
+          <button
+            onClick={() => handleOpenGeminiWithContext()}
+            className="group relative flex items-center gap-2 px-3.5 sm:px-4 py-2.5 sm:py-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-full font-bold text-xs sm:text-sm shadow-xl shadow-blue-600/30 hover:shadow-blue-500/50 hover:scale-105 active:scale-95 transition-all"
+            title="Open Gemini Missions & Prayer Intelligence AI"
+          >
+            <span className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-300"></span>
+            </span>
+            <Sparkles className="w-4 h-4 text-amber-300" />
+            <span className="tracking-wide">Ask Gemini AI</span>
+          </button>
+        </div>
+      )}
+
+      {/* Footer only on homepage */}
+      {currentPage === 'home' && <Footer onNavigate={navigateTo} />}
 
       {/* Docked Global Bottom Navigation Bar - hidden during admin session */}
       {currentPage !== 'admin' && (
         <BottomNavbar
           currentPage={currentPage}
           onNavigate={navigateTo}
+          onOpenGeminiAI={() => handleOpenGeminiWithContext()}
         />
       )}
 
@@ -369,6 +418,13 @@ function MainAppContent() {
         onClose={() => setCreatePrayerOpen(false)}
         onSuccess={refreshData}
         initialCountry={createPrayerContext}
+      />
+
+      {/* Gemini AI Multi-Turn Grounded Chatbot Modal */}
+      <GeminiMissionsChatModal
+        isOpen={geminiChatOpen}
+        onClose={() => setGeminiChatOpen(false)}
+        initialTopic={geminiInitialTopic}
       />
 
       {/* Real-time System Notification Toast Alerts */}
