@@ -5,7 +5,16 @@ import { desc, eq, ne, and } from 'drizzle-orm';
 // Fetch all users from Cloud SQL
 export async function getAllUsersFromDb() {
   try {
-    return await db.select().from(users).orderBy(desc(users.createdAt));
+    const list = await db.select().from(users).orderBy(desc(users.createdAt));
+    return list.map(u => {
+      const isSuperAdminEmail =
+        u.email.toLowerCase() === 'dtemitope60@gmail.com' ||
+        u.email.toLowerCase() === 'admin@prayercloud.org';
+      if (isSuperAdminEmail && u.role !== 'Super Admin') {
+        return { ...u, role: 'Super Admin' };
+      }
+      return u;
+    });
   } catch (error) {
     console.error('Database query for users failed:', error);
     throw new Error('Failed to retrieve users from Cloud SQL database.', { cause: error });
@@ -56,6 +65,11 @@ export async function getOrCreateUser(
   }
 ) {
   try {
+    const isSuperAdminEmail =
+      email.toLowerCase() === 'dtemitope60@gmail.com' ||
+      email.toLowerCase() === 'admin@prayercloud.org';
+    const finalRole = isSuperAdminEmail ? 'Super Admin' : (extra?.role || 'Prayer Warrior');
+
     const result = await db
       .insert(users)
       .values({
@@ -65,7 +79,7 @@ export async function getOrCreateUser(
         username: extra?.username || email.split('@')[0],
         phoneNumber: extra?.phoneNumber || '',
         country: extra?.country || 'Global',
-        role: extra?.role || 'Prayer Warrior',
+        role: finalRole,
         avatarUrl: extra?.avatarUrl || '',
         bio: extra?.bio || 'Dedicated intercessor standing in the gap.',
         joinedAt: new Date().toISOString(),
@@ -78,7 +92,7 @@ export async function getOrCreateUser(
           ...(extra?.username ? { username: extra.username } : {}),
           ...(extra?.phoneNumber ? { phoneNumber: extra.phoneNumber } : {}),
           ...(extra?.country ? { country: extra.country } : {}),
-          ...(extra?.role ? { role: extra.role } : {}),
+          role: finalRole,
           ...(extra?.avatarUrl ? { avatarUrl: extra.avatarUrl } : {}),
           ...(extra?.bio ? { bio: extra.bio } : {}),
         },

@@ -135,6 +135,24 @@ export const apiClient = {
     return this.get<ApiHealthResponse>('/api/health');
   },
 
+  async login(identifier: string, password?: string): Promise<{ success: boolean; user?: any; error?: string }> {
+    return this.post('/api/auth/login', { identifier, password });
+  },
+
+  async register(userData: {
+    uid?: string;
+    email: string;
+    fullName?: string;
+    username?: string;
+    phoneNumber?: string;
+    country?: string;
+    role?: string;
+    avatarUrl?: string;
+    bio?: string;
+  }): Promise<{ success: boolean; user?: any; error?: string }> {
+    return this.post('/api/auth/register', userData);
+  },
+
   async syncUserToCloudSql(userData: {
     uid: string;
     email: string;
