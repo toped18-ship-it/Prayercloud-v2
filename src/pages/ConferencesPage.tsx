@@ -192,126 +192,160 @@ export const ConferencesPage: React.FC<ConferencesPageProps> = ({
 
       {/* TAB 1: Upcoming Meetings */}
       {selectedTab === 'upcoming' && (
-        <div className="space-y-4">
-          {events.map((evt, idx) => (
-            <div
-              key={evt.id}
-              className="p-5 bg-white dark:bg-[#161b26] rounded-2xl border border-slate-200 dark:border-[#262f43] flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm hover:shadow-md transition-all"
-            >
-              <div className="space-y-1.5 max-w-xl">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                    evt.isLiveNow ? 'bg-red-600 text-white animate-pulse' : 'bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300'
-                  }`}>
-                    {evt.isLiveNow ? '🔴 LIVE NOW' : evt.type}
-                  </span>
-                  <span className="text-xs text-slate-500 font-mono">{evt.startTime}</span>
-                  <span className="text-xs text-slate-400">· Meeting ID: 849 {2040 + idx} {1190 + idx}</span>
-                </div>
-
-                <h3 className="font-bold text-base text-slate-900 dark:text-white">
-                  {evt.title}
-                </h3>
-
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  {evt.description}
-                </p>
-
-                <div className="text-xs text-slate-500 pt-1 flex items-center gap-3">
-                  <span>Target Nation: <strong className="text-slate-700 dark:text-slate-300">{evt.targetCountry || 'Global Focus'}</strong></span>
-                  <span>·</span>
-                  <span>Host: <strong className="text-slate-700 dark:text-slate-300">{evt.hostName}</strong></span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2.5 flex-wrap">
-                <button
-                  onClick={() => {
-                    const link = `${baseDomain}/#calls?j=849${2040 + idx}${1190 + idx}\nTopic: ${evt.title}\nPasscode: prayer247`;
-                    navigator.clipboard.writeText(link);
-                  }}
-                  className="px-3.5 py-2 bg-slate-100 dark:bg-[#232a3b] hover:bg-slate-200 dark:hover:bg-[#2f3950] text-slate-700 dark:text-slate-200 font-semibold text-xs rounded-xl transition-colors flex items-center gap-1.5"
-                >
-                  <Copy className="w-3.5 h-3.5" />
-                  <span>Copy Invite</span>
-                </button>
-
-                <button
-                  onClick={() => setActiveCallRoom({
-                    roomTitle: evt.title,
-                    countryFocus: evt.targetCountry || 'Global Focus',
-                    meetingId: `849 ${2040 + idx} ${1190 + idx}`,
-                    passcode: 'prayer247'
-                  })}
-                  className="px-5 py-2 bg-[#0e71eb] hover:bg-blue-600 text-white font-bold text-xs rounded-xl shadow-md shadow-blue-500/20 transition-colors flex items-center gap-1.5"
-                >
-                  <Video className="w-4 h-4" />
-                  <span>{evt.isLiveNow ? 'Join Live Room' : 'Start Meeting'}</span>
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* TAB 2: Cloud Recordings */}
-      {selectedTab === 'recordings' && (
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {recordings.map((rec) => (
+        events.length > 0 ? (
+          <div className="space-y-4">
+            {events.map((evt, idx) => (
               <div
-                key={rec.id}
-                className="bg-white dark:bg-[#161b26] rounded-2xl border border-slate-200 dark:border-[#262f43] overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+                key={evt.id}
+                className="p-5 bg-white dark:bg-[#161b26] rounded-2xl border border-slate-200 dark:border-[#262f43] flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm hover:shadow-md transition-all"
               >
-                <div className="relative h-36 bg-gradient-to-br from-[#121622] to-[#1c2438] flex items-center justify-center group">
-                  <button
-                    onClick={() => setActiveRecordingPlayback(rec)}
-                    className="w-12 h-12 rounded-full bg-[#0e71eb] text-white flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg"
-                  >
-                    <Play className="w-6 h-6 ml-1" />
-                  </button>
-                  <span className="absolute bottom-2 right-2 px-2 py-0.5 bg-black/80 text-white text-[10px] font-mono rounded">
-                    {rec.durationFormatted}
-                  </span>
-                </div>
-
-                <div className="p-4 space-y-2">
-                  <div className="flex items-center justify-between text-[11px] text-slate-400">
-                    <span>{rec.date}</span>
-                    <span className="font-mono">{rec.sizeFormatted}</span>
+                <div className="space-y-1.5 max-w-xl">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
+                      evt.isLiveNow ? 'bg-red-600 text-white animate-pulse' : 'bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300'
+                    }`}>
+                      {evt.isLiveNow ? '🔴 LIVE NOW' : evt.type}
+                    </span>
+                    <span className="text-xs text-slate-500 font-mono">{evt.startTime}</span>
+                    <span className="text-xs text-slate-400">· Meeting ID: 849 {2040 + idx} {1190 + idx}</span>
                   </div>
 
-                  <h4 className="font-bold text-sm text-slate-900 dark:text-white">
-                    {rec.title}
-                  </h4>
+                  <h3 className="font-bold text-base text-slate-900 dark:text-white">
+                    {evt.title}
+                  </h3>
 
-                  <p className="text-xs text-slate-500">
-                    Host: {rec.hostName} · Focus: {rec.countryFocus}
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                    {evt.description}
                   </p>
+
+                  <div className="text-xs text-slate-500 pt-1 flex items-center gap-3">
+                    <span>Target Nation: <strong className="text-slate-700 dark:text-slate-300">{evt.targetCountry || 'Global Focus'}</strong></span>
+                    <span>·</span>
+                    <span>Host: <strong className="text-slate-700 dark:text-slate-300">{evt.hostName}</strong></span>
+                  </div>
                 </div>
 
-                <div className="p-3 bg-slate-50 dark:bg-[#121622] border-t border-slate-100 dark:border-[#262f43] flex items-center justify-between text-xs">
+                <div className="flex items-center gap-2.5 flex-wrap">
                   <button
-                    onClick={() => setActiveRecordingPlayback(rec)}
-                    className="font-semibold text-[#0e71eb] hover:underline flex items-center gap-1"
+                    onClick={() => {
+                      const link = `${baseDomain}/#calls?j=849${2040 + idx}${1190 + idx}\nTopic: ${evt.title}\nPasscode: prayer247`;
+                      navigator.clipboard.writeText(link);
+                    }}
+                    className="px-3.5 py-2 bg-slate-100 dark:bg-[#232a3b] hover:bg-slate-200 dark:hover:bg-[#2f3950] text-slate-700 dark:text-slate-200 font-semibold text-xs rounded-xl transition-colors flex items-center gap-1.5"
                   >
-                    <Play className="w-3.5 h-3.5" />
-                    <span>Watch Session</span>
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>Copy Invite</span>
                   </button>
 
-                  <a
-                    href={rec.mediaUrl}
-                    download={`${rec.title}.webm`}
-                    className="text-slate-500 hover:text-slate-700 dark:hover:text-white flex items-center gap-1"
+                  <button
+                    onClick={() => setActiveCallRoom({
+                      roomTitle: evt.title,
+                      countryFocus: evt.targetCountry || 'Global Focus',
+                      meetingId: `849 ${2040 + idx} ${1190 + idx}`,
+                      passcode: 'prayer247'
+                    })}
+                    className="px-5 py-2 bg-[#0e71eb] hover:bg-blue-600 text-white font-bold text-xs rounded-xl shadow-md shadow-blue-500/20 transition-colors flex items-center gap-1.5"
                   >
-                    <Download className="w-3.5 h-3.5" />
-                    <span>Download</span>
-                  </a>
+                    <Video className="w-4 h-4" />
+                    <span>{evt.isLiveNow ? 'Join Live Room' : 'Start Meeting'}</span>
+                  </button>
                 </div>
               </div>
             ))}
           </div>
-        </div>
+        ) : (
+          <div className="text-center py-16 px-4 bg-white dark:bg-[#161b26] rounded-2xl border border-slate-200 dark:border-[#262f43]">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-50 dark:bg-blue-950/50 flex items-center justify-center text-[#0e71eb]">
+              <Calendar className="w-8 h-8" />
+            </div>
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+              No Scheduled Summits Yet
+            </h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto mb-6">
+              Plan and host global 24/7 prayer watches, country intercession vigils, or frontier mission briefings.
+            </p>
+            <button
+              onClick={() => setShowScheduleModal(true)}
+              className="px-5 py-2.5 bg-[#0e71eb] hover:bg-blue-600 text-white text-xs font-bold rounded-xl shadow-lg transition-all"
+            >
+              Schedule the First Summit
+            </button>
+          </div>
+        )
+      )}
+
+      {/* TAB 2: Cloud Recordings */}
+      {selectedTab === 'recordings' && (
+        recordings.length > 0 ? (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {recordings.map((rec) => (
+                <div
+                  key={rec.id}
+                  className="bg-white dark:bg-[#161b26] rounded-2xl border border-slate-200 dark:border-[#262f43] overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+                >
+                  <div className="relative h-36 bg-gradient-to-br from-[#121622] to-[#1c2438] flex items-center justify-center group">
+                    <button
+                      onClick={() => setActiveRecordingPlayback(rec)}
+                      className="w-12 h-12 rounded-full bg-[#0e71eb] text-white flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg"
+                    >
+                      <Play className="w-6 h-6 ml-1" />
+                    </button>
+                    <span className="absolute bottom-2 right-2 px-2 py-0.5 bg-black/80 text-white text-[10px] font-mono rounded">
+                      {rec.durationFormatted}
+                    </span>
+                  </div>
+
+                  <div className="p-4 space-y-2">
+                    <div className="flex items-center justify-between text-[11px] text-slate-400">
+                      <span>{rec.date}</span>
+                      <span className="font-mono">{rec.sizeFormatted}</span>
+                    </div>
+
+                    <h4 className="font-bold text-sm text-slate-900 dark:text-white">
+                      {rec.title}
+                    </h4>
+
+                    <p className="text-xs text-slate-500">
+                      Host: {rec.hostName} · Focus: {rec.countryFocus}
+                    </p>
+                  </div>
+
+                  <div className="p-3 bg-slate-50 dark:bg-[#121622] border-t border-slate-100 dark:border-[#262f43] flex items-center justify-between text-xs">
+                    <button
+                      onClick={() => setActiveRecordingPlayback(rec)}
+                      className="font-semibold text-[#0e71eb] hover:underline flex items-center gap-1"
+                    >
+                      <Play className="w-3.5 h-3.5" />
+                      <span>Watch Session</span>
+                    </button>
+
+                    <a
+                      href={rec.mediaUrl}
+                      download={`${rec.title}.webm`}
+                      className="text-slate-500 hover:text-slate-700 dark:hover:text-white flex items-center gap-1"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Download</span>
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="text-center py-16 px-4 bg-white dark:bg-[#161b26] rounded-2xl border border-slate-200 dark:border-[#262f43]">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-50 dark:bg-blue-950/50 flex items-center justify-center text-[#0e71eb]">
+              <Disc className="w-8 h-8" />
+            </div>
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+              No Archived Recordings Yet
+            </h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto">
+              Summit recordings and recorded prayer watches will be archived here for on-demand playback and download.
+            </p>
+          </div>
+        )
       )}
 
       {/* TAB 3: Personal Meeting Room (PMI) */}

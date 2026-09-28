@@ -8,6 +8,7 @@ import { getLatestSyncStatus, recordSyncExecution, logAuditToDb } from './src/db
 import { getOrCreateUser, getAllUsersFromDb, deleteUserFromDb, purgeNonAdminUsersFromDb } from './src/db/users.ts';
 import {
   getAllPrayersFromDb,
+  purgeDemoPrayersFromDb,
   createPrayerInDb,
   agreePrayerInDb,
   addCommentToPrayerInDb,
@@ -333,6 +334,16 @@ app.post('/api/prayers/:customId/comments', async (req: Request, res: Response) 
     res.json({ success: true, prayer: updated });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error?.message || 'Failed to add comment to prayer' });
+  }
+});
+
+app.post('/api/prayers/purge-demo', async (req: Request, res: Response) => {
+  try {
+    const deleted = await purgeDemoPrayersFromDb();
+    await logAuditToDb('PURGE_DEMO_PRAYERS', `Purged demo prayers from database for clean production launch`, 'admin', 'Super Admin');
+    res.json({ success: true, purgedCount: deleted.length });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error?.message || 'Failed to purge demo prayers' });
   }
 });
 

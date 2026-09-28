@@ -36,7 +36,9 @@ export async function purgeNonAdminUsersFromDb() {
       and(
         ne(users.uid, 'usr-admin-1'),
         ne(users.role, 'Super Admin'),
-        ne(users.email, 'admin@prayercloud.org')
+        ne(users.role, 'Admin'),
+        ne(users.email, 'admin@prayercloud.org'),
+        ne(users.email, 'dtemitope60@gmail.com')
       )
     ).returning();
     return deleted;

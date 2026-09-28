@@ -98,19 +98,28 @@ class StorageService {
       this.set(STORAGE_KEYS.PLACES, UNREACHED_PLACES_DATA);
     }
     if (!localStorage.getItem(STORAGE_KEYS.PRAYERS)) {
-      this.set(STORAGE_KEYS.PRAYERS, INITIAL_PRAYER_REQUESTS);
+      this.set(STORAGE_KEYS.PRAYERS, []);
     }
     if (!localStorage.getItem(STORAGE_KEYS.REPORTS)) {
-      this.set(STORAGE_KEYS.REPORTS, INITIAL_MISSION_REPORTS);
+      this.set(STORAGE_KEYS.REPORTS, []);
     }
     if (!localStorage.getItem(STORAGE_KEYS.EVENTS)) {
-      this.set(STORAGE_KEYS.EVENTS, INITIAL_EVENTS);
+      this.set(STORAGE_KEYS.EVENTS, []);
     }
     if (!localStorage.getItem(STORAGE_KEYS.CHAT_ROOMS)) {
       this.set(STORAGE_KEYS.CHAT_ROOMS, INITIAL_CHAT_ROOMS);
     }
     if (!localStorage.getItem(STORAGE_KEYS.MESSAGES)) {
-      this.set(STORAGE_KEYS.MESSAGES, INITIAL_MESSAGES);
+      this.set(STORAGE_KEYS.MESSAGES, {});
+    }
+    if (!localStorage.getItem(STORAGE_KEYS.RECORDINGS)) {
+      this.set(STORAGE_KEYS.RECORDINGS, []);
+    }
+
+    // Auto-clean any legacy demo records cached in browser from prior deployments
+    if (!localStorage.getItem('prayercloud_demo_cleaned_v4')) {
+      this.purgeAllDemoData();
+      localStorage.setItem('prayercloud_demo_cleaned_v4', 'true');
     }
 
     // Trigger full background sync with Google Cloud SQL
@@ -243,9 +252,7 @@ class StorageService {
   // User Credentials
   public getUserCredentials(): Record<string, string> {
     return this.get<Record<string, string>>('prayercloud_credentials_v2', {
-      'usr-admin-1': 'Admin@12345',
-      'usr-miss-1': 'Missions@2025',
-      'usr-intercessor-1': 'Prayer@2025'
+      'usr-admin-1': 'Admin@12345'
     });
   }
 
@@ -284,8 +291,22 @@ class StorageService {
     const localUsers = this.getUsers();
     const mergedMap = new Map<string, User>();
 
+    const demoUids = new Set(['usr-miss-1', 'usr-intercessor-1', 'usr-pastor-1', 'usr-volunteer-1', 'usr-evangelist-1']);
+    const demoEmails = new Set([
+      'johnathan.bae@prayercloud.org',
+      'deborah.alabi@prayercloud.org',
+      'pastor.mateo@prayercloud.org',
+      'sarah.jenkins@prayercloud.org',
+      'caleb.masri@prayercloud.org',
+      'emmanuel.mensah@prayercloud.org'
+    ]);
+
     mergedMap.set('usr-admin-1', DEFAULT_ADMIN_USER);
-    localUsers.forEach(u => mergedMap.set(u.id, u));
+    localUsers.forEach(u => {
+      if (!demoUids.has(u.id) && !demoEmails.has((u.email || '').toLowerCase())) {
+        mergedMap.set(u.id, u);
+      }
+    });
 
     let updated = false;
 
@@ -294,7 +315,9 @@ class StorageService {
       const firestoreUsers = await firestoreService.getUsersFromFirestore();
       if (firestoreUsers && firestoreUsers.length > 0) {
         firestoreUsers.forEach((fu) => {
-          mergedMap.set(fu.id, { ...(mergedMap.get(fu.id) || {}), ...fu });
+          if (!demoUids.has(fu.id) && !demoEmails.has((fu.email || '').toLowerCase())) {
+            mergedMap.set(fu.id, { ...(mergedMap.get(fu.id) || {}), ...fu });
+          }
         });
         updated = true;
       }
@@ -312,8 +335,13 @@ class StorageService {
       const res = await apiClient.getUsersFromCloudSql();
       if (res && res.success && Array.isArray(res.users)) {
         res.users.forEach((u: any) => {
+          const email = (u.email || '').toLowerCase();
+          const uid = u.uid || `usr-${u.id}`;
+          if (demoUids.has(uid) || demoEmails.has(email)) {
+            return;
+          }
           const userObj: User = {
-            id: u.uid || `usr-${u.id}`,
+            id: uid,
             fullName: u.fullName || u.full_name || 'Global Intercessor',
             username: u.username || (u.email ? u.email.split('@')[0] : 'user'),
             email: u.email,
@@ -336,49 +364,60 @@ class StorageService {
       console.warn('Cloud SQL users sync notice:', e);
     }
 
-    if (updated || mergedMap.size > localUsers.length) {
-      const mergedList = Array.from(mergedMap.values());
-      this.set(STORAGE_KEYS.USERS, mergedList);
-      return mergedList;
-    }
-
-    return this.getUsers();
+    const mergedList = Array.from(mergedMap.values());
+    this.set(STORAGE_KEYS.USERS, mergedList);
+    return mergedList;
   }
 
   // ==========================================
   // PRAYERS
   // ==========================================
   public getPrayerRequests(): PrayerRequest[] {
-    return this.get<PrayerRequest[]>(STORAGE_KEYS.PRAYERS, INITIAL_PRAYER_REQUESTS);
+    return this.get<PrayerRequest[]>(STORAGE_KEYS.PRAYERS, []);
   }
 
   public async syncPrayersFromCloudSql(): Promise<PrayerRequest[]> {
     try {
       const res = await apiClient.getPrayersFromCloudSql();
-      if (res && res.success && Array.isArray(res.prayers) && res.prayers.length > 0) {
-        const cloudPrayers: PrayerRequest[] = res.prayers.map((p: any) => ({
-          id: p.customId || `pr-${p.id}`,
-          title: p.title,
-          description: p.description,
-          targetCountry: p.targetCountry || 'Global',
-          category: p.category || 'Unreached Tribe',
-          urgency: p.urgency || 'Normal',
-          authorId: p.authorUid || 'usr-admin-1',
-          authorName: p.authorName || 'Intercessor',
-          authorRole: (p.authorRole as UserRole) || 'Prayer Warrior',
-          authorCountry: p.authorCountry || 'Global',
-          isAnonymous: false,
-          prayedCount: p.prayerCount || 1,
-          prayingUserIds: Array.isArray(p.prayingUserIds) ? p.prayingUserIds : [p.authorUid || 'usr-admin-1'],
-          comments: Array.isArray(p.commentsJson) ? p.commentsJson : [],
-          isAnswered: p.isAnswered || false,
-          createdAt: p.createdAt ? new Date(p.createdAt).toISOString() : new Date().toISOString(),
-          updatedAt: p.createdAt ? new Date(p.createdAt).toISOString() : new Date().toISOString()
-        }));
+      if (res && res.success && Array.isArray(res.prayers)) {
+        const demoTitles = ['pamir corridor', 'tehranian', 'berber clan', 'turkana', 'secret believers', 'cox\'s bazar', 'bandung', 'saharan oasis'];
+        const demoUids = new Set(['usr-miss-1', 'usr-intercessor-1', 'usr-pastor-1', 'usr-volunteer-1', 'usr-evangelist-1']);
+
+        const cloudPrayers: PrayerRequest[] = res.prayers
+          .filter((p: any) => {
+            const t = (p.title || '').toLowerCase();
+            if (demoTitles.some(dt => t.includes(dt))) return false;
+            if (demoUids.has(p.authorUid)) return false;
+            return true;
+          })
+          .map((p: any) => ({
+            id: p.customId || `pr-${p.id}`,
+            title: p.title,
+            description: p.description,
+            targetCountry: p.targetCountry || 'Global',
+            category: p.category || 'Unreached Tribe',
+            urgency: p.urgency || 'Normal',
+            authorId: p.authorUid || 'usr-admin-1',
+            authorName: p.authorName || 'Intercessor',
+            authorRole: (p.authorRole as UserRole) || 'Prayer Warrior',
+            authorCountry: p.authorCountry || 'Global',
+            isAnonymous: false,
+            prayedCount: p.prayerCount || 1,
+            prayingUserIds: Array.isArray(p.prayingUserIds) ? p.prayingUserIds : [p.authorUid || 'usr-admin-1'],
+            comments: Array.isArray(p.commentsJson) ? p.commentsJson : [],
+            isAnswered: p.isAnswered || false,
+            createdAt: p.createdAt ? new Date(p.createdAt).toISOString() : new Date().toISOString(),
+            updatedAt: p.createdAt ? new Date(p.createdAt).toISOString() : new Date().toISOString()
+          }));
 
         const map = new Map<string, PrayerRequest>();
-        INITIAL_PRAYER_REQUESTS.forEach(ip => map.set(ip.id, ip));
-        this.getPrayerRequests().forEach(p => map.set(p.id, p));
+        this.getPrayerRequests()
+          .filter(p => {
+            const t = (p.title || '').toLowerCase();
+            return !demoTitles.some(dt => t.includes(dt)) && !demoUids.has(p.authorId) && !['pr-1', 'pr-2', 'pr-3', 'pr-4'].includes(p.id);
+          })
+          .forEach(p => map.set(p.id, p));
+
         cloudPrayers.forEach(cp => map.set(cp.id, cp));
 
         const merged = Array.from(map.values());
@@ -521,38 +560,44 @@ class StorageService {
   // MISSION REPORTS
   // ==========================================
   public getMissionReports(): MissionReport[] {
-    return this.get<MissionReport[]>(STORAGE_KEYS.REPORTS, INITIAL_MISSION_REPORTS);
+    return this.get<MissionReport[]>(STORAGE_KEYS.REPORTS, []);
   }
 
   public async syncReportsFromCloudSql(): Promise<MissionReport[]> {
     try {
       const res = await apiClient.getReportsFromCloudSql();
-      if (res && res.success && Array.isArray(res.reports) && res.reports.length > 0) {
-        const cloudReports: MissionReport[] = res.reports.map((r: any) => ({
-          id: r.id,
-          title: r.title,
-          missionaryId: r.authorId || 'usr-miss-1',
-          missionaryName: r.authorName || 'Field Missionary',
-          country: r.country,
-          regionOrCity: r.countryCode || r.country,
-          summary: r.content ? r.content.slice(0, 160) : '',
-          fullReport: r.content || '',
-          peopleReachedEstimate: r.peopleReached || 0,
-          conversionsCount: r.salvationsCount || 0,
-          churchesPlantedCount: r.bapCount || 0,
-          challenges: 'Spiritual opposition and frontier logistics',
-          urgentNeeds: ['Intercessors for local language translation', 'Transport resources'],
-          photoUrls: [],
-          scriptureAnchor: 'Matthew 28:19',
-          createdAt: r.createdAt ? new Date(r.createdAt).toISOString() : new Date().toISOString(),
-          isVerified: true,
-          likesCount: r.likesCount || 0,
-          likedUserIds: Array.isArray(r.likedUserIds) ? r.likedUserIds : []
-        }));
+      if (res && res.success && Array.isArray(res.reports)) {
+        const demoIds = new Set(['rep-1', 'rep-2']);
+        const demoUids = new Set(['usr-miss-1', 'usr-pastor-1']);
+
+        const cloudReports: MissionReport[] = res.reports
+          .filter((r: any) => !demoIds.has(r.id) && !demoUids.has(r.authorId))
+          .map((r: any) => ({
+            id: r.id,
+            title: r.title,
+            missionaryId: r.authorId || 'usr-admin-1',
+            missionaryName: r.authorName || 'Field Missionary',
+            country: r.country,
+            regionOrCity: r.countryCode || r.country,
+            summary: r.content ? r.content.slice(0, 160) : '',
+            fullReport: r.content || '',
+            peopleReachedEstimate: r.peopleReached || 0,
+            conversionsCount: r.salvationsCount || 0,
+            churchesPlantedCount: r.bapCount || 0,
+            challenges: 'Spiritual opposition and frontier logistics',
+            urgentNeeds: ['Intercessors for local language translation', 'Transport resources'],
+            photoUrls: [],
+            scriptureAnchor: 'Matthew 28:19',
+            createdAt: r.createdAt ? new Date(r.createdAt).toISOString() : new Date().toISOString(),
+            isVerified: true,
+            likesCount: r.likesCount || 0,
+            likedUserIds: Array.isArray(r.likedUserIds) ? r.likedUserIds : []
+          }));
 
         const map = new Map<string, MissionReport>();
-        INITIAL_MISSION_REPORTS.forEach(ir => map.set(ir.id, ir));
-        this.getMissionReports().forEach(r => map.set(r.id, r));
+        this.getMissionReports()
+          .filter(r => !demoIds.has(r.id) && !demoUids.has(r.missionaryId))
+          .forEach(r => map.set(r.id, r));
         cloudReports.forEach(cr => map.set(cr.id, cr));
 
         const merged = Array.from(map.values());
@@ -639,32 +684,36 @@ class StorageService {
   // EVENTS & PRAYER MEETINGS
   // ==========================================
   public getEvents(): EventMeeting[] {
-    return this.get<EventMeeting[]>(STORAGE_KEYS.EVENTS, INITIAL_EVENTS);
+    return this.get<EventMeeting[]>(STORAGE_KEYS.EVENTS, []);
   }
 
   public async syncEventsFromCloudSql(): Promise<EventMeeting[]> {
     try {
       const res = await apiClient.getEventsFromCloudSql();
-      if (res && res.success && Array.isArray(res.events) && res.events.length > 0) {
-        const cloudEvents: EventMeeting[] = res.events.map((e: any) => ({
-          id: e.id,
-          title: e.title,
-          description: e.description,
-          type: (e.category as any) || '24/7 Global Prayer',
-          hostId: e.hostId,
-          hostName: e.hostName,
-          startTime: e.scheduledAt,
-          endTime: new Date(new Date(e.scheduledAt).getTime() + (e.durationMinutes || 60) * 60000).toISOString(),
-          targetCountry: e.targetCountry || 'Global',
-          meetingLink: e.zoomUrl || 'https://meet.google.com',
-          isLiveNow: e.isLive || false,
-          rsvps: Array.isArray(e.rsvps) ? e.rsvps : [e.hostId],
-          maxParticipants: e.maxParticipants || 500
-        }));
+      if (res && res.success && Array.isArray(res.events)) {
+        const demoIds = new Set(['evt-1', 'evt-2', 'evt-3']);
+        const cloudEvents: EventMeeting[] = res.events
+          .filter((e: any) => !demoIds.has(e.id))
+          .map((e: any) => ({
+            id: e.id,
+            title: e.title,
+            description: e.description,
+            type: (e.category as any) || '24/7 Global Prayer',
+            hostId: e.hostId,
+            hostName: e.hostName,
+            startTime: e.scheduledAt,
+            endTime: new Date(new Date(e.scheduledAt).getTime() + (e.durationMinutes || 60) * 60000).toISOString(),
+            targetCountry: e.targetCountry || 'Global',
+            meetingLink: e.zoomUrl || 'https://meet.google.com',
+            isLiveNow: e.isLive || false,
+            rsvps: Array.isArray(e.rsvps) ? e.rsvps : [e.hostId],
+            maxParticipants: e.maxParticipants || 500
+          }));
 
         const map = new Map<string, EventMeeting>();
-        INITIAL_EVENTS.forEach(ie => map.set(ie.id, ie));
-        this.getEvents().forEach(e => map.set(e.id, e));
+        this.getEvents()
+          .filter(e => !demoIds.has(e.id))
+          .forEach(e => map.set(e.id, e));
         cloudEvents.forEach(ce => map.set(ce.id, ce));
 
         const merged = Array.from(map.values());
@@ -860,7 +909,7 @@ class StorageService {
   // RECORDINGS & RESOURCES
   // ==========================================
   public getRecordings(): MeetingRecording[] {
-    return this.get<MeetingRecording[]>(STORAGE_KEYS.RECORDINGS, INITIAL_RECORDINGS);
+    return this.get<MeetingRecording[]>(STORAGE_KEYS.RECORDINGS, []);
   }
 
   public saveRecording(rec: MeetingRecording): void {
@@ -1187,6 +1236,93 @@ class StorageService {
     );
 
     return { purgedMessagesCount, updatedRoomsCount };
+  }
+
+  public purgeAllDemoData(): {
+    purgedUsersCount: number;
+    purgedPrayersCount: number;
+    purgedReportsCount: number;
+    purgedEventsCount: number;
+    purgedRecordingsCount: number;
+    purgedMessagesCount: number;
+  } {
+    // 1. Purge demo users
+    const allUsers = this.getUsers();
+    const adminUsers = allUsers.filter(
+      u => u.role === 'Super Admin' || u.id === 'usr-admin-1' || u.email === 'admin@prayercloud.org' || u.email === 'dtemitope60@gmail.com'
+    );
+    const purgedUsersCount = allUsers.length - adminUsers.length;
+    this.set(STORAGE_KEYS.USERS, adminUsers);
+
+    // 2. Reset credentials to only admin
+    const creds = this.getUserCredentials();
+    const newCreds: Record<string, string> = {
+      'usr-admin-1': creds['usr-admin-1'] || 'Admin@12345'
+    };
+    this.set('prayercloud_credentials_v2', newCreds);
+
+    // 3. Purge demo prayers
+    const currentPrayers = this.getPrayerRequests();
+    const demoTitles = ['pamir corridor', 'tehranian', 'berber clan', 'turkana', 'secret believers', 'cox\'s bazar', 'bandung', 'saharan oasis'];
+    const demoUids = new Set(['usr-miss-1', 'usr-intercessor-1', 'usr-pastor-1', 'usr-volunteer-1', 'usr-evangelist-1']);
+    const keptPrayers = currentPrayers.filter(p => {
+      const t = (p.title || '').toLowerCase();
+      if (demoTitles.some(dt => t.includes(dt))) return false;
+      if (demoUids.has(p.authorId)) return false;
+      if (['pr-1', 'pr-2', 'pr-3', 'pr-4'].includes(p.id)) return false;
+      return true;
+    });
+    const purgedPrayersCount = currentPrayers.length - keptPrayers.length;
+    this.set(STORAGE_KEYS.PRAYERS, keptPrayers);
+
+    // 4. Purge demo reports
+    const currentReports = this.getMissionReports();
+    const keptReports = currentReports.filter(r => !['rep-1', 'rep-2'].includes(r.id) && !['usr-miss-1', 'usr-pastor-1'].includes(r.missionaryId));
+    const purgedReportsCount = currentReports.length - keptReports.length;
+    this.set(STORAGE_KEYS.REPORTS, keptReports);
+
+    // 5. Purge demo events
+    const currentEvents = this.getEvents();
+    const keptEvents = currentEvents.filter(e => !['evt-1', 'evt-2', 'evt-3'].includes(e.id));
+    const purgedEventsCount = currentEvents.length - keptEvents.length;
+    this.set(STORAGE_KEYS.EVENTS, keptEvents);
+
+    // 6. Purge demo recordings
+    const currentRecordings = this.getRecordings();
+    const keptRecordings = currentRecordings.filter(rec => !['rec-1', 'rec-2', 'rec-3'].includes(rec.id));
+    const purgedRecordingsCount = currentRecordings.length - keptRecordings.length;
+    this.set(STORAGE_KEYS.RECORDINGS, keptRecordings);
+
+    // 7. Purge chatroom demo data
+    const chatRes = this.purgeChatroomDemoData();
+
+    // Mark demo data as permanently purged so it never gets auto-seeded again
+    this.set('prayercloud_demo_chat_purged', true);
+    this.set('prayercloud_demo_purged_v2', true);
+
+    // Log launch audit
+    this.logAudit(
+      'admin',
+      'Super Admin',
+      'PURGE_ALL_DEMO_DATA_FOR_LAUNCH',
+      'All Entities',
+      `Purged ${purgedUsersCount} demo users, ${purgedPrayersCount} demo prayers, ${purgedReportsCount} reports, ${purgedEventsCount} events, and ${chatRes.purgedMessagesCount} demo transmissions for official deployment.`
+    );
+
+    // Clean Cloud SQL backend
+    try {
+      apiClient.purgeNonAdminUsersFromCloudSql().catch(() => {});
+      apiClient.purgeDemoPrayersFromCloudSql().catch(() => {});
+    } catch {}
+
+    return {
+      purgedUsersCount,
+      purgedPrayersCount,
+      purgedReportsCount,
+      purgedEventsCount,
+      purgedRecordingsCount,
+      purgedMessagesCount: chatRes.purgedMessagesCount
+    };
   }
 
   // ==========================================

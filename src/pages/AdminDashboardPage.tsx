@@ -560,20 +560,14 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onNaviga
   };
 
   const handlePurgeAllNonAdminUsers = async () => {
-    const nonAdminCount = users.filter(u => u.role !== 'Super Admin' && u.id !== 'usr-admin-1' && u.email !== 'admin@prayercloud.org').length;
-    if (nonAdminCount === 0) {
-      alert('The user directory is already in a clean state with 0 non-admin accounts. New users can register fresh!');
-      return;
-    }
-    
     if (
       confirm(
-        `🚨 PRODUCTION LAUNCH RESET:\n\nAre you sure you want to purge all ${nonAdminCount} non-admin directory records and clean all chatrooms?\n\nThis will reset the user registry to ZERO and remove demo messages from chat channels so incoming users can register and use the app from scratch. Your Super Admin account will remain active.`
+        `🚨 PRODUCTION LAUNCH RESET / PURGE ALL DEMO DATA:\n\nAre you sure you want to completely purge all demo users, demo prayer requests, demo mission reports, demo events, and demo transmissions?\n\nThis permanently cleans both local storage and the database so only authentic incoming users and missionary transmissions will be recorded. Your administrator accounts will remain active.`
       )
     ) {
-      const res = storage.purgeNonAdminUsers();
+      const res = storage.purgeAllDemoData();
       reloadData();
-      setUpdateSuccessMessage(`🚀 Launch Reset Complete: Purged ${res.purgedCount} directory accounts and cleaned all chatrooms. System is now fresh for live production!`);
+      setUpdateSuccessMessage(`🚀 Launch Reset Complete: Purged ${res.purgedUsersCount} demo users, ${res.purgedPrayersCount} demo prayers, ${res.purgedReportsCount} reports, and cleaned all channels. System is 100% clean for live production!`);
       setTimeout(() => setUpdateSuccessMessage(null), 6000);
     }
   };

@@ -7,7 +7,7 @@ import {
   siteSettings,
   auditLogs
 } from './schema.ts';
-import { desc, eq } from 'drizzle-orm';
+import { desc, eq, or, like, inArray } from 'drizzle-orm';
 
 // --- PRAYER REQUESTS ---
 export async function getAllPrayersFromDb() {
@@ -15,6 +15,28 @@ export async function getAllPrayersFromDb() {
     return await db.select().from(prayerRequests).orderBy(desc(prayerRequests.createdAt));
   } catch (e) {
     console.error('Failed to get prayers from Cloud SQL:', e);
+    return [];
+  }
+}
+
+export async function purgeDemoPrayersFromDb() {
+  try {
+    const deleted = await db.delete(prayerRequests).where(
+      or(
+        like(prayerRequests.title, '%Pamir Corridor%'),
+        like(prayerRequests.title, '%Tehranian%'),
+        like(prayerRequests.title, '%Berber clan%'),
+        like(prayerRequests.title, '%Turkana%'),
+        like(prayerRequests.title, '%Secret Believers%'),
+        like(prayerRequests.title, '%Cox%Bazar%'),
+        like(prayerRequests.title, '%Sundanese%'),
+        like(prayerRequests.title, '%Saharan Oasis%'),
+        inArray(prayerRequests.authorUid, ['usr-miss-1', 'usr-intercessor-1', 'usr-pastor-1', 'usr-volunteer-1', 'usr-evangelist-1'])
+      )
+    ).returning();
+    return deleted;
+  } catch (e) {
+    console.error('Failed to purge demo prayers from Cloud SQL:', e);
     return [];
   }
 }
@@ -122,9 +144,14 @@ export async function addCommentToPrayerInDb(prayerCustomId: string, comment: an
 
 export async function deletePrayerFromDb(prayerCustomId: string) {
   try {
+    const numId = Number(prayerCustomId);
+    const conditions = [eq(prayerRequests.customId, prayerCustomId)];
+    if (!isNaN(numId)) {
+      conditions.push(eq(prayerRequests.id, numId));
+    }
     const deleted = await db
       .delete(prayerRequests)
-      .where(eq(prayerRequests.customId, prayerCustomId))
+      .where(or(...conditions))
       .returning();
     return deleted[0] || null;
   } catch (e) {

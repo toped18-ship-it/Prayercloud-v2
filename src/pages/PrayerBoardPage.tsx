@@ -120,15 +120,35 @@ export const PrayerBoardPage: React.FC<PrayerBoardPageProps> = ({
       </div>
 
       {/* Prayer Request Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {filteredPrayers.map((prayer) => (
-          <PrayerRequestCard
-            key={prayer.id}
-            request={prayer}
-            onUpdate={onRefreshPrayers}
-          />
-        ))}
-      </div>
+      {filteredPrayers.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {filteredPrayers.map((prayer) => (
+            <PrayerRequestCard
+              key={prayer.id}
+              request={prayer}
+              onUpdate={onRefreshPrayers}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-16 px-4 bg-white dark:bg-[#151c2a] rounded-2xl border border-slate-200 dark:border-[#222d42]">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-50 dark:bg-blue-950/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
+            <HeartHandshake className="w-8 h-8" />
+          </div>
+          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+            No Active Prayer Petitions Yet
+          </h3>
+          <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto mb-6">
+            The global prayer wall is ready for real mission requests and urgent intercession needs from around the world.
+          </p>
+          <button
+            onClick={onOpenCreatePrayer}
+            className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-lg transition-all"
+          >
+            Post the First Prayer Petition
+          </button>
+        </div>
+      )}
     </div>
   );
 };

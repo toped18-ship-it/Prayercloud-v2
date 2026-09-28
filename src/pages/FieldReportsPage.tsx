@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { MissionReport } from '../types';
-import { FileText, Heart, MessageSquare, Plus, Search, CheckCircle, ArrowRight, X, Sparkles } from 'lucide-react';
+import { FileText, Heart, MessageSquare, Plus, Search, CheckCircle, ArrowRight, X, Sparkles, Globe } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { storage } from '../services/storageService';
 
@@ -74,70 +74,90 @@ export const FieldReportsPage: React.FC<FieldReportsPageProps> = ({
       </div>
 
       {/* Reports Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredReports.map((report) => {
-          const isLiked = currentUser ? report.likedUserIds.includes(currentUser.id) : false;
+      {filteredReports.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredReports.map((report) => {
+            const isLiked = currentUser ? report.likedUserIds.includes(currentUser.id) : false;
 
-          return (
-            <div
-              key={report.id}
-              onClick={() => setActiveReportModal(report)}
-              className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-xl transition-all cursor-pointer flex flex-col justify-between group"
-            >
-              <div className="p-6 space-y-3">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-semibold text-blue-600 dark:text-blue-400">
-                    {report.country} · {report.regionOrCity}
-                  </span>
-                  <span className="text-slate-400 text-[11px]">{report.createdAt}</span>
-                </div>
-
-                <h3 className="font-bold text-base text-slate-900 dark:text-white group-hover:text-emerald-600 transition-colors">
-                  {report.title}
-                </h3>
-
-                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-3">
-                  {report.summary}
-                </p>
-
-                {/* Key Metrics snapshot */}
-                {(report.peopleReachedEstimate || report.churchesPlantedCount) && (
-                  <div className="flex gap-2 pt-2">
-                    {report.peopleReachedEstimate && (
-                      <span className="text-[10px] font-bold px-2 py-0.5 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 rounded border border-emerald-200 dark:border-emerald-800">
-                        {report.peopleReachedEstimate.toLocaleString()} Reached
-                      </span>
-                    )}
-                    {report.churchesPlantedCount && (
-                      <span className="text-[10px] font-bold px-2 py-0.5 bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 rounded border border-blue-200 dark:border-blue-800">
-                        {report.churchesPlantedCount} Planted
-                      </span>
-                    )}
+            return (
+              <div
+                key={report.id}
+                onClick={() => setActiveReportModal(report)}
+                className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-xl transition-all cursor-pointer flex flex-col justify-between group"
+              >
+                <div className="p-6 space-y-3">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-semibold text-blue-600 dark:text-blue-400">
+                      {report.country} · {report.regionOrCity}
+                    </span>
+                    <span className="text-slate-400 text-[11px]">{report.createdAt}</span>
                   </div>
-                )}
-              </div>
 
-              <div className="p-4 bg-slate-50 dark:bg-slate-800/60 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500">
-                <span className="font-medium text-slate-700 dark:text-slate-300">
-                  By {report.missionaryName}
-                </span>
+                  <h3 className="font-bold text-base text-slate-900 dark:text-white group-hover:text-emerald-600 transition-colors">
+                    {report.title}
+                  </h3>
 
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={(e) => handleLike(report.id, e)}
-                    className={`flex items-center gap-1 hover:text-red-500 transition-colors ${
-                      isLiked ? 'text-red-500 font-bold' : ''
-                    }`}
-                  >
-                    <Heart className={`w-4 h-4 ${isLiked ? 'fill-red-500' : ''}`} />
-                    <span>{report.likesCount}</span>
-                  </button>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-3">
+                    {report.summary}
+                  </p>
+
+                  {/* Key Metrics snapshot */}
+                  {(report.peopleReachedEstimate || report.churchesPlantedCount) && (
+                    <div className="flex gap-2 pt-2">
+                      {report.peopleReachedEstimate && (
+                        <span className="text-[10px] font-bold px-2 py-0.5 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 rounded border border-emerald-200 dark:border-emerald-800">
+                          {report.peopleReachedEstimate.toLocaleString()} Reached
+                        </span>
+                      )}
+                      {report.churchesPlantedCount && (
+                        <span className="text-[10px] font-bold px-2 py-0.5 bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 rounded border border-blue-200 dark:border-blue-800">
+                          {report.churchesPlantedCount} Planted
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                <div className="p-4 bg-slate-50 dark:bg-slate-800/60 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500">
+                  <span className="font-medium text-slate-700 dark:text-slate-300">
+                    By {report.missionaryName}
+                  </span>
+
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={(e) => handleLike(report.id, e)}
+                      className={`flex items-center gap-1 hover:text-red-500 transition-colors ${
+                        isLiked ? 'text-red-500 font-bold' : ''
+                      }`}
+                    >
+                      <Heart className={`w-4 h-4 ${isLiked ? 'fill-red-500' : ''}`} />
+                      <span>{report.likesCount}</span>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="text-center py-16 px-4 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-emerald-50 dark:bg-emerald-950/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+            <Globe className="w-8 h-8" />
+          </div>
+          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+            No Field Reports Published Yet
+          </h3>
+          <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto mb-6">
+            Pioneering missionaries and field workers will share real kingdom breakthroughs, baptisms, and frontier stories here.
+          </p>
+          <button
+            onClick={() => setIsSubmitModalOpen(true)}
+            className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-lg transition-all"
+          >
+            Submit the First Field Report
+          </button>
+        </div>
+      )}
 
       {/* Full Report Reader Modal */}
       {activeReportModal && (

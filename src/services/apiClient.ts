@@ -271,6 +271,10 @@ export const apiClient = {
     return this.post('/api/users/purge-non-admins');
   },
 
+  async purgeDemoPrayersFromCloudSql() {
+    return this.post('/api/prayers/purge-demo');
+  },
+
   // Prayers
   async getPrayersFromCloudSql() {
     return this.get<{ success: boolean; prayers: any[] }>('/api/prayers');
