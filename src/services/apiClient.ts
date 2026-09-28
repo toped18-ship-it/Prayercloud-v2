@@ -358,6 +358,17 @@ export const apiClient = {
     return this.post('/api/sync/trigger', params);
   },
 
+  async syncCountryWithSearch(countryCode?: string, countryName?: string) {
+    return this.post<{ success: boolean; country?: any; countriesCount?: number; source?: string; timestamp?: string }>('/api/countries/search-sync', {
+      countryCode,
+      countryName
+    });
+  },
+
+  async getSearchSyncedCountries() {
+    return this.get<{ success: boolean; countries: any[]; timestamp?: string }>('/api/countries');
+  },
+
   async getSyncStatus() {
     return this.get('/api/sync/status');
   },

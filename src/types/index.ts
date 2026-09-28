@@ -73,6 +73,9 @@ export interface Country {
   activeMissionariesCount: number;
   activePrayerWarriorsCount: number;
   description: string;
+  unreachedPlaces?: string[]; // Names of unreached places / tribes / people groups for workforce deployment
+  lastUpdatedFromSearch?: string;
+  searchGroundingSource?: string;
 }
 
 export interface GlobalMissionStats {

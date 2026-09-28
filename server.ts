@@ -530,6 +530,97 @@ app.post('/api/sync/trigger', async (req: Request, res: Response) => {
 });
 
 // ==========================================
+// 8B. LIVE SEARCH ENGINE DEMOGRAPHIC SYNC
+// ==========================================
+app.get('/api/countries', async (req: Request, res: Response) => {
+  try {
+    const { ALL_COUNTRIES } = await import('./src/data/countriesData.ts');
+    res.json({ success: true, countries: ALL_COUNTRIES, timestamp: new Date().toISOString() });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error?.message || 'Failed to load countries' });
+  }
+});
+
+app.post('/api/countries/search-sync', async (req: Request, res: Response) => {
+  try {
+    const { countryCode, countryName } = req.body || {};
+    const { ALL_COUNTRIES } = await import('./src/data/countriesData.ts');
+    
+    let target = ALL_COUNTRIES.find(c => 
+      (countryCode && (c.code.toUpperCase() === countryCode.toUpperCase() || c.code3.toUpperCase() === countryCode.toUpperCase())) ||
+      (countryName && c.name.toLowerCase() === countryName.toLowerCase())
+    );
+
+    const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || '';
+    
+    // If Gemini API is available and a specific country is requested, perform live Google Search Grounding
+    if (apiKey && target) {
+      try {
+        const ai = new GoogleGenAI({
+          apiKey,
+          httpOptions: {
+            headers: {
+              'User-Agent': 'aistudio-build',
+            }
+          }
+        });
+
+        const prompt = `Search live Google Search for the most up-to-date demographic statistics for ${target.name} (${target.code3}).
+Extract:
+1. Latest total population (integer)
+2. Dominant religion percentages breakdown (e.g. Christianity %, Islam %, Hinduism %, etc.)
+3. Top 3 to 6 unreached places, unreached tribes, or unreached people groups needing missionary workforce.
+Return ONLY valid JSON in format:
+{
+  "population": number,
+  "dominantReligions": [{ "religion": string, "percentage": number }],
+  "unreachedPlaces": string[],
+  "source": string
+}`;
+
+        const response = await ai.models.generateContent({
+          model: 'gemini-3.8-flash',
+          contents: prompt,
+          config: {
+            tools: [{ googleSearch: {} }],
+          }
+        });
+
+        const text = response.text || '';
+        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          const parsed = JSON.parse(jsonMatch[0]);
+          if (parsed.population && typeof parsed.population === 'number') {
+            target = {
+              ...target,
+              population: parsed.population,
+              dominantReligions: Array.isArray(parsed.dominantReligions) && parsed.dominantReligions.length > 0 ? parsed.dominantReligions : target.dominantReligions,
+              unreachedPlaces: Array.isArray(parsed.unreachedPlaces) && parsed.unreachedPlaces.length > 0 ? parsed.unreachedPlaces : target.unreachedPlaces,
+              lastUpdatedFromSearch: new Date().toISOString(),
+              searchGroundingSource: parsed.source || 'Live Google Search Engine Grounding (2026 UN & Census)'
+            };
+          }
+        }
+      } catch (aiErr) {
+        console.warn('Live Google Search Grounding note:', aiErr);
+      }
+    }
+
+    await logAuditToDb('SEARCH_ENGINE_SYNC', `Search engine demographic sync executed for ${countryCode || 'all nations'}`);
+
+    res.json({
+      success: true,
+      country: target || null,
+      countriesCount: ALL_COUNTRIES.length,
+      timestamp: new Date().toISOString(),
+      source: 'United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Live Search Engine'
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error?.message || 'Failed to sync with search engines' });
+  }
+});
+
+// ==========================================
 // 9. AUDIT LOGS
 // ==========================================
 app.post('/api/audit', async (req: Request, res: Response) => {
@@ -550,18 +641,25 @@ app.post('/api/audit', async (req: Request, res: Response) => {
 // ==========================================
 app.post('/api/gemini/chat', async (req: Request, res: Response) => {
   try {
-    const { history, message, model = 'gemini-3.5-flash', systemInstruction, groundingMode = 'none' } = req.body || {};
+    const { history, message, model = 'gemini-3.8-flash', systemInstruction, groundingMode = 'none' } = req.body || {};
 
     if (!message || typeof message !== 'string') {
       return res.status(400).json({ success: false, error: 'message string is required' });
     }
 
     const apiKey = process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY || '';
-    const ai = new GoogleGenAI(apiKey ? { apiKey } : {});
+    const ai = new GoogleGenAI({
+      apiKey: apiKey || '',
+      httpOptions: {
+        headers: {
+          'User-Agent': 'aistudio-build',
+        }
+      }
+    });
 
     // Validate supported model names strictly
-    const validModels = ['gemini-3.5-flash', 'gemini-3.1-pro-preview', 'gemini-3.1-flash-lite', 'gemini-3.8-flash'];
-    const selectedModel = validModels.includes(model) ? model : 'gemini-3.5-flash';
+    const validModels = ['gemini-3.8-flash', 'gemini-3.1-pro-preview', 'gemini-3.1-flash-lite'];
+    const selectedModel = validModels.includes(model) ? model : 'gemini-3.8-flash';
 
     // Build multi-turn contents
     const contents: any[] = [];

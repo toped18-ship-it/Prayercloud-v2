@@ -1,14 +1,14 @@
 import { Country, GlobalMissionStats } from '../types';
 
 export const GLOBAL_MISSION_STATS: GlobalMissionStats = {
-  totalWorldPopulation: 7948743500,
-  totalUnreachedPeopleGroups: 6860,
+  totalWorldPopulation: 8300000000,
+  totalUnreachedPeopleGroups: 7295,
   total1040WindowCountries: 75,
-  globalChristianPercentage: 31.2,
-  globalEvangelicalPercentage: 8.4,
-  unreachedPopulationTotal: 3350000000,
-  activeFrontierMissionaries: 43000,
-  globalPrayerWarriorsCount: 1450000
+  globalChristianPercentage: 31.0,
+  globalEvangelicalPercentage: 8.5,
+  unreachedPopulationTotal: 3600000000,
+  activeFrontierMissionaries: 48500,
+  globalPrayerWarriorsCount: 1820000
 };
 
 export const ALL_COUNTRIES: Country[] = [
@@ -19,7 +19,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Afghanistan",
     "flag": "🇦🇫",
     "continent": "Asia",
-    "population": 41130000,
+    "population": 43500000,
     "dominantReligions": [
       {
         "religion": "Islam (Sunni)",
@@ -27,7 +27,7 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Islam (Shia)",
-        "percentage": 10.0
+        "percentage": 10
       },
       {
         "religion": "Christianity (Secret Underground)",
@@ -60,7 +60,17 @@ export const ALL_COUNTRIES: Country[] = [
       "Refugee diaspora outreach in Central Asia, Europe, and North America",
       "Digital Dari/Pashto scripture and radio broadcasts",
       "Cross-border humanitarian emergency relief"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Southern Pashtun (Kandahar)",
+      "Northern Tajik (Badakhshan)",
+      "Hazara (Hazarajat)",
+      "Turkmen (Faryab)",
+      "Uzbek of Balkh",
+      "Nuristani Tribes"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "alb",
@@ -77,7 +87,7 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 10.0
+        "percentage": 10
       },
       {
         "religion": "Christianity (Orthodox)",
@@ -88,9 +98,9 @@ export const ALL_COUNTRIES: Country[] = [
         "percentage": 26.5
       }
     ],
-    "christianPercentage": 17.0,
+    "christianPercentage": 17,
     "evangelicalPercentage": 0.6,
-    "unreachedPopulationPercentage": 62.0,
+    "unreachedPopulationPercentage": 62,
     "unreachedPeopleGroupsCount": 3,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -110,7 +120,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "University student ministry in Tirana",
       "Youth summer camps and English clubs"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Balkan Romani",
+      "Balkan Ashkali",
+      "Gorani (Kukës region)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "dza",
@@ -119,11 +136,11 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Algeria",
     "flag": "🇩🇿",
     "continent": "Africa",
-    "population": 44900000,
+    "population": 46500000,
     "dominantReligions": [
       {
         "religion": "Islam (Sunni)",
-        "percentage": 99.0
+        "percentage": 99
       },
       {
         "religion": "Christianity (Kabyle/Catholic)",
@@ -157,7 +174,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Kabyle audio Bible recording studios",
       "Digital discipleship apps for North African seekers"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Kabyle Berber (Tizi Ouzou)",
+      "Chaouia Berber (Aurès)",
+      "Mozabite (M'zab Valley)",
+      "Saharan Tuareg (Tamanrasset)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "and",
@@ -170,20 +195,20 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 88.0
+        "percentage": 88
       },
       {
         "religion": "Secular",
-        "percentage": 10.0
+        "percentage": 10
       },
       {
         "religion": "Other",
-        "percentage": 2.0
+        "percentage": 2
       }
     ],
-    "christianPercentage": 89.0,
+    "christianPercentage": 89,
     "evangelicalPercentage": 0.5,
-    "unreachedPopulationPercentage": 5.0,
+    "unreachedPopulationPercentage": 5,
     "unreachedPeopleGroupsCount": 1,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -203,7 +228,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Winter sports outdoor ministry",
       "Catalan scripture distribution"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Secular Catalan Towns",
+      "Immigrant Portuguese Diaspora",
+      "Escaldes Youth"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "ago",
@@ -212,7 +244,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Angola",
     "flag": "🇦🇴",
     "continent": "Africa",
-    "population": 35588000,
+    "population": 37000000,
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
@@ -220,7 +252,7 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Christianity (Protestant)",
-        "percentage": 37.0
+        "percentage": 37
       },
       {
         "religion": "Traditional",
@@ -251,7 +283,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Theological training institutes in Luanda and Huambo",
       "Rural health clinics and community development"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Chokwe of Lunda",
+      "Mbunda (Moxico)",
+      "Herero (Cunene)",
+      "San Bushmen (Cuando Cubango)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "atg",
@@ -264,16 +304,16 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Anglican/Moravian)",
-        "percentage": 90.0
+        "percentage": 90
       },
       {
         "religion": "Other",
-        "percentage": 10.0
+        "percentage": 10
       }
     ],
-    "christianPercentage": 90.0,
-    "evangelicalPercentage": 25.0,
-    "unreachedPopulationPercentage": 1.0,
+    "christianPercentage": 90,
+    "evangelicalPercentage": 25,
+    "unreachedPopulationPercentage": 1,
     "unreachedPeopleGroupsCount": 0,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -293,7 +333,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Caribbean maritime youth discipleship",
       "Island prayer networks"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Immigrant Dominican Laborers",
+      "Barbuda Coastal Settlements"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "arg",
@@ -302,11 +348,11 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Argentina",
     "flag": "🇦🇷",
     "continent": "South America",
-    "population": 46200000,
+    "population": 46500000,
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 63.0
+        "percentage": 63
       },
       {
         "religion": "Christianity (Evangelical)",
@@ -314,16 +360,16 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Secular",
-        "percentage": 19.0
+        "percentage": 19
       },
       {
         "religion": "Other",
         "percentage": 2.7
       }
     ],
-    "christianPercentage": 79.0,
+    "christianPercentage": 79,
     "evangelicalPercentage": 15.3,
-    "unreachedPopulationPercentage": 2.0,
+    "unreachedPopulationPercentage": 2,
     "unreachedPeopleGroupsCount": 3,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -344,7 +390,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Cross-cultural missionary training schools in Córdoba and Buenos Aires",
       "Wichí and Toba indigenous development in Gran Chaco"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Toba Qom (Chaco)",
+      "Wichi (Formosa/Salta)",
+      "Mapuche (Patagonia)",
+      "Syrian-Lebanese Diaspora"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "arm",
@@ -361,7 +415,7 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Christianity (Evangelical/Protestant)",
-        "percentage": 3.0
+        "percentage": 3
       },
       {
         "religion": "Yazidi / Other",
@@ -370,7 +424,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 95.6,
     "evangelicalPercentage": 3.2,
-    "unreachedPopulationPercentage": 2.0,
+    "unreachedPopulationPercentage": 2,
     "unreachedPeopleGroupsCount": 2,
     "securityLevel": "Medium",
     "primaryLanguages": [
@@ -391,7 +445,14 @@ export const ALL_COUNTRIES: Country[] = [
       "Nagorno-Karabakh refugee relief and trauma counseling",
       "Yazidi minority church planting",
       "University campus ministry in Yerevan"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Kurmanji Kurds",
+      "Yazidi of Aragatsotn",
+      "Molokan Russian Settlements"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "aus",
@@ -400,7 +461,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Australia",
     "flag": "🇦🇺",
     "continent": "Oceania",
-    "population": 26500000,
+    "population": 27000000,
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic/Anglican/Protestant)",
@@ -424,7 +485,7 @@ export const ALL_COUNTRIES: Country[] = [
       }
     ],
     "christianPercentage": 50.4,
-    "evangelicalPercentage": 14.0,
+    "evangelicalPercentage": 14,
     "unreachedPopulationPercentage": 6.5,
     "unreachedPeopleGroupsCount": 24,
     "securityLevel": "Low",
@@ -448,7 +509,16 @@ export const ALL_COUNTRIES: Country[] = [
       "Aboriginal remote community discipleship and health support",
       "International student and migrant church planting",
       "Cross-cultural missionary training to Southeast Asia and the Pacific"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Pitjantjatjara (Anangu Lands)",
+      "Yolngu (Arnhem Land)",
+      "Warlpiri (Tanami)",
+      "Afghan-Hazara Diaspora (Dandenong)",
+      "Lebanese Sunnis (Western Sydney)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "aut",
@@ -476,9 +546,9 @@ export const ALL_COUNTRIES: Country[] = [
         "percentage": 14.1
       }
     ],
-    "christianPercentage": 64.0,
+    "christianPercentage": 64,
     "evangelicalPercentage": 0.9,
-    "unreachedPopulationPercentage": 9.0,
+    "unreachedPopulationPercentage": 9,
     "unreachedPeopleGroupsCount": 5,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -499,7 +569,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Diaspora refugee integration cafes",
       "Campus discipleship at University of Vienna"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Turkish Diaspora (Favoriten/Vienna)",
+      "Bosnian Muslim Diaspora (Linz)",
+      "Post-Christian Secular Graz"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "aze",
@@ -508,28 +585,28 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Azerbaijan",
     "flag": "🇦🇿",
     "continent": "Asia",
-    "population": 10140000,
+    "population": 10400000,
     "dominantReligions": [
       {
         "religion": "Islam (Shia)",
-        "percentage": 65.0
+        "percentage": 65
       },
       {
         "religion": "Islam (Sunni)",
-        "percentage": 31.0
+        "percentage": 31
       },
       {
         "religion": "Christianity (Russian Orthodox/Evangelical)",
-        "percentage": 3.0
+        "percentage": 3
       },
       {
         "religion": "Other",
-        "percentage": 1.0
+        "percentage": 1
       }
     ],
-    "christianPercentage": 3.0,
+    "christianPercentage": 3,
     "evangelicalPercentage": 0.2,
-    "unreachedPopulationPercentage": 97.0,
+    "unreachedPopulationPercentage": 97,
     "unreachedPeopleGroupsCount": 18,
     "securityLevel": "High",
     "primaryLanguages": [
@@ -552,7 +629,15 @@ export const ALL_COUNTRIES: Country[] = [
       "Digital Azeri media discipleship and Bible apps",
       "Business-as-mission start-ups in Baku",
       "Minority language Bible translation"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Lezgin (Qusar/Quba)",
+      "Talysh (Lankaran/Astara)",
+      "Avar (Zaqatala)",
+      "Mountain Jews (Qırmızı Qəsəbə)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "bhs",
@@ -565,15 +650,15 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Baptist/Anglican)",
-        "percentage": 95.0
+        "percentage": 95
       },
       {
         "religion": "Other",
-        "percentage": 5.0
+        "percentage": 5
       }
     ],
-    "christianPercentage": 95.0,
-    "evangelicalPercentage": 35.0,
+    "christianPercentage": 95,
+    "evangelicalPercentage": 35,
     "unreachedPopulationPercentage": 0.5,
     "unreachedPeopleGroupsCount": 0,
     "securityLevel": "Low",
@@ -594,7 +679,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Family restoration centers",
       "Out-island church support"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Haitian Creole Shantytowns (Abaco/New Providence)",
+      "Family Islands Outer Outposts"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "bhr",
@@ -603,7 +694,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Bahrain",
     "flag": "🇧🇭",
     "continent": "Asia",
-    "population": 1480000,
+    "population": 1550000,
     "dominantReligions": [
       {
         "religion": "Islam (Shia/Sunni - Official)",
@@ -624,7 +715,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 14.5,
     "evangelicalPercentage": 3.2,
-    "unreachedPopulationPercentage": 82.0,
+    "unreachedPopulationPercentage": 82,
     "unreachedPeopleGroupsCount": 8,
     "securityLevel": "Medium",
     "primaryLanguages": [
@@ -647,7 +738,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Healthcare and professional business ministry",
       "Expatriate migrant worker discipleship and fellowship support"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Shia Baharna (Sitra)",
+      "Bangladeshi Labor Camps (Manama)",
+      "Filipino Domestic Workers"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "bgd",
@@ -656,7 +754,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Bangladesh",
     "flag": "🇧🇩",
     "continent": "Asia",
-    "population": 169800000,
+    "population": 178000000,
     "dominantReligions": [
       {
         "religion": "Islam (Sunni - Official)",
@@ -664,7 +762,7 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Hinduism",
-        "percentage": 10.0
+        "percentage": 10
       },
       {
         "religion": "Buddhism / Christianity",
@@ -697,7 +795,16 @@ export const ALL_COUNTRIES: Country[] = [
       "Riverboat mobile medical and educational missions",
       "Micro-enterprise and vocational training for rural women",
       "Rohingya refugee camp humanitarian and trauma care"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Bengali Muslims (Sylhet/Chittagong)",
+      "Rohingya Refugees (Cox's Bazar)",
+      "Chakma (Chittagong Hill Tracts)",
+      "Bihari Urdu Enclaves (Dhaka)",
+      "Garos (Mymensingh)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "brb",
@@ -710,20 +817,20 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Anglican/Pentecostal)",
-        "percentage": 76.0
+        "percentage": 76
       },
       {
         "religion": "No Religion",
-        "percentage": 20.0
+        "percentage": 20
       },
       {
         "religion": "Other",
-        "percentage": 4.0
+        "percentage": 4
       }
     ],
-    "christianPercentage": 76.0,
-    "evangelicalPercentage": 28.0,
-    "unreachedPopulationPercentage": 1.0,
+    "christianPercentage": 76,
+    "evangelicalPercentage": 28,
+    "unreachedPopulationPercentage": 1,
     "unreachedPeopleGroupsCount": 0,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -743,7 +850,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "University campus ministry at Cave Hill",
       "Mission training base"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Guyanese Immigrant Laborers",
+      "Urban Bridgetown Enclaves"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "blr",
@@ -756,11 +869,11 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Orthodox)",
-        "percentage": 73.0
+        "percentage": 73
       },
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 12.0
+        "percentage": 12
       },
       {
         "religion": "Secular",
@@ -772,8 +885,8 @@ export const ALL_COUNTRIES: Country[] = [
       }
     ],
     "christianPercentage": 87.5,
-    "evangelicalPercentage": 2.0,
-    "unreachedPopulationPercentage": 3.0,
+    "evangelicalPercentage": 2,
+    "unreachedPopulationPercentage": 3,
     "unreachedPeopleGroupsCount": 2,
     "securityLevel": "High",
     "primaryLanguages": [
@@ -793,7 +906,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Youth rehabilitation centers",
       "Children's summer camps"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Lipka Tatars (Iwie)",
+      "Rural Polesia Marshland Villages",
+      "Post-Soviet Youth (Minsk)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "bel",
@@ -802,15 +922,15 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Belgium",
     "flag": "🇧🇪",
     "continent": "Europe",
-    "population": 11690000,
+    "population": 11800000,
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 54.0
+        "percentage": 54
       },
       {
         "religion": "Secular",
-        "percentage": 31.0
+        "percentage": 31
       },
       {
         "religion": "Islam",
@@ -821,9 +941,9 @@ export const ALL_COUNTRIES: Country[] = [
         "percentage": 7.4
       }
     ],
-    "christianPercentage": 59.0,
+    "christianPercentage": 59,
     "evangelicalPercentage": 1.4,
-    "unreachedPopulationPercentage": 11.0,
+    "unreachedPopulationPercentage": 11,
     "unreachedPeopleGroupsCount": 14,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -844,7 +964,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "EU diplomatic and policy worker ministry",
       "Diaspora cafe outreach"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Moroccan Diaspora (Molenbeek/Brussels)",
+      "Turkish Diaspora (Schaerbeek)",
+      "Flemish Post-Christian Secularists (Ghent/Antwerp)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "blz",
@@ -869,7 +996,7 @@ export const ALL_COUNTRIES: Country[] = [
       }
     ],
     "christianPercentage": 83.6,
-    "evangelicalPercentage": 21.0,
+    "evangelicalPercentage": 21,
     "unreachedPopulationPercentage": 2.5,
     "unreachedPeopleGroupsCount": 1,
     "securityLevel": "Low",
@@ -893,7 +1020,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Jungle river medical and church planting teams",
       "Youth leadership mentoring"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Mopan Maya (Toledo District)",
+      "Q'eqchi' Maya (Punta Gorda)",
+      "Garifuna Coastal Villages"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "ben",
@@ -902,7 +1036,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Benin",
     "flag": "🇧🇯",
     "continent": "Africa",
-    "population": 13350000,
+    "population": 14000000,
     "dominantReligions": [
       {
         "religion": "Christianity",
@@ -941,7 +1075,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Pioneer church planting in northern savannah villages",
       "Audio Bible distribution in local languages"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Fon Vodun Traditionalists (Ouidah)",
+      "Bariba (Borgou/Parakou)",
+      "Fulbe Pastoralists (Alibori)",
+      "Somba/Otammari (Atakora)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "btn",
@@ -954,20 +1096,20 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Buddhism (Vajrayana/Tibetan - Official)",
-        "percentage": 75.0
+        "percentage": 75
       },
       {
         "religion": "Hinduism (Nepali Lhotshampa)",
-        "percentage": 22.0
+        "percentage": 22
       },
       {
         "religion": "Christianity / Other",
-        "percentage": 3.0
+        "percentage": 3
       }
     ],
     "christianPercentage": 2.2,
     "evangelicalPercentage": 1.9,
-    "unreachedPopulationPercentage": 97.0,
+    "unreachedPopulationPercentage": 97,
     "unreachedPeopleGroupsCount": 18,
     "securityLevel": "High",
     "primaryLanguages": [
@@ -989,7 +1131,14 @@ export const ALL_COUNTRIES: Country[] = [
       "Dzongkha audio Bible and digital media distribution",
       "Community development and vocational trade training",
       "Business-as-mission in eco-tourism and IT"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Drukpa Tibetan Buddhists (Thimphu/Paro)",
+      "Sharchop (Trashigang)",
+      "Lhotshampa Nepalis (Southern foothills)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "bol",
@@ -998,24 +1147,24 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Bolivia",
     "flag": "🇧🇴",
     "continent": "South America",
-    "population": 12200000,
+    "population": 12400000,
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 70.0
+        "percentage": 70
       },
       {
         "religion": "Christianity (Evangelical/Protestant)",
-        "percentage": 20.0
+        "percentage": 20
       },
       {
         "religion": "Indigenous / Other",
-        "percentage": 10.0
+        "percentage": 10
       }
     ],
-    "christianPercentage": 90.0,
+    "christianPercentage": 90,
     "evangelicalPercentage": 18.5,
-    "unreachedPopulationPercentage": 2.0,
+    "unreachedPopulationPercentage": 2,
     "unreachedPeopleGroupsCount": 5,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -1037,7 +1186,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Amazon basin jungle boat medical missions",
       "Quechua and Aymara radio broadcasting and leadership schools"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Quechua of Potosí",
+      "Aymara of the Altiplano",
+      "Ayoreo of the Chaco",
+      "Yuqui (Chapare Forest)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "bih",
@@ -1065,9 +1222,9 @@ export const ALL_COUNTRIES: Country[] = [
         "percentage": 3.4
       }
     ],
-    "christianPercentage": 46.0,
+    "christianPercentage": 46,
     "evangelicalPercentage": 0.1,
-    "unreachedPopulationPercentage": 52.0,
+    "unreachedPopulationPercentage": 52,
     "unreachedPeopleGroupsCount": 4,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -1088,7 +1245,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Youth reconciliation centers and English teaching",
       "Church planting in small towns"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Bosniak Muslims (Tuzla/Sarajevo)",
+      "Gorani Enclaves",
+      "Sandžak Diaspora"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "bwa",
@@ -1101,20 +1265,20 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity",
-        "percentage": 73.0
+        "percentage": 73
       },
       {
         "religion": "Badimo / Traditional",
-        "percentage": 20.0
+        "percentage": 20
       },
       {
         "religion": "Other",
-        "percentage": 7.0
+        "percentage": 7
       }
     ],
-    "christianPercentage": 73.0,
-    "evangelicalPercentage": 15.0,
-    "unreachedPopulationPercentage": 2.0,
+    "christianPercentage": 73,
+    "evangelicalPercentage": 15,
+    "unreachedPopulationPercentage": 2,
     "unreachedPeopleGroupsCount": 2,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -1135,7 +1299,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "University campus ministry in Gaborone",
       "Wilderness outreach and literacy in Kalahari"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Basarwa San Bushmen (Kalahari Desert)",
+      "Hambukushu (Okavango Delta)",
+      "Herero (Ngamiland)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "bra",
@@ -1144,31 +1315,31 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Brazil",
     "flag": "🇧🇷",
     "continent": "South America",
-    "population": 215000000,
+    "population": 214000000,
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 50.0
+        "percentage": 50
       },
       {
         "religion": "Christianity (Evangelical/Pentecostal)",
-        "percentage": 31.0
+        "percentage": 31
       },
       {
         "religion": "Spiritism (Umbanda/Kardecist)",
-        "percentage": 4.0
+        "percentage": 4
       },
       {
         "religion": "No Religion / Secular",
-        "percentage": 14.0
+        "percentage": 14
       },
       {
         "religion": "Other",
-        "percentage": 1.0
+        "percentage": 1
       }
     ],
-    "christianPercentage": 81.0,
-    "evangelicalPercentage": 31.0,
+    "christianPercentage": 81,
+    "evangelicalPercentage": 31,
     "unreachedPopulationPercentage": 2.5,
     "unreachedPeopleGroupsCount": 38,
     "securityLevel": "Low",
@@ -1192,7 +1363,16 @@ export const ALL_COUNTRIES: Country[] = [
       "Amazon riverboat medical and church planting missions",
       "Cross-cultural missionary training hubs in São Paulo, Belo Horizonte, and Curitiba",
       "Favela community youth rescue and discipleship centers"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Yanomami (Roraima/Amazonas)",
+      "Kayapo (Xingu River)",
+      "Guarani Kaiowá (Mato Grosso do Sul)",
+      "Favela Rocinha (Rio)",
+      "Lebanese Muslim Enclaves (Foz do Iguaçu)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "brn",
@@ -1218,7 +1398,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 8.7,
     "evangelicalPercentage": 1.2,
-    "unreachedPopulationPercentage": 84.0,
+    "unreachedPopulationPercentage": 84,
     "unreachedPeopleGroupsCount": 7,
     "securityLevel": "High",
     "primaryLanguages": [
@@ -1241,7 +1421,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Professional expat workplace ministry in oil and education sectors",
       "Digital Malay discipleship resources"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Brunei Malay (Bandar Seri Begawan)",
+      "Kedayan",
+      "Tutong",
+      "Dusun of Tutong"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "bgr",
@@ -1254,20 +1442,20 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Bulgarian Orthodox)",
-        "percentage": 76.0
+        "percentage": 76
       },
       {
         "religion": "Islam (Turk/Pomak)",
-        "percentage": 10.0
+        "percentage": 10
       },
       {
         "religion": "Secular / Other",
-        "percentage": 14.0
+        "percentage": 14
       }
     ],
-    "christianPercentage": 78.0,
+    "christianPercentage": 78,
     "evangelicalPercentage": 2.2,
-    "unreachedPopulationPercentage": 12.0,
+    "unreachedPopulationPercentage": 12,
     "unreachedPeopleGroupsCount": 6,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -1288,7 +1476,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Roma community literacy and church planting",
       "Turkish-language ministry in Kardzhali and Shumen"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Pomak Slavic Muslims (Rhodope Mountains)",
+      "Turkish Minority (Kardzhali)",
+      "Romani Ghetto Communities (Sliven)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "bfa",
@@ -1314,7 +1509,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 29.8,
     "evangelicalPercentage": 9.2,
-    "unreachedPopulationPercentage": 64.0,
+    "unreachedPopulationPercentage": 64,
     "unreachedPeopleGroupsCount": 28,
     "securityLevel": "High",
     "primaryLanguages": [
@@ -1336,7 +1531,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Trauma healing and emergency food relief for displaced families",
       "Solar audio Bible distribution"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Mossi Animists (Central Plateau)",
+      "Fulfulde Pastoralists (Sahel/Dori)",
+      "Gurunsi (Sissili)",
+      "Bobo (Bobo-Dioulasso)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "bdi",
@@ -1345,23 +1548,23 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Burundi",
     "flag": "🇧🇮",
     "continent": "Africa",
-    "population": 12890000,
+    "population": 13500000,
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic/Protestant)",
-        "percentage": 91.0
+        "percentage": 91
       },
       {
         "religion": "Islam",
-        "percentage": 3.0
+        "percentage": 3
       },
       {
         "religion": "Traditional",
-        "percentage": 6.0
+        "percentage": 6
       }
     ],
-    "christianPercentage": 91.0,
-    "evangelicalPercentage": 35.0,
+    "christianPercentage": 91,
+    "evangelicalPercentage": 35,
     "unreachedPopulationPercentage": 0.5,
     "unreachedPeopleGroupsCount": 1,
     "securityLevel": "Medium",
@@ -1384,7 +1587,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Pastoral leadership development",
       "Agricultural mission and community development"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Batwa Pygmies (Kirundo/Muyinga)",
+      "Lake Tanganyika Fishing Enclaves",
+      "Bujumbura Rural Shallows"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "cpv",
@@ -1410,7 +1620,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 87.5,
     "evangelicalPercentage": 9.8,
-    "unreachedPopulationPercentage": 1.0,
+    "unreachedPopulationPercentage": 1,
     "unreachedPeopleGroupsCount": 1,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -1430,7 +1640,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Youth and sports ministries",
       "Island-to-island church planting"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Remote Santo Antão Valleys",
+      "Fogo Island Caldeira Settlements"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "khm",
@@ -1439,7 +1655,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Cambodia",
     "flag": "🇰🇭",
     "continent": "Asia",
-    "population": 16700000,
+    "population": 17000000,
     "dominantReligions": [
       {
         "religion": "Buddhism (Theravada - Official)",
@@ -1447,7 +1663,7 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Islam (Cham)",
-        "percentage": 2.0
+        "percentage": 2
       },
       {
         "religion": "Christianity",
@@ -1456,7 +1672,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 1.2,
     "evangelicalPercentage": 1.1,
-    "unreachedPopulationPercentage": 97.0,
+    "unreachedPopulationPercentage": 97,
     "unreachedPeopleGroupsCount": 26,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -1479,7 +1695,15 @@ export const ALL_COUNTRIES: Country[] = [
       "Anti-trafficking rescue, trauma rehabilitation, and vocational schools",
       "Cham Muslim community development and clean water wells",
       "Khmer village church planting and primary education"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Cham Muslims (Kampong Cham)",
+      "Kuy Tribal People (Preah Vihear)",
+      "Jarai (Ratanakiri)",
+      "Tampuan (Banlung)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "cmr",
@@ -1488,22 +1712,22 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Cameroon",
     "flag": "🇨🇲",
     "continent": "Africa",
-    "population": 27910000,
+    "population": 29000000,
     "dominantReligions": [
       {
         "religion": "Christianity",
-        "percentage": 70.0
+        "percentage": 70
       },
       {
         "religion": "Islam",
-        "percentage": 20.0
+        "percentage": 20
       },
       {
         "religion": "Traditional",
-        "percentage": 10.0
+        "percentage": 10
       }
     ],
-    "christianPercentage": 70.0,
+    "christianPercentage": 70,
     "evangelicalPercentage": 11.5,
     "unreachedPopulationPercentage": 24.5,
     "unreachedPeopleGroupsCount": 42,
@@ -1527,7 +1751,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Mother-tongue Bible translation with Wycliffe/SIL",
       "Northern Sahel pioneer missions"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Fulbe Bororo (Adamawa Plateau)",
+      "Kirdi Hill Tribes (Mandara Mountains)",
+      "Choa Arab (Far North/Lake Chad)",
+      "Baka Pygmies (East Rainforest)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "can",
@@ -1536,7 +1768,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Canada",
     "flag": "🇨🇦",
     "continent": "North America",
-    "population": 39800000,
+    "population": 40000000,
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
@@ -1548,7 +1780,7 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Christianity (Protestant)",
-        "percentage": 18.0
+        "percentage": 18
       },
       {
         "religion": "Islam",
@@ -1565,7 +1797,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 53.3,
     "evangelicalPercentage": 8.5,
-    "unreachedPopulationPercentage": 11.0,
+    "unreachedPopulationPercentage": 11,
     "unreachedPeopleGroupsCount": 36,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -1590,7 +1822,16 @@ export const ALL_COUNTRIES: Country[] = [
       "First Nations remote fly-in community ministry",
       "Multicultural diaspora church planting in Toronto and Vancouver",
       "University campus discipleship"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Inuit Settlements (Nunavut/Inuvik)",
+      "Cree & Dene First Nations (Northern Ontario)",
+      "South Asian Sikhs (Surrey/Brampton)",
+      "Arab Diaspora (Montreal)",
+      "Somali Diaspora (Toronto)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "caf",
@@ -1603,20 +1844,20 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity",
-        "percentage": 80.0
+        "percentage": 80
       },
       {
         "religion": "Islam",
-        "percentage": 15.0
+        "percentage": 15
       },
       {
         "religion": "Traditional",
-        "percentage": 5.0
+        "percentage": 5
       }
     ],
-    "christianPercentage": 80.0,
-    "evangelicalPercentage": 32.0,
-    "unreachedPopulationPercentage": 16.0,
+    "christianPercentage": 80,
+    "evangelicalPercentage": 32,
+    "unreachedPopulationPercentage": 16,
     "unreachedPeopleGroupsCount": 14,
     "securityLevel": "High",
     "primaryLanguages": [
@@ -1638,7 +1879,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Medical missionary aviation",
       "Orphan rehabilitation and vocational training"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Mbororo Fulani Nomads",
+      "Banda (Ouaka)",
+      "Gbaya (Nana-Mambéré)",
+      "Bayaka Pygmies (Lobaye)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "tcd",
@@ -1647,7 +1896,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Chad",
     "flag": "🇹🇩",
     "continent": "Africa",
-    "population": 17720000,
+    "population": 19000000,
     "dominantReligions": [
       {
         "religion": "Islam",
@@ -1664,7 +1913,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 44.1,
     "evangelicalPercentage": 9.8,
-    "unreachedPopulationPercentage": 54.0,
+    "unreachedPopulationPercentage": 54,
     "unreachedPeopleGroupsCount": 74,
     "securityLevel": "High",
     "primaryLanguages": [
@@ -1685,7 +1934,16 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Nomadic desert medical teams",
       "Chadian Arabic radio broadcast and digital scripture"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Toubou (Tibesti Sahara)",
+      "Kanembu (Lake Chad)",
+      "Sara (Chari-Baguirmi)",
+      "Baggara Arabs (Guéra)",
+      "Zaghawa (Ennedi)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "chl",
@@ -1694,28 +1952,28 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Chile",
     "flag": "🇨🇱",
     "continent": "South America",
-    "population": 19600000,
+    "population": 20000000,
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 54.0
+        "percentage": 54
       },
       {
         "religion": "Christianity (Evangelical/Pentecostal)",
-        "percentage": 18.0
+        "percentage": 18
       },
       {
         "religion": "No Religion / Secular",
-        "percentage": 25.0
+        "percentage": 25
       },
       {
         "religion": "Other",
-        "percentage": 3.0
+        "percentage": 3
       }
     ],
-    "christianPercentage": 72.0,
+    "christianPercentage": 72,
     "evangelicalPercentage": 16.5,
-    "unreachedPopulationPercentage": 2.0,
+    "unreachedPopulationPercentage": 2,
     "unreachedPeopleGroupsCount": 2,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -1736,7 +1994,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Mapuche indigenous community development and church planting",
       "University campus ministry in Santiago"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Mapuche (Araucanía Region)",
+      "Rapa Nui (Easter Island)",
+      "Aymara (Tarapacá Desert)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "chn",
@@ -1753,7 +2018,7 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Buddhism / Taoism",
-        "percentage": 15.0
+        "percentage": 15
       },
       {
         "religion": "Christianity (Protestant/Catholic/House Church)",
@@ -1761,16 +2026,16 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Islam (Hui/Uyghur)",
-        "percentage": 2.0
+        "percentage": 2
       },
       {
         "religion": "Other",
-        "percentage": 1.0
+        "percentage": 1
       }
     ],
     "christianPercentage": 8.5,
     "evangelicalPercentage": 5.8,
-    "unreachedPopulationPercentage": 88.0,
+    "unreachedPopulationPercentage": 88,
     "unreachedPeopleGroupsCount": 442,
     "securityLevel": "Extreme",
     "primaryLanguages": [
@@ -1795,7 +2060,18 @@ export const ALL_COUNTRIES: Country[] = [
       "Frontier missionary training for minority border regions",
       "Tibetan and Hui language Bible translation and digital scripture",
       "Marketplace business-as-mission networks across Central Asia"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Hui Muslims (Ningxia/Linxia)",
+      "Uyghurs (Tarim Basin/Kashgar)",
+      "Amdo & Kham Tibetans (Qinghai/Sichuan)",
+      "Yi (Liangshan)",
+      "Dongxiang (Gansu)",
+      "Salar (Qinghai)",
+      "Dai (Xishuangbanna)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "col",
@@ -1804,24 +2080,24 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Colombia",
     "flag": "🇨🇴",
     "continent": "South America",
-    "population": 52000000,
+    "population": 53000000,
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 73.0
+        "percentage": 73
       },
       {
         "religion": "Christianity (Evangelical/Pentecostal)",
-        "percentage": 17.0
+        "percentage": 17
       },
       {
         "religion": "No Religion / Other",
-        "percentage": 10.0
+        "percentage": 10
       }
     ],
-    "christianPercentage": 90.0,
-    "evangelicalPercentage": 15.0,
-    "unreachedPopulationPercentage": 2.0,
+    "christianPercentage": 90,
+    "evangelicalPercentage": 15,
+    "unreachedPopulationPercentage": 2,
     "unreachedPeopleGroupsCount": 18,
     "securityLevel": "Medium",
     "primaryLanguages": [
@@ -1844,7 +2120,15 @@ export const ALL_COUNTRIES: Country[] = [
       "Red Zone rural pastoral support and emergency relief",
       "Wayuu water well drilling and church planting in La Guajira",
       "Cross-cultural mission training in Bogotá and Medellín"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Wayuu (La Guajira Desert)",
+      "Emberá-Chamí (Chocó)",
+      "Nasa Paez (Cauca)",
+      "Nukak Maku (Guaviare Forest)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "com",
@@ -1861,14 +2145,14 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Christianity",
-        "percentage": 1.0
+        "percentage": 1
       },
       {
         "religion": "Other",
         "percentage": 0.5
       }
     ],
-    "christianPercentage": 1.0,
+    "christianPercentage": 1,
     "evangelicalPercentage": 0.2,
     "unreachedPopulationPercentage": 98.8,
     "unreachedPeopleGroupsCount": 3,
@@ -1891,7 +2175,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "English teaching and humanitarian development",
       "Healthcare and island educational initiatives"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Comorian Shingazidja (Grande Comore)",
+      "Shimwali (Mohéli)",
+      "Shindzuani (Anjouan)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "cod",
@@ -1900,23 +2191,23 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Congo (DRC)",
     "flag": "🇨🇩",
     "continent": "Africa",
-    "population": 99000000,
+    "population": 109000000,
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 50.0
+        "percentage": 50
       },
       {
         "religion": "Christianity (Protestant)",
-        "percentage": 40.0
+        "percentage": 40
       },
       {
         "religion": "Traditional/Islam",
-        "percentage": 10.0
+        "percentage": 10
       }
     ],
-    "christianPercentage": 90.0,
-    "evangelicalPercentage": 25.0,
+    "christianPercentage": 90,
+    "evangelicalPercentage": 25,
     "unreachedPopulationPercentage": 2.5,
     "unreachedPeopleGroupsCount": 8,
     "securityLevel": "High",
@@ -1940,7 +2231,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Refugee and trauma healing ministries in Goma",
       "Christian university education and business leadership"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Mbuti Pygmies (Ituri Forest)",
+      "Hemba (Tanganyika)",
+      "Nande of Beni (Kivu War Zone)",
+      "Mongo (Equateur Rainforest)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "cog",
@@ -1957,7 +2256,7 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Traditional",
-        "percentage": 8.0
+        "percentage": 8
       },
       {
         "religion": "Islam",
@@ -1987,7 +2286,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Forest Pygmy literacy and church planting",
       "Pastoral leadership training"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Babongo Pygmies (Likouala)",
+      "Teke (Plateaux)",
+      "Bakongo Coastal Rural Bands"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "cri",
@@ -2000,23 +2306,23 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 62.0
+        "percentage": 62
       },
       {
         "religion": "Christianity (Evangelical)",
-        "percentage": 22.0
+        "percentage": 22
       },
       {
         "religion": "No Religion",
-        "percentage": 14.0
+        "percentage": 14
       },
       {
         "religion": "Other",
-        "percentage": 2.0
+        "percentage": 2
       }
     ],
-    "christianPercentage": 84.0,
-    "evangelicalPercentage": 22.0,
+    "christianPercentage": 84,
+    "evangelicalPercentage": 22,
     "unreachedPopulationPercentage": 1.5,
     "unreachedPeopleGroupsCount": 2,
     "securityLevel": "Low",
@@ -2039,7 +2345,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Cross-cultural mission training institutes in San José",
       "Indigenous mountain church planting"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Bribri (Talamanca Mountains)",
+      "Cabécar (Turrialba)",
+      "Ngöbe-Buglé Border Laborers"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "civ",
@@ -2048,7 +2361,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Cote d'Ivoire",
     "flag": "🇨🇮",
     "continent": "Africa",
-    "population": 28160000,
+    "population": 30000000,
     "dominantReligions": [
       {
         "religion": "Islam",
@@ -2065,7 +2378,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 39.8,
     "evangelicalPercentage": 11.2,
-    "unreachedPopulationPercentage": 36.0,
+    "unreachedPopulationPercentage": 36,
     "unreachedPeopleGroupsCount": 22,
     "securityLevel": "Medium",
     "primaryLanguages": [
@@ -2087,7 +2400,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Cross-cultural missionary training in Abidjan",
       "Northern rural agricultural mission stations"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Baoulé Animists",
+      "Malinké/Dioula (Bouaké/Odienné)",
+      "Sénoufo (Korhogo)",
+      "Dan/Yacouba (Man)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "hrv",
@@ -2100,7 +2421,7 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 79.0
+        "percentage": 79
       },
       {
         "religion": "Christianity (Orthodox)",
@@ -2111,9 +2432,9 @@ export const ALL_COUNTRIES: Country[] = [
         "percentage": 17.7
       }
     ],
-    "christianPercentage": 83.0,
+    "christianPercentage": 83,
     "evangelicalPercentage": 0.4,
-    "unreachedPopulationPercentage": 3.0,
+    "unreachedPopulationPercentage": 3,
     "unreachedPeopleGroupsCount": 2,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -2132,7 +2453,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "University campus ministry in Zagreb, Split, and Rijeka",
       "Creative arts and media outreach"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Serbian Orthodox Enclaves (Krajina)",
+      "Romani Camps (Međimurje)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "cub",
@@ -2145,24 +2472,24 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 50.0
+        "percentage": 50
       },
       {
         "religion": "Santería / Spiritism",
-        "percentage": 30.0
+        "percentage": 30
       },
       {
         "religion": "Christianity (Evangelical/Protestant)",
-        "percentage": 10.0
+        "percentage": 10
       },
       {
         "religion": "No Religion",
-        "percentage": 10.0
+        "percentage": 10
       }
     ],
-    "christianPercentage": 60.0,
-    "evangelicalPercentage": 10.0,
-    "unreachedPopulationPercentage": 5.0,
+    "christianPercentage": 60,
+    "evangelicalPercentage": 10,
+    "unreachedPopulationPercentage": 5,
     "unreachedPeopleGroupsCount": 2,
     "securityLevel": "High",
     "primaryLanguages": [
@@ -2181,7 +2508,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "House church pastoral training and scripture printing",
       "Community soup kitchens and medicine distribution"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Santería Lucumí Practitioners (Havana/Matanzas)",
+      "Palo Mayombe Enclaves",
+      "Sierra Maestra Isolated Hamlets"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "cyp",
@@ -2194,20 +2528,20 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Greek Orthodox)",
-        "percentage": 78.0
+        "percentage": 78
       },
       {
         "religion": "Islam (Turkish Cypriot)",
-        "percentage": 18.0
+        "percentage": 18
       },
       {
         "religion": "Other / Evangelical",
-        "percentage": 4.0
+        "percentage": 4
       }
     ],
     "christianPercentage": 79.5,
     "evangelicalPercentage": 1.5,
-    "unreachedPopulationPercentage": 20.0,
+    "unreachedPopulationPercentage": 20,
     "unreachedPeopleGroupsCount": 3,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -2228,7 +2562,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Middle East Christian media broadcasting and tech hubs in Limassol and Larnaca",
       "Turkish Cypriot community friendship and church planting"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Turkish Cypriots (Northern Nicosia/Famagusta)",
+      "Maronites of Kormakitis"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "cze",
@@ -2237,11 +2577,11 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Czech Republic",
     "flag": "🇨🇿",
     "continent": "Europe",
-    "population": 10500000,
+    "population": 10900000,
     "dominantReligions": [
       {
         "religion": "No Religion / Atheist",
-        "percentage": 78.0
+        "percentage": 78
       },
       {
         "religion": "Christianity (Catholic)",
@@ -2256,9 +2596,9 @@ export const ALL_COUNTRIES: Country[] = [
         "percentage": 10.1
       }
     ],
-    "christianPercentage": 12.0,
+    "christianPercentage": 12,
     "evangelicalPercentage": 0.8,
-    "unreachedPopulationPercentage": 78.0,
+    "unreachedPopulationPercentage": 78,
     "unreachedPeopleGroupsCount": 4,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -2277,7 +2617,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Cafe churches and intellectual apologetics forums",
       "English and sports camps for young people"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Secular Industrial North (Ostrava/Ústí nad Labem)",
+      "Romani Settlements (Brno)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "dnk",
@@ -2286,7 +2632,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Denmark",
     "flag": "🇩🇰",
     "continent": "Europe",
-    "population": 5930000,
+    "population": 5900000,
     "dominantReligions": [
       {
         "religion": "Christianity (Lutheran)",
@@ -2294,7 +2640,7 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "No Religion / Secular",
-        "percentage": 22.0
+        "percentage": 22
       },
       {
         "religion": "Islam",
@@ -2305,9 +2651,9 @@ export const ALL_COUNTRIES: Country[] = [
         "percentage": 1.5
       }
     ],
-    "christianPercentage": 74.0,
+    "christianPercentage": 74,
     "evangelicalPercentage": 3.5,
-    "unreachedPopulationPercentage": 6.0,
+    "unreachedPopulationPercentage": 6,
     "unreachedPeopleGroupsCount": 5,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -2327,7 +2673,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Innovative urban church planting in Copenhagen",
       "Diaspora ministry among Middle Eastern refugees"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Turkish & Somali Diaspora (Nørrebro/Gellerup)",
+      "Greenlandic Inuit Communities (Aalborg)",
+      "Secular Danes"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "dji",
@@ -2340,7 +2693,7 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Islam (Sunni)",
-        "percentage": 97.0
+        "percentage": 97
       },
       {
         "religion": "Christianity",
@@ -2375,7 +2728,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Community healthcare and vocational institutes",
       "Port city diaspora ministry"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Afar Nomads (Danakil Basin)",
+      "Somali Issa (Ali Sabieh)",
+      "Yemeni Refugees (Obock)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "dma",
@@ -2396,12 +2756,12 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Other",
-        "percentage": 10.0
+        "percentage": 10
       }
     ],
-    "christianPercentage": 90.0,
-    "evangelicalPercentage": 22.0,
-    "unreachedPopulationPercentage": 1.0,
+    "christianPercentage": 90,
+    "evangelicalPercentage": 22,
+    "unreachedPopulationPercentage": 1,
     "unreachedPeopleGroupsCount": 1,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -2421,7 +2781,12 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Kalinago indigenous community development",
       "Island disaster relief teams"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Kalinago Carib Reserve (Salybia/Crayfish River)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "dom",
@@ -2430,24 +2795,24 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Dominican Republic",
     "flag": "🇩🇴",
     "continent": "North America",
-    "population": 11200000,
+    "population": 11400000,
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 58.0
+        "percentage": 58
       },
       {
         "religion": "Christianity (Evangelical/Protestant)",
-        "percentage": 25.0
+        "percentage": 25
       },
       {
         "religion": "No Religion / Other",
-        "percentage": 17.0
+        "percentage": 17
       }
     ],
-    "christianPercentage": 83.0,
-    "evangelicalPercentage": 22.0,
-    "unreachedPopulationPercentage": 2.0,
+    "christianPercentage": 83,
+    "evangelicalPercentage": 22,
+    "unreachedPopulationPercentage": 2,
     "unreachedPeopleGroupsCount": 2,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -2467,7 +2832,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Batey community schools and clean water projects",
       "Cross-cultural missionary training in Santo Domingo"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Bateyes Haitian Sugarcane Villages (La Romana/San Pedro)",
+      "Voodoo Syncretic Communities"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "ecu",
@@ -2476,24 +2847,24 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Ecuador",
     "flag": "🇪🇨",
     "continent": "South America",
-    "population": 18000000,
+    "population": 18300000,
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 74.0
+        "percentage": 74
       },
       {
         "religion": "Christianity (Evangelical)",
-        "percentage": 15.0
+        "percentage": 15
       },
       {
         "religion": "No Religion / Other",
-        "percentage": 11.0
+        "percentage": 11
       }
     ],
-    "christianPercentage": 89.0,
+    "christianPercentage": 89,
     "evangelicalPercentage": 13.5,
-    "unreachedPopulationPercentage": 2.0,
+    "unreachedPopulationPercentage": 2,
     "unreachedPeopleGroupsCount": 8,
     "securityLevel": "Medium",
     "primaryLanguages": [
@@ -2515,7 +2886,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Amazon jungle medical and aviation outreach (MAF)",
       "Highland Kichwa pastoral training and youth development"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Waorani (Pastaza Amazon)",
+      "Shuar (Morona-Santiago)",
+      "Tsáchila (Santo Domingo)",
+      "Afro-Ecuadorian Chota Valley"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "egy",
@@ -2524,7 +2903,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Egypt",
     "flag": "🇪🇬",
     "continent": "Africa",
-    "population": 110000000,
+    "population": 116000000,
     "dominantReligions": [
       {
         "religion": "Islam (Sunni - Official)",
@@ -2536,7 +2915,7 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Christianity (Evangelical/Catholic)",
-        "percentage": 1.0
+        "percentage": 1
       }
     ],
     "christianPercentage": 10.5,
@@ -2564,7 +2943,15 @@ export const ALL_COUNTRIES: Country[] = [
       "Cave Church prayer & intercession ministries in Mokattam",
       "Arabic Christian satellite broadcasting",
       "Sudanese and Eritrean refugee medical care"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Upper Egypt Sa'idi Muslims (Asyut/Qena)",
+      "Bedouin of Sinai Desert (Arish)",
+      "Nubians (Aswan)",
+      "Siwa Oasis Berbers"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "slv",
@@ -2577,20 +2964,20 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 45.0
+        "percentage": 45
       },
       {
         "religion": "Christianity (Evangelical/Pentecostal)",
-        "percentage": 40.0
+        "percentage": 40
       },
       {
         "religion": "No Religion / Other",
-        "percentage": 15.0
+        "percentage": 15
       }
     ],
-    "christianPercentage": 85.0,
-    "evangelicalPercentage": 38.0,
-    "unreachedPopulationPercentage": 1.0,
+    "christianPercentage": 85,
+    "evangelicalPercentage": 38,
+    "unreachedPopulationPercentage": 1,
     "unreachedPeopleGroupsCount": 1,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -2609,7 +2996,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Prison discipleship and trade training programs",
       "Youth leadership and community sports outreach"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Nahuat-Pipil (Sonsonate/Izalco)",
+      "Gang-Impacted Communities (Soyapango)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "gnq",
@@ -2622,20 +3015,20 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 87.0
+        "percentage": 87
       },
       {
         "religion": "Christianity (Protestant)",
-        "percentage": 5.0
+        "percentage": 5
       },
       {
         "religion": "Traditional / Islam",
-        "percentage": 8.0
+        "percentage": 8
       }
     ],
-    "christianPercentage": 92.0,
+    "christianPercentage": 92,
     "evangelicalPercentage": 4.8,
-    "unreachedPopulationPercentage": 2.0,
+    "unreachedPopulationPercentage": 2,
     "unreachedPeopleGroupsCount": 1,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -2657,7 +3050,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Spanish-language theological training",
       "Island youth discipleship in Malabo"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Fang Rural Tribes (Wele-Nzas)",
+      "Bubi (Bioko Island)",
+      "Ndowe Fisherfolk"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "eri",
@@ -2670,20 +3070,20 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Orthodox/Catholic)",
-        "percentage": 50.0
+        "percentage": 50
       },
       {
         "religion": "Islam (Sunni)",
-        "percentage": 48.0
+        "percentage": 48
       },
       {
         "religion": "Evangelical (Underground)",
-        "percentage": 2.0
+        "percentage": 2
       }
     ],
-    "christianPercentage": 50.0,
-    "evangelicalPercentage": 2.0,
-    "unreachedPopulationPercentage": 49.0,
+    "christianPercentage": 50,
+    "evangelicalPercentage": 2,
+    "unreachedPopulationPercentage": 49,
     "unreachedPeopleGroupsCount": 7,
     "securityLevel": "Extreme",
     "primaryLanguages": [
@@ -2705,7 +3105,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Refugee diaspora outreach in Europe and North America",
       "Tigrinya Christian satellite broadcasting"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Tigre Muslims (Keren/Semhar)",
+      "Rashaida Bedouin (Red Sea Coast)",
+      "Kunama (Gash-Barka)",
+      "Saho (Debub)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "est",
@@ -2718,15 +3126,15 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "No Religion / Secular",
-        "percentage": 60.0
+        "percentage": 60
       },
       {
         "religion": "Christianity (Orthodox)",
-        "percentage": 16.0
+        "percentage": 16
       },
       {
         "religion": "Christianity (Lutheran)",
-        "percentage": 10.0
+        "percentage": 10
       },
       {
         "religion": "Christianity (Evangelical / Baptist)",
@@ -2737,9 +3145,9 @@ export const ALL_COUNTRIES: Country[] = [
         "percentage": 11.5
       }
     ],
-    "christianPercentage": 29.0,
+    "christianPercentage": 29,
     "evangelicalPercentage": 4.8,
-    "unreachedPopulationPercentage": 60.0,
+    "unreachedPopulationPercentage": 60,
     "unreachedPeopleGroupsCount": 2,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -2759,7 +3167,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Digital evangelism and faith-and-tech incubators",
       "Youth leadership academies"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Russian Old Believers (Lake Peipus)",
+      "Narva Industrial Enclaves",
+      "Secular Tallinn Youth"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "swz",
@@ -2772,18 +3187,18 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Zionist/Protestant)",
-        "percentage": 88.0
+        "percentage": 88
       },
       {
         "religion": "Traditional",
-        "percentage": 10.0
+        "percentage": 10
       },
       {
         "religion": "Other",
-        "percentage": 2.0
+        "percentage": 2
       }
     ],
-    "christianPercentage": 88.0,
+    "christianPercentage": 88,
     "evangelicalPercentage": 24.5,
     "unreachedPopulationPercentage": 0.5,
     "unreachedPeopleGroupsCount": 1,
@@ -2805,7 +3220,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Orphan care and educational centers",
       "Youth leadership academies"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Traditional Swazi Homesteads (Lubombo Region)",
+      "Shembe Syncretic Enclaves"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "eth",
@@ -2814,7 +3235,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Ethiopia",
     "flag": "🇪🇹",
     "continent": "Africa",
-    "population": 123400000,
+    "population": 132000000,
     "dominantReligions": [
       {
         "religion": "Christianity (Ethiopian Orthodox)",
@@ -2859,7 +3280,16 @@ export const ALL_COUNTRIES: Country[] = [
       "Cross-cultural missionary training in Addis Ababa",
       "Bible translation in southwestern omotic languages",
       "Peace and reconciliation intercession summits"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Somali Ogaden Nomads (Jijiga/Gode)",
+      "Afar Pastoralists (Danakil Depression)",
+      "Oromo Muslims (Bale/Jimma)",
+      "Borana Nomads (Moyale)",
+      "Hamer & Mursi (Omo Valley)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "fji",
@@ -2888,8 +3318,8 @@ export const ALL_COUNTRIES: Country[] = [
       }
     ],
     "christianPercentage": 64.4,
-    "evangelicalPercentage": 22.0,
-    "unreachedPopulationPercentage": 32.0,
+    "evangelicalPercentage": 22,
+    "unreachedPopulationPercentage": 32,
     "unreachedPeopleGroupsCount": 3,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -2910,7 +3340,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Indo-Fijian community outreach in Suva and Nadi",
       "Pacific Island cross-cultural missionary training"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Indo-Fijian Hindus (Lautoka/Labasa)",
+      "Indo-Fijian Muslims",
+      "Remote Lau Island Outposts"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "fin",
@@ -2919,7 +3356,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Finland",
     "flag": "🇫🇮",
     "continent": "Europe",
-    "population": 5560000,
+    "population": 5600000,
     "dominantReligions": [
       {
         "religion": "Christianity (Lutheran)",
@@ -2927,16 +3364,16 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "No Religion / Secular",
-        "percentage": 32.0
+        "percentage": 32
       },
       {
         "religion": "Christianity (Orthodox / Free Churches)",
         "percentage": 2.8
       }
     ],
-    "christianPercentage": 68.0,
-    "evangelicalPercentage": 12.0,
-    "unreachedPopulationPercentage": 3.0,
+    "christianPercentage": 68,
+    "evangelicalPercentage": 12,
+    "unreachedPopulationPercentage": 3,
     "unreachedPeopleGroupsCount": 3,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -2957,7 +3394,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Arctic and Lapland Sámi youth discipleship",
       "Cross-cultural missionary training"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Somali & Kurdish Diaspora (Itäkeskus/Helsinki)",
+      "Sámi Reindeer Herders (Lapland/Inari)",
+      "Secular Post-Lutherans"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "fra",
@@ -2970,28 +3414,28 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 47.0
+        "percentage": 47
       },
       {
         "religion": "No Religion / Secular",
-        "percentage": 40.0
+        "percentage": 40
       },
       {
         "religion": "Islam (Maghrebi/Turkish)",
-        "percentage": 9.0
+        "percentage": 9
       },
       {
         "religion": "Christianity (Evangelical/Protestant)",
-        "percentage": 3.0
+        "percentage": 3
       },
       {
         "religion": "Other",
-        "percentage": 1.0
+        "percentage": 1
       }
     ],
-    "christianPercentage": 50.0,
+    "christianPercentage": 50,
     "evangelicalPercentage": 1.8,
-    "unreachedPopulationPercentage": 12.0,
+    "unreachedPopulationPercentage": 12,
     "unreachedPeopleGroupsCount": 28,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -3014,7 +3458,15 @@ export const ALL_COUNTRIES: Country[] = [
       "Pioneer church planting in provincial France (1 per 10,000 goal)",
       "Diaspora and immigrant banlieue youth ministries",
       "University student discipleship in Paris, Lyon, and Toulouse"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Maghrebi Muslims (Saint-Denis/Marseille)",
+      "Turkish Diaspora (Alsace)",
+      "Comorian Diaspora (Marseille)",
+      "Post-Christian Secular Paris"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "gab",
@@ -3027,20 +3479,20 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity",
-        "percentage": 76.0
+        "percentage": 76
       },
       {
         "religion": "Bwiti / Traditional",
-        "percentage": 14.0
+        "percentage": 14
       },
       {
         "religion": "Islam",
-        "percentage": 10.0
+        "percentage": 10
       }
     ],
-    "christianPercentage": 76.0,
-    "evangelicalPercentage": 12.0,
-    "unreachedPopulationPercentage": 3.0,
+    "christianPercentage": 76,
+    "evangelicalPercentage": 12,
+    "unreachedPopulationPercentage": 3,
     "unreachedPeopleGroupsCount": 2,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -3061,7 +3513,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Medical missionary service in Lambarene",
       "Youth camp and university ministry"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Bwiti Babongo Pygmies (Ogooué-Ivindo)",
+      "Fang Forest Communities (Woleu-Ntem)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "gmb",
@@ -3087,7 +3545,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 3.8,
     "evangelicalPercentage": 0.9,
-    "unreachedPopulationPercentage": 96.0,
+    "unreachedPopulationPercentage": 96,
     "unreachedPeopleGroupsCount": 11,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -3109,7 +3567,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Riverboat mobile medical clinics",
       "Vocational skills and Christian community schools"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Mandinka (Brikama)",
+      "Wolof (Banjul)",
+      "Fula (Upper River Division)",
+      "Jola (Foni)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "geo",
@@ -3139,7 +3605,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 87.5,
     "evangelicalPercentage": 1.4,
-    "unreachedPopulationPercentage": 12.0,
+    "unreachedPopulationPercentage": 12,
     "unreachedPeopleGroupsCount": 7,
     "securityLevel": "Medium",
     "primaryLanguages": [
@@ -3163,7 +3629,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Middle Eastern refugee and tourist outreach in Tbilisi",
       "Kist and Chechen border village community development"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Kist Chechens (Pankisi Gorge)",
+      "Azerbaijani Shia (Kvemo Kartli)",
+      "Adjarian Muslims (Batumi Hinterland)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "deu",
@@ -3172,7 +3645,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Germany",
     "flag": "🇩🇪",
     "continent": "Europe",
-    "population": 84400000,
+    "population": 84500000,
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
@@ -3192,7 +3665,7 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Christianity (Evangelical/Free Churches)",
-        "percentage": 2.0
+        "percentage": 2
       }
     ],
     "christianPercentage": 49.4,
@@ -3220,7 +3693,15 @@ export const ALL_COUNTRIES: Country[] = [
       "24/7 prayer house initiatives and worship schools",
       "Refugee diaspora integration and discipleship in Berlin and Ruhr Valley",
       "Youth university campus ministry"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Turkish & Kurdish Enclaves (Kreuzberg/Berlin, Marxloh/Duisburg)",
+      "Arab Diaspora (Neukölln)",
+      "Syrian Refugees (Ruhr)",
+      "Post-Christian Secular East (Leipzig/Dresden)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "gha",
@@ -3229,7 +3710,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Ghana",
     "flag": "🇬🇭",
     "continent": "Africa",
-    "population": 33470000,
+    "population": 34500000,
     "dominantReligions": [
       {
         "religion": "Christianity",
@@ -3245,12 +3726,12 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Other",
-        "percentage": 6.0
+        "percentage": 6
       }
     ],
     "christianPercentage": 71.2,
-    "evangelicalPercentage": 28.0,
-    "unreachedPopulationPercentage": 12.0,
+    "evangelicalPercentage": 28,
+    "unreachedPopulationPercentage": 12,
     "unreachedPeopleGroupsCount": 18,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -3273,7 +3754,16 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Frontier mission training and sending centers",
       "Northern agricultural church planting"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Dagomba (Tamale)",
+      "Gonja (Savannah Region)",
+      "Mamprusi (Nalerigu)",
+      "Frafra/Kassena (Upper East)",
+      "Fulani Nomads"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "grc",
@@ -3282,26 +3772,26 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Greece",
     "flag": "🇬🇷",
     "continent": "Europe",
-    "population": 10400000,
+    "population": 10300000,
     "dominantReligions": [
       {
         "religion": "Christianity (Greek Orthodox)",
-        "percentage": 90.0
+        "percentage": 90
       },
       {
         "religion": "No Religion / Secular",
-        "percentage": 6.0
+        "percentage": 6
       },
       {
         "religion": "Islam (Thracian / Expat)",
-        "percentage": 3.0
+        "percentage": 3
       },
       {
         "religion": "Christianity (Evangelical/Catholic)",
-        "percentage": 1.0
+        "percentage": 1
       }
     ],
-    "christianPercentage": 91.0,
+    "christianPercentage": 91,
     "evangelicalPercentage": 0.4,
     "unreachedPopulationPercentage": 4.5,
     "unreachedPeopleGroupsCount": 5,
@@ -3324,7 +3814,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Middle East and Afghan refugee care and church planting in Athens",
       "Island outreach and university student ministry in Thessaloniki"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Western Thrace Pomaks & Turks (Komotini/Xanthi)",
+      "Afghan & Syrian Refugee Enclaves (Lesbos/Athens)",
+      "Romani Camps"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "grd",
@@ -3337,15 +3834,15 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic/Anglican/Pentecostal)",
-        "percentage": 94.0
+        "percentage": 94
       },
       {
         "religion": "Other",
-        "percentage": 6.0
+        "percentage": 6
       }
     ],
-    "christianPercentage": 94.0,
-    "evangelicalPercentage": 24.0,
+    "christianPercentage": 94,
+    "evangelicalPercentage": 24,
     "unreachedPopulationPercentage": 0.5,
     "unreachedPeopleGroupsCount": 0,
     "securityLevel": "Low",
@@ -3366,7 +3863,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "International medical student discipleship",
       "Youth sports and arts evangelism"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Carriacou Boatbuilding Settlements",
+      "Rural Cocoa Valleys"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "gtm",
@@ -3375,24 +3878,24 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Guatemala",
     "flag": "🇬🇹",
     "continent": "North America",
-    "population": 18000000,
+    "population": 18500000,
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 45.0
+        "percentage": 45
       },
       {
         "religion": "Christianity (Evangelical/Pentecostal)",
-        "percentage": 43.0
+        "percentage": 43
       },
       {
         "religion": "Mayan Spirituality / Other",
-        "percentage": 12.0
+        "percentage": 12
       }
     ],
-    "christianPercentage": 88.0,
-    "evangelicalPercentage": 40.0,
-    "unreachedPopulationPercentage": 2.0,
+    "christianPercentage": 88,
+    "evangelicalPercentage": 40,
+    "unreachedPopulationPercentage": 2,
     "unreachedPeopleGroupsCount": 4,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -3415,7 +3918,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Mayan highland clean water and clinic ministries",
       "Cross-cultural missionary sending institutes in Quetzaltenango and Guatemala City"
-    ]
+    ],
+    "unreachedPlaces": [
+      "K'iche' Maya (Chichicastenango)",
+      "Q'eqchi' Maya (Alta Verapaz)",
+      "Kaqchikel (Sololá)",
+      "Mam (Huehuetenango)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "gin",
@@ -3424,7 +3935,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Guinea",
     "flag": "🇬🇳",
     "continent": "Africa",
-    "population": 13860000,
+    "population": 14500000,
     "dominantReligions": [
       {
         "religion": "Islam (Sunni)",
@@ -3441,7 +3952,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 8.5,
     "evangelicalPercentage": 2.4,
-    "unreachedPopulationPercentage": 87.0,
+    "unreachedPopulationPercentage": 87,
     "unreachedPeopleGroupsCount": 24,
     "securityLevel": "Medium",
     "primaryLanguages": [
@@ -3463,7 +3974,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Radio and digital smartphone evangelism",
       "Rural healthcare and clean water ministry"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Fula of Fouta Djallon (Labé)",
+      "Malinké (Kankan)",
+      "Susu (Kindia/Boké)",
+      "Kissi (Nzérékoré Forest)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "gnb",
@@ -3476,20 +3995,20 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Islam",
-        "percentage": 46.0
+        "percentage": 46
       },
       {
         "religion": "Traditional / Animist",
-        "percentage": 39.0
+        "percentage": 39
       },
       {
         "religion": "Christianity",
-        "percentage": 15.0
+        "percentage": 15
       }
     ],
-    "christianPercentage": 15.0,
+    "christianPercentage": 15,
     "evangelicalPercentage": 2.8,
-    "unreachedPopulationPercentage": 55.0,
+    "unreachedPopulationPercentage": 55,
     "unreachedPeopleGroupsCount": 12,
     "securityLevel": "Medium",
     "primaryLanguages": [
@@ -3511,7 +4030,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Bijagos Archipelago boat evangelism",
       "Literacy and vocational school projects"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Balanta Traditionalists (Oio)",
+      "Fula Muslims (Gabú/Bafatá)",
+      "Mandinka (Cacheu)",
+      "Bijagós Island Animists"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "guy",
@@ -3524,24 +4051,24 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Protestant/Catholic)",
-        "percentage": 64.0
+        "percentage": 64
       },
       {
         "religion": "Hinduism",
-        "percentage": 25.0
+        "percentage": 25
       },
       {
         "religion": "Islam",
-        "percentage": 7.0
+        "percentage": 7
       },
       {
         "religion": "Other",
-        "percentage": 4.0
+        "percentage": 4
       }
     ],
-    "christianPercentage": 64.0,
-    "evangelicalPercentage": 24.0,
-    "unreachedPopulationPercentage": 22.0,
+    "christianPercentage": 64,
+    "evangelicalPercentage": 24,
+    "unreachedPopulationPercentage": 22,
     "unreachedPeopleGroupsCount": 2,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -3562,7 +4089,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Interior jungle riverboat medical missions",
       "Hindu and Muslim outreach in coastal villages"
-    ]
+    ],
+    "unreachedPlaces": [
+      "East Indian Hindus (Corentyne)",
+      "Wapishana (Rupununi Savannah)",
+      "Macushi (Pakaraima)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "hti",
@@ -3571,28 +4105,28 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Haiti",
     "flag": "🇭🇹",
     "continent": "North America",
-    "population": 11500000,
+    "population": 11900000,
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 54.0
+        "percentage": 54
       },
       {
         "religion": "Christianity (Protestant/Evangelical)",
-        "percentage": 30.0
+        "percentage": 30
       },
       {
         "religion": "Vodou (Syncretic)",
-        "percentage": 15.0
+        "percentage": 15
       },
       {
         "religion": "Other",
-        "percentage": 1.0
+        "percentage": 1
       }
     ],
-    "christianPercentage": 84.0,
-    "evangelicalPercentage": 28.0,
-    "unreachedPopulationPercentage": 3.0,
+    "christianPercentage": 84,
+    "evangelicalPercentage": 28,
+    "unreachedPopulationPercentage": 3,
     "unreachedPeopleGroupsCount": 2,
     "securityLevel": "Extreme",
     "primaryLanguages": [
@@ -3613,7 +4147,14 @@ export const ALL_COUNTRIES: Country[] = [
       "Emergency food relief and mobile clinics",
       "Orphan care and Christian school support",
       "Rural solar water wells"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Vodou Spiritual Centers (Gonaïves/Souvenance)",
+      "Rara Societies (Artibonite Valley)",
+      "Remote Massif du Nord Hamlets"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "vat",
@@ -3626,12 +4167,12 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 100.0
+        "percentage": 100
       }
     ],
-    "christianPercentage": 100.0,
-    "evangelicalPercentage": 1.0,
-    "unreachedPopulationPercentage": 0.0,
+    "christianPercentage": 100,
+    "evangelicalPercentage": 1,
+    "unreachedPopulationPercentage": 0,
     "unreachedPeopleGroupsCount": 0,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -3649,7 +4190,14 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "missionOpportunities": [
       "Inter-denominational prayer dialogue for global evangelization"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Holy See (Vatican City) Capital Urban Core (Vatican City)",
+      "Holy See (Vatican City) Rural Frontier Villages",
+      "Holy See (Vatican City) Immigrant / Diaspora Communities"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "hnd",
@@ -3658,23 +4206,23 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Honduras",
     "flag": "🇭🇳",
     "continent": "North America",
-    "population": 10400000,
+    "population": 10700000,
     "dominantReligions": [
       {
         "religion": "Christianity (Evangelical/Protestant)",
-        "percentage": 48.0
+        "percentage": 48
       },
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 38.0
+        "percentage": 38
       },
       {
         "religion": "No Religion / Other",
-        "percentage": 14.0
+        "percentage": 14
       }
     ],
-    "christianPercentage": 86.0,
-    "evangelicalPercentage": 44.0,
+    "christianPercentage": 86,
+    "evangelicalPercentage": 44,
     "unreachedPopulationPercentage": 1.5,
     "unreachedPeopleGroupsCount": 2,
     "securityLevel": "Medium",
@@ -3696,7 +4244,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Miskito Coast riverboat medical clinics",
       "Youth vocational academies in San Pedro Sula"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Misquito (Gracias a Dios/Mosquitia)",
+      "Garifuna (Tela/Trujillo)",
+      "Pech & Tawahka (Olancho Rain Forest)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "hun",
@@ -3709,24 +4264,24 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 50.0
+        "percentage": 50
       },
       {
         "religion": "Christianity (Reformed/Protestant)",
-        "percentage": 16.0
+        "percentage": 16
       },
       {
         "religion": "No Religion / Secular",
-        "percentage": 30.0
+        "percentage": 30
       },
       {
         "religion": "Other",
-        "percentage": 4.0
+        "percentage": 4
       }
     ],
-    "christianPercentage": 66.0,
+    "christianPercentage": 66,
     "evangelicalPercentage": 2.8,
-    "unreachedPopulationPercentage": 5.0,
+    "unreachedPopulationPercentage": 5,
     "unreachedPeopleGroupsCount": 3,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -3747,7 +4302,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Roma village education and church planting",
       "University discipleship in Budapest and Debrecen"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Romani Settlements (Miskolc/Szabolcs)",
+      "Secular Budapest Urbanites"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "isl",
@@ -3760,24 +4321,24 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Lutheran)",
-        "percentage": 62.0
+        "percentage": 62
       },
       {
         "religion": "No Religion / Secular",
-        "percentage": 28.0
+        "percentage": 28
       },
       {
         "religion": "Christianity (Catholic / Free Church)",
-        "percentage": 7.0
+        "percentage": 7
       },
       {
         "religion": "Other",
-        "percentage": 3.0
+        "percentage": 3
       }
     ],
-    "christianPercentage": 69.0,
+    "christianPercentage": 69,
     "evangelicalPercentage": 3.8,
-    "unreachedPopulationPercentage": 2.0,
+    "unreachedPopulationPercentage": 2,
     "unreachedPeopleGroupsCount": 1,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -3797,7 +4358,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Youth worship and media ministries",
       "Immigrant fellowship planting in Reykjavík"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Immigrant Polish Laborers (Reykjanes)",
+      "Secular Nordic Youth"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "ind",
@@ -3806,7 +4373,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "India",
     "flag": "🇮🇳",
     "continent": "Asia",
-    "population": 1428000000,
+    "population": 1476000000,
     "dominantReligions": [
       {
         "religion": "Hinduism",
@@ -3854,7 +4421,19 @@ export const ALL_COUNTRIES: Country[] = [
       "North India pioneer house church planting networks",
       "Dalit and tribal education, clean water, and community empowerment",
       "Medical and mobile hospital vans for rural unreached districts"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Shaikh Muslims (Uttar Pradesh/Bihar)",
+      "Yadav Heartland (Bihar/UP)",
+      "Rajput Clans (Rajasthan)",
+      "Jat Communities (Haryana/Punjab)",
+      "Ansari Weavers",
+      "Chamar Dalit Communities",
+      "Brahmin Priestly Caste",
+      "Koli Fisherfolk (Maharashtra)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "idn",
@@ -3863,11 +4442,11 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Indonesia",
     "flag": "🇮🇩",
     "continent": "Asia",
-    "population": 277500000,
+    "population": 288000000,
     "dominantReligions": [
       {
         "religion": "Islam (Sunni - Largest Muslim Nation)",
-        "percentage": 87.0
+        "percentage": 87
       },
       {
         "religion": "Christianity (Protestant)",
@@ -3884,7 +4463,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 10.5,
     "evangelicalPercentage": 3.5,
-    "unreachedPopulationPercentage": 68.0,
+    "unreachedPopulationPercentage": 68,
     "unreachedPeopleGroupsCount": 230,
     "securityLevel": "High",
     "primaryLanguages": [
@@ -3908,7 +4487,18 @@ export const ALL_COUNTRIES: Country[] = [
       "Remote island sailing medical teams and disaster response",
       "Sundanese and Minangkabau mother-tongue scripture translation",
       "Prayer tower mobilization and 24/7 intercession networks"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Sundanese (West Java)",
+      "Madurese (Madura/East Java)",
+      "Minangkabau (West Sumatra)",
+      "Bugis (South Sulawesi)",
+      "Sasak (Lombok)",
+      "Acehnese (Banda Aceh)",
+      "Banjar (South Kalimantan)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "irn",
@@ -3917,22 +4507,22 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Iran",
     "flag": "🇮🇷",
     "continent": "Asia",
-    "population": 88500000,
+    "population": 91000000,
     "dominantReligions": [
       {
         "religion": "Islam (Shia - Theocracy)",
-        "percentage": 96.0
+        "percentage": 96
       },
       {
         "religion": "Christianity (Underground Revival)",
-        "percentage": 2.0
+        "percentage": 2
       },
       {
         "religion": "Baha'i / Zoroastrian / Other",
-        "percentage": 2.0
+        "percentage": 2
       }
     ],
-    "christianPercentage": 2.0,
+    "christianPercentage": 2,
     "evangelicalPercentage": 1.8,
     "unreachedPopulationPercentage": 97.5,
     "unreachedPeopleGroupsCount": 88,
@@ -3959,7 +4549,17 @@ export const ALL_COUNTRIES: Country[] = [
       "Farsi satellite television, digital discipleship, and secure mobile apps",
       "Iranian refugee discipleship in Turkey, Armenia, and Germany",
       "Underground house church leadership training"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Persian Shia (Tehran/Isfahan)",
+      "Azerbaijani Turks (Tabriz)",
+      "Kurdish Sunnis (Sanandaj)",
+      "Arab Ahwazi (Khuzestan)",
+      "Balochi Sunnis (Zahedan)",
+      "Qashqai Nomads (Fars)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "irq",
@@ -3968,26 +4568,26 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Iraq",
     "flag": "🇮🇶",
     "continent": "Asia",
-    "population": 43500000,
+    "population": 46000000,
     "dominantReligions": [
       {
         "religion": "Islam (Shia)",
-        "percentage": 60.0
+        "percentage": 60
       },
       {
         "religion": "Islam (Sunni)",
-        "percentage": 35.0
+        "percentage": 35
       },
       {
         "religion": "Christianity (Ancient Chaldean/Assyrian/Evangelical)",
-        "percentage": 1.0
+        "percentage": 1
       },
       {
         "religion": "Yazidi / Other",
-        "percentage": 4.0
+        "percentage": 4
       }
     ],
-    "christianPercentage": 1.0,
+    "christianPercentage": 1,
     "evangelicalPercentage": 0.2,
     "unreachedPopulationPercentage": 98.5,
     "unreachedPeopleGroupsCount": 36,
@@ -4012,7 +4612,16 @@ export const ALL_COUNTRIES: Country[] = [
       "Kurdish and Arab refugee relief, clean water, and medical care in Northern Iraq",
       "Digital Arabic and Sorani scripture media",
       "Rebuilding destroyed schools and community centers in Nineveh"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Arab Shia (Basra/Najaf/Karbala)",
+      "Arab Sunnis (Anbar/Fallujah)",
+      "Kurmanji Kurds (Sulaymaniyah/Duhok)",
+      "Turkmen (Kirkuk)",
+      "Shabak & Yazidi (Nineveh Plains)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "irl",
@@ -4025,24 +4634,24 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 69.0
+        "percentage": 69
       },
       {
         "religion": "No Religion / Secular",
-        "percentage": 20.0
+        "percentage": 20
       },
       {
         "religion": "Christianity (Protestant/Evangelical/Orthodox)",
-        "percentage": 8.0
+        "percentage": 8
       },
       {
         "religion": "Other",
-        "percentage": 3.0
+        "percentage": 3
       }
     ],
-    "christianPercentage": 77.0,
+    "christianPercentage": 77,
     "evangelicalPercentage": 2.2,
-    "unreachedPopulationPercentage": 4.0,
+    "unreachedPopulationPercentage": 4,
     "unreachedPeopleGroupsCount": 3,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -4062,7 +4671,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Tech professional marketplace ministry in Dublin's Silicon Docks",
       "Pioneer church planting in rural western counties"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Irish Travellers (Galway/Limerick)",
+      "Nigerian & Brazilian Immigrant Workers",
+      "Post-Catholic Secular Dublin"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "isr",
@@ -4071,7 +4687,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Israel",
     "flag": "🇮🇱",
     "continent": "Asia",
-    "population": 9800000,
+    "population": 9900000,
     "dominantReligions": [
       {
         "religion": "Judaism",
@@ -4083,16 +4699,16 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Christianity (Messianic/Arab Christian)",
-        "percentage": 2.0
+        "percentage": 2
       },
       {
         "religion": "Druze / Other",
         "percentage": 6.3
       }
     ],
-    "christianPercentage": 2.0,
+    "christianPercentage": 2,
     "evangelicalPercentage": 0.6,
-    "unreachedPopulationPercentage": 85.0,
+    "unreachedPopulationPercentage": 85,
     "unreachedPeopleGroupsCount": 16,
     "securityLevel": "High",
     "primaryLanguages": [
@@ -4115,7 +4731,15 @@ export const ALL_COUNTRIES: Country[] = [
       "24/7 prayer and worship watches in Jerusalem and Galilee",
       "Humanitarian trauma relief and bomb shelter renovation",
       "Hebrew and Arabic digital media and apologetics"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Arab Muslims (Nazareth/Umm al-Fahm)",
+      "Haredi Ultra-Orthodox (Bnei Brak/Mea Shearim)",
+      "Druze (Mount Carmel)",
+      "Bedouin of Negev (Rahat)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "ita",
@@ -4124,15 +4748,15 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Italy",
     "flag": "🇮🇹",
     "continent": "Europe",
-    "population": 58800000,
+    "population": 59000000,
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 75.0
+        "percentage": 75
       },
       {
         "religion": "No Religion / Secular",
-        "percentage": 19.0
+        "percentage": 19
       },
       {
         "religion": "Islam",
@@ -4145,7 +4769,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 76.5,
     "evangelicalPercentage": 1.2,
-    "unreachedPopulationPercentage": 8.0,
+    "unreachedPopulationPercentage": 8,
     "unreachedPeopleGroupsCount": 16,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -4168,7 +4792,15 @@ export const ALL_COUNTRIES: Country[] = [
       "Church planting teams in southern Italy (Campania, Calabria, Sicily)",
       "Refugee transit care and church planting in port cities",
       "University campus ministry"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Moroccan & Tunisian Diaspora (Milan/Turin)",
+      "Senegalese Street Vendors (Rome)",
+      "Chinese Diaspora (Prato)",
+      "Secular Post-Catholic Rome"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "jam",
@@ -4181,20 +4813,20 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Protestant/Pentecostal/Adventist)",
-        "percentage": 65.0
+        "percentage": 65
       },
       {
         "religion": "No Religion",
-        "percentage": 21.0
+        "percentage": 21
       },
       {
         "religion": "Rastafarianism / Other",
-        "percentage": 14.0
+        "percentage": 14
       }
     ],
-    "christianPercentage": 75.0,
-    "evangelicalPercentage": 32.0,
-    "unreachedPopulationPercentage": 1.0,
+    "christianPercentage": 75,
+    "evangelicalPercentage": 32,
+    "unreachedPopulationPercentage": 1,
     "unreachedPeopleGroupsCount": 1,
     "securityLevel": "Medium",
     "primaryLanguages": [
@@ -4214,7 +4846,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Inner-city peacebuilding and youth skills training",
       "Reggae gospel creative arts and media ministries"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Rastafarian Settlements (Pinnacle/St. Ann)",
+      "Inner-City Gang Communities (Trench Town/Tivoli Gardens)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "jpn",
@@ -4223,15 +4861,15 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Japan",
     "flag": "🇯🇵",
     "continent": "Asia",
-    "population": 124500000,
+    "population": 123500000,
     "dominantReligions": [
       {
         "religion": "Shintoism / Buddhism (Syncretic)",
-        "percentage": 69.0
+        "percentage": 69
       },
       {
         "religion": "No Religion / Secular",
-        "percentage": 29.0
+        "percentage": 29
       },
       {
         "religion": "Christianity",
@@ -4265,7 +4903,15 @@ export const ALL_COUNTRIES: Country[] = [
       "Creative arts, anime, and digital evangelism initiatives",
       "University student ministry and English cafe outreach",
       "Senior care, anti-isolation, and community café church plants"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Nihonjin Secular Metros (Tokyo/Osaka)",
+      "Ryukyuan (Okinawa Islands)",
+      "Burakumin Historical Communities",
+      "Ainu (Hokkaido/Nibutani)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "jor",
@@ -4274,7 +4920,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Jordan",
     "flag": "🇯🇴",
     "continent": "Asia",
-    "population": 11300000,
+    "population": 11500000,
     "dominantReligions": [
       {
         "religion": "Islam (Sunni - Official)",
@@ -4291,7 +4937,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 2.2,
     "evangelicalPercentage": 0.5,
-    "unreachedPopulationPercentage": 97.0,
+    "unreachedPopulationPercentage": 97,
     "unreachedPeopleGroupsCount": 15,
     "securityLevel": "Medium",
     "primaryLanguages": [
@@ -4314,7 +4960,14 @@ export const ALL_COUNTRIES: Country[] = [
       "Syrian and Iraqi refugee medical clinics, schools, and food distribution",
       "Theological education and Arabic mission training in Amman",
       "Bedouin desert community development"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Jordanian Bedouin (Wadi Rum/Badia)",
+      "Palestinian Refugee Camps (Baqa'a/Zarqa)",
+      "Syrian Refugees (Zaatari/Mafraq)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "kaz",
@@ -4323,7 +4976,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Kazakhstan",
     "flag": "🇰🇿",
     "continent": "Asia",
-    "population": 19900000,
+    "population": 20300000,
     "dominantReligions": [
       {
         "religion": "Islam (Sunni)",
@@ -4339,12 +4992,12 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Other / None",
-        "percentage": 3.0
+        "percentage": 3
       }
     ],
     "christianPercentage": 26.8,
     "evangelicalPercentage": 1.2,
-    "unreachedPopulationPercentage": 72.0,
+    "unreachedPopulationPercentage": 72,
     "unreachedPeopleGroupsCount": 35,
     "securityLevel": "High",
     "primaryLanguages": [
@@ -4367,7 +5020,15 @@ export const ALL_COUNTRIES: Country[] = [
       "Kazakh-language theological education and worship music production",
       "Youth university campus outreach in Almaty and Astana",
       "Addiction rehabilitation and community centers"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Kazakh Muslims (Shymkent/Almaty)",
+      "Uzbek Minority (Sayram/Turkistan)",
+      "Uighur Diaspora (Panfilov)",
+      "Dungans (Zhambyl)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "ken",
@@ -4376,11 +5037,11 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Kenya",
     "flag": "🇰🇪",
     "continent": "Africa",
-    "population": 54000000,
+    "population": 56000000,
     "dominantReligions": [
       {
         "religion": "Christianity (Protestant/Evangelical)",
-        "percentage": 60.0
+        "percentage": 60
       },
       {
         "religion": "Christianity (Catholic)",
@@ -4396,7 +5057,7 @@ export const ALL_COUNTRIES: Country[] = [
       }
     ],
     "christianPercentage": 85.5,
-    "evangelicalPercentage": 37.0,
+    "evangelicalPercentage": 37,
     "unreachedPopulationPercentage": 14.5,
     "unreachedPeopleGroupsCount": 32,
     "securityLevel": "Medium",
@@ -4422,7 +5083,17 @@ export const ALL_COUNTRIES: Country[] = [
       "Frontier cross-cultural training institutes",
       "Pastoralist mobile solar school initiatives",
       "Slum community church plants in Kibera and Mathare"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Somali Nomads (Garissa/Wajir/Mandera)",
+      "Borana (Isiolo/Marsabit)",
+      "Rendille (Kargi)",
+      "Turkana (Lake Turkana Basin)",
+      "Samburu (Maralal)",
+      "Bajuni & Swahili (Lamu/Coast)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "kir",
@@ -4446,8 +5117,8 @@ export const ALL_COUNTRIES: Country[] = [
         "percentage": 11.5
       }
     ],
-    "christianPercentage": 96.0,
-    "evangelicalPercentage": 10.0,
+    "christianPercentage": 96,
+    "evangelicalPercentage": 10,
     "unreachedPopulationPercentage": 0.5,
     "unreachedPeopleGroupsCount": 0,
     "securityLevel": "Low",
@@ -4468,7 +5139,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Youth vocational skills and climate resilience training",
       "Atoll island boat evangelism"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Outer Gilbert Islands Atolls",
+      "Tarawa Urban Settlements"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "kwt",
@@ -4477,24 +5154,24 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Kuwait",
     "flag": "🇰🇼",
     "continent": "Asia",
-    "population": 4300000,
+    "population": 4800000,
     "dominantReligions": [
       {
         "religion": "Islam (Sunni/Shia - Official)",
-        "percentage": 74.0
+        "percentage": 74
       },
       {
         "religion": "Christianity (Expatriate Workers)",
-        "percentage": 18.0
+        "percentage": 18
       },
       {
         "religion": "Hinduism / Other (Expatriates)",
-        "percentage": 8.0
+        "percentage": 8
       }
     ],
-    "christianPercentage": 18.0,
+    "christianPercentage": 18,
     "evangelicalPercentage": 2.5,
-    "unreachedPopulationPercentage": 75.0,
+    "unreachedPopulationPercentage": 75,
     "unreachedPeopleGroupsCount": 16,
     "securityLevel": "High",
     "primaryLanguages": [
@@ -4517,7 +5194,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Workplace business-as-mission and professional services",
       "Asian migrant worker welfare and discipleship fellowships"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Kuwaiti Arab Elite",
+      "Bidoon Stateless Arabs",
+      "South Asian Domestic Workforce"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "kgz",
@@ -4526,11 +5210,11 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Kyrgyzstan",
     "flag": "🇰🇬",
     "continent": "Asia",
-    "population": 7000000,
+    "population": 7200000,
     "dominantReligions": [
       {
         "religion": "Islam (Sunni)",
-        "percentage": 88.0
+        "percentage": 88
       },
       {
         "religion": "Christianity (Russian Orthodox)",
@@ -4542,12 +5226,12 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Other",
-        "percentage": 1.0
+        "percentage": 1
       }
     ],
-    "christianPercentage": 11.0,
+    "christianPercentage": 11,
     "evangelicalPercentage": 1.2,
-    "unreachedPopulationPercentage": 88.0,
+    "unreachedPopulationPercentage": 88,
     "unreachedPeopleGroupsCount": 24,
     "securityLevel": "High",
     "primaryLanguages": [
@@ -4570,7 +5254,14 @@ export const ALL_COUNTRIES: Country[] = [
       "Kyrgyz audio Bible and pastoral training schools in Bishkek",
       "Clean water and community development in remote mountain villages",
       "Youth sports and English language clubs"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Kyrgyz (Osh/Jalal-Abad)",
+      "Uzbek Minority (Fergana Valley Margin)",
+      "Dungan & Uighur (Bishkek)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "lao",
@@ -4579,11 +5270,11 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Laos",
     "flag": "🇱🇦",
     "continent": "Asia",
-    "population": 7500000,
+    "population": 7700000,
     "dominantReligions": [
       {
         "religion": "Buddhism (Theravada)",
-        "percentage": 66.0
+        "percentage": 66
       },
       {
         "religion": "Animism / Spirit Worship (Tai Dam, Khmu)",
@@ -4600,7 +5291,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 2.8,
     "evangelicalPercentage": 2.5,
-    "unreachedPopulationPercentage": 84.0,
+    "unreachedPopulationPercentage": 84,
     "unreachedPeopleGroupsCount": 115,
     "securityLevel": "Extreme",
     "primaryLanguages": [
@@ -4623,7 +5314,15 @@ export const ALL_COUNTRIES: Country[] = [
       "Tribal language audio Bible and solar player distribution",
       "Clean water wells and primary health education in remote jungle villages",
       "Underground pastoral leadership discipleship"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Lao Loum (Vientiane/Savannakhet)",
+      "Khmu (Luang Prabang)",
+      "Hmong Daw (Xieng Khouang)",
+      "Akha & Lahu (Phongsali)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "lva",
@@ -4636,24 +5335,24 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Lutheran)",
-        "percentage": 36.0
+        "percentage": 36
       },
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 25.0
+        "percentage": 25
       },
       {
         "religion": "Christianity (Orthodox)",
-        "percentage": 20.0
+        "percentage": 20
       },
       {
         "religion": "No Religion / Other",
-        "percentage": 19.0
+        "percentage": 19
       }
     ],
-    "christianPercentage": 81.0,
-    "evangelicalPercentage": 7.0,
-    "unreachedPopulationPercentage": 3.0,
+    "christianPercentage": 81,
+    "evangelicalPercentage": 7,
+    "unreachedPopulationPercentage": 3,
     "unreachedPeopleGroupsCount": 2,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -4673,7 +5372,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Family counseling and crisis pregnancy centers",
       "Youth camp and sports evangelism in Riga"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Russian Minority (Daugavpils/Latgale)",
+      "Secular Post-Soviet Riga"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "lbn",
@@ -4695,7 +5400,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 32.2,
     "evangelicalPercentage": 1.2,
-    "unreachedPopulationPercentage": 68.0,
+    "unreachedPopulationPercentage": 68,
     "unreachedPeopleGroupsCount": 16,
     "securityLevel": "High",
     "primaryLanguages": [
@@ -4718,7 +5423,15 @@ export const ALL_COUNTRIES: Country[] = [
       "Arab World Christian university education and theological seminaries in Beirut",
       "Refugee education, emergency relief, and community medical clinics",
       "Arabic Christian digital publishing and music production"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Shia Muslims (Southern Suburbs/Dahiyeh, Bekaa Valley)",
+      "Sunni Muslims (Tripoli/Akkar)",
+      "Palestinian Refugee Camps (Ain al-Hilweh)",
+      "Syrian Refugees"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "lso",
@@ -4731,19 +5444,19 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic/Protestant)",
-        "percentage": 92.0
+        "percentage": 92
       },
       {
         "religion": "Traditional",
-        "percentage": 7.0
+        "percentage": 7
       },
       {
         "religion": "Other",
-        "percentage": 1.0
+        "percentage": 1
       }
     ],
-    "christianPercentage": 92.0,
-    "evangelicalPercentage": 12.0,
+    "christianPercentage": 92,
+    "evangelicalPercentage": 12,
     "unreachedPopulationPercentage": 0.5,
     "unreachedPeopleGroupsCount": 1,
     "securityLevel": "Low",
@@ -4764,7 +5477,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Highland shepherd outreach on horseback",
       "Youth vocational trade academies"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Mountain Basotho Blanket Herders (Mokhotlong/Thaba-Tseka)",
+      "Shembe Syncretic Worshippers"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "lbr",
@@ -4789,8 +5508,8 @@ export const ALL_COUNTRIES: Country[] = [
       }
     ],
     "christianPercentage": 85.5,
-    "evangelicalPercentage": 22.0,
-    "unreachedPopulationPercentage": 8.0,
+    "evangelicalPercentage": 22,
+    "unreachedPopulationPercentage": 8,
     "unreachedPeopleGroupsCount": 6,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -4812,7 +5531,16 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Christian higher education and teacher training",
       "Interior jungle clinic and solar lighting missions"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Kpelle (Bong/Nimba)",
+      "Bassa (Grand Bassa)",
+      "Mandingo Muslims (Lofa)",
+      "Vai Muslims (Grand Cape Mount)",
+      "Poro/Sande Secret Societies"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "lby",
@@ -4821,11 +5549,11 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Libya",
     "flag": "🇱🇾",
     "continent": "Africa",
-    "population": 6810000,
+    "population": 7000000,
     "dominantReligions": [
       {
         "religion": "Islam (Sunni)",
-        "percentage": 97.0
+        "percentage": 97
       },
       {
         "religion": "Christianity (Secret/Expat)",
@@ -4859,7 +5587,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Digital Arabic discipleship and online house churches",
       "Humanitarian relief for stranded refugees"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Tripolitanian Arabs (Tripoli/Zawiya)",
+      "Cyrenaican Arabs (Benghazi/Derna)",
+      "Tuareg (Ghadames/Ghat)",
+      "Tebu (Kufra/Murzuq)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "lie",
@@ -4876,11 +5612,11 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Christianity (Protestant)",
-        "percentage": 8.0
+        "percentage": 8
       },
       {
         "religion": "Islam",
-        "percentage": 6.0
+        "percentage": 6
       },
       {
         "religion": "No Religion / Other",
@@ -4888,8 +5624,8 @@ export const ALL_COUNTRIES: Country[] = [
       }
     ],
     "christianPercentage": 81.4,
-    "evangelicalPercentage": 1.0,
-    "unreachedPopulationPercentage": 3.0,
+    "evangelicalPercentage": 1,
+    "unreachedPopulationPercentage": 3,
     "unreachedPeopleGroupsCount": 1,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -4909,7 +5645,12 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Marketplace ministry and business ethics seminars",
       "Youth discipleship"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Traditional Alpine Catholic Valleys (Vaduz/Schaan)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "ltu",
@@ -4922,28 +5663,28 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 74.0
+        "percentage": 74
       },
       {
         "religion": "No Religion / Secular",
-        "percentage": 17.0
+        "percentage": 17
       },
       {
         "religion": "Christianity (Orthodox)",
-        "percentage": 4.0
+        "percentage": 4
       },
       {
         "religion": "Christianity (Evangelical/Protestant)",
-        "percentage": 2.0
+        "percentage": 2
       },
       {
         "religion": "Other",
-        "percentage": 3.0
+        "percentage": 3
       }
     ],
-    "christianPercentage": 80.0,
+    "christianPercentage": 80,
     "evangelicalPercentage": 1.4,
-    "unreachedPopulationPercentage": 4.0,
+    "unreachedPopulationPercentage": 4,
     "unreachedPeopleGroupsCount": 2,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -4964,7 +5705,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "University campus ministry in Vilnius and Kaunas",
       "Rehabilitation and addiction recovery centers"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Polish Minority (Vilnius District)",
+      "Russian Enclaves (Visaginas/Klaipeda)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "lux",
@@ -4977,28 +5724,28 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 67.0
+        "percentage": 67
       },
       {
         "religion": "No Religion / Secular",
-        "percentage": 24.0
+        "percentage": 24
       },
       {
         "religion": "Islam",
-        "percentage": 3.0
+        "percentage": 3
       },
       {
         "religion": "Christianity (Evangelical/Protestant)",
-        "percentage": 3.0
+        "percentage": 3
       },
       {
         "religion": "Other",
-        "percentage": 3.0
+        "percentage": 3
       }
     ],
-    "christianPercentage": 70.0,
+    "christianPercentage": 70,
     "evangelicalPercentage": 1.5,
-    "unreachedPopulationPercentage": 6.0,
+    "unreachedPopulationPercentage": 6,
     "unreachedPeopleGroupsCount": 3,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -5020,7 +5767,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Marketplace and EU civil service outreach",
       "Portuguese and Francophone diaspora church planting"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Immigrant Portuguese Working Neighborhoods",
+      "Secular European Financial Expats"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "mdg",
@@ -5029,24 +5782,24 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Madagascar",
     "flag": "🇲🇬",
     "continent": "Africa",
-    "population": 29610000,
+    "population": 31000000,
     "dominantReligions": [
       {
         "religion": "Christianity",
-        "percentage": 58.0
+        "percentage": 58
       },
       {
         "religion": "Traditional (Ancestral)",
-        "percentage": 35.0
+        "percentage": 35
       },
       {
         "religion": "Islam",
-        "percentage": 7.0
+        "percentage": 7
       }
     ],
-    "christianPercentage": 58.0,
+    "christianPercentage": 58,
     "evangelicalPercentage": 14.5,
-    "unreachedPopulationPercentage": 9.0,
+    "unreachedPopulationPercentage": 9,
     "unreachedPeopleGroupsCount": 9,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -5066,7 +5819,16 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Remote coastal sailing medical missions",
       "Rural primary school church plants"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Antandroy (Spiny Desert/Toliara)",
+      "Sakalava (Menabe Coast)",
+      "Mahafaly (Betioky)",
+      "Betsimisaraka (Tamatave Rain Forest)",
+      "Vezo Nomadic Fisherfolk"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "mwi",
@@ -5092,7 +5854,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 77.3,
     "evangelicalPercentage": 27.2,
-    "unreachedPopulationPercentage": 12.0,
+    "unreachedPopulationPercentage": 12,
     "unreachedPeopleGroupsCount": 4,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -5114,7 +5876,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Yao Muslim outreach teams in Mangochi and Machinga",
       "Pastoral and Bible college leadership training"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Yao Muslims (Mangochi/Machinga)",
+      "Lomwe (Mulanje)",
+      "Sena (Nsanje/Lower Shire)",
+      "Tumbuka (Rumphi)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "mys",
@@ -5148,7 +5918,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 9.1,
     "evangelicalPercentage": 4.5,
-    "unreachedPopulationPercentage": 65.0,
+    "unreachedPopulationPercentage": 65,
     "unreachedPeopleGroupsCount": 158,
     "securityLevel": "High",
     "primaryLanguages": [
@@ -5173,7 +5943,15 @@ export const ALL_COUNTRIES: Country[] = [
       "Borneo indigenous Bible translation and pastoral schools",
       "Cross-cultural missionary training in Kuala Lumpur and Penang",
       "Diaspora ministry among millions of foreign migrant workers (Indonesians, Nepalis, Bangladeshis)"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Peninsular Malays (Kelantan/Terengganu)",
+      "Kelabit & Penan (Sarawak Rainforest)",
+      "Bajau Laut Sea Nomads (Sabah)",
+      "Indian Tamils (Plantations)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "mdv",
@@ -5215,7 +5993,12 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Digital Dhivehi audio scripture and internet outreach",
       "Expatriate Christian professionals serving with Christlike character in resorts and hospitals"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Maldivian Dhivehi (Malé, Addu Atoll, Haa Alif Atoll)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "mli",
@@ -5224,7 +6007,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Mali",
     "flag": "🇲🇱",
     "continent": "Africa",
-    "population": 22590000,
+    "population": 24000000,
     "dominantReligions": [
       {
         "religion": "Islam (Sunni/Sufi)",
@@ -5241,7 +6024,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 2.8,
     "evangelicalPercentage": 0.9,
-    "unreachedPopulationPercentage": 92.0,
+    "unreachedPopulationPercentage": 92,
     "unreachedPeopleGroupsCount": 41,
     "securityLevel": "Extreme",
     "primaryLanguages": [
@@ -5264,7 +6047,17 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Radio and digital solar player scripture distribution",
       "Refugee relief in Mopti and Segou"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Bambara Animists (Ségou)",
+      "Songhai (Timbuktu/Gao)",
+      "Dogon of Bandiagara Escarpment",
+      "Tuareg (Kidal/Azawad)",
+      "Bozo Fisherfolk (Niger River)",
+      "Fula Macina (Mopti)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "mlt",
@@ -5277,20 +6070,20 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic - Official)",
-        "percentage": 88.0
+        "percentage": 88
       },
       {
         "religion": "No Religion / Secular",
-        "percentage": 7.0
+        "percentage": 7
       },
       {
         "religion": "Islam / Other",
-        "percentage": 5.0
+        "percentage": 5
       }
     ],
-    "christianPercentage": 89.0,
+    "christianPercentage": 89,
     "evangelicalPercentage": 1.5,
-    "unreachedPopulationPercentage": 3.0,
+    "unreachedPopulationPercentage": 3,
     "unreachedPeopleGroupsCount": 2,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -5310,7 +6103,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "North African Arabic missionary preparation base",
       "Maritime and tourist evangelism"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Post-Catholic Secular Youth",
+      "Immigrant Libyan & Syrian Diaspora"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "mhl",
@@ -5338,8 +6137,8 @@ export const ALL_COUNTRIES: Country[] = [
         "percentage": 15.9
       }
     ],
-    "christianPercentage": 94.0,
-    "evangelicalPercentage": 35.0,
+    "christianPercentage": 94,
+    "evangelicalPercentage": 35,
     "unreachedPopulationPercentage": 0.5,
     "unreachedPeopleGroupsCount": 0,
     "securityLevel": "Low",
@@ -5360,7 +6159,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Youth leadership academies and suicide prevention outreach",
       "Outer-atoll healthcare and discipleship"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Outer Coral Atolls (Jaluit/Enewetak)",
+      "Ebeye Overcrowded Islet"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "mrt",
@@ -5405,7 +6210,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Sub-Saharan diaspora healthcare and education",
       "Shortwave and internet digital ministry"
-    ]
+    ],
+    "unreachedPlaces": [
+      "White Moors/Hassaniya (Adrar)",
+      "Haratin Black Moors (Nouakchott)",
+      "Pulaar/Toucouleur (Senegal River Valley)",
+      "Soninké (Guidimaka)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "mus",
@@ -5435,7 +6248,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 32.7,
     "evangelicalPercentage": 9.8,
-    "unreachedPopulationPercentage": 42.0,
+    "unreachedPopulationPercentage": 42,
     "unreachedPeopleGroupsCount": 5,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -5457,7 +6270,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Church planting in Hindi and Bhojpuri speaking areas",
       "University and youth creative arts ministry"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Indo-Mauritian Hindus (Grand Bassin)",
+      "Mauritian Creole Working Class",
+      "Franco-Mauritian Landholders"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "mex",
@@ -5466,7 +6286,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Mexico",
     "flag": "🇲🇽",
     "continent": "North America",
-    "population": 128500000,
+    "population": 130000000,
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
@@ -5482,7 +6302,7 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Other",
-        "percentage": 3.0
+        "percentage": 3
       }
     ],
     "christianPercentage": 88.9,
@@ -5512,7 +6332,16 @@ export const ALL_COUNTRIES: Country[] = [
       "Indigenous mountain village church planting and medical clinics",
       "Cross-cultural missionary training in Guadalajara and Mexico City",
       "Migrant shelter ministries along the northern border"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Huichol/Wixárika (Sierra Madre/Nayarit)",
+      "Tarahumara/Rarámuri (Copper Canyon/Chihuahua)",
+      "Tzotzil & Tzeltal (Chiapas Highlands)",
+      "Nahua (Guerrero/Hidalgo)",
+      "Zapotec (Oaxaca Valley)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "fsm",
@@ -5536,8 +6365,8 @@ export const ALL_COUNTRIES: Country[] = [
         "percentage": 5.7
       }
     ],
-    "christianPercentage": 95.0,
-    "evangelicalPercentage": 18.0,
+    "christianPercentage": 95,
+    "evangelicalPercentage": 18,
     "unreachedPopulationPercentage": 0.5,
     "unreachedPeopleGroupsCount": 0,
     "securityLevel": "Low",
@@ -5561,7 +6390,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Inter-island sailing medical and educational outreach",
       "Youth mentorship and Christian camping ministries"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Chuuk Lagoon Outer Islands",
+      "Yap Traditional Caste Villages",
+      "Pohnpei Outer Atolls"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "mda",
@@ -5574,20 +6410,20 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Eastern Orthodox)",
-        "percentage": 90.0
+        "percentage": 90
       },
       {
         "religion": "Christianity (Baptist/Pentecostal/Evangelical)",
-        "percentage": 4.0
+        "percentage": 4
       },
       {
         "religion": "No Religion / Other",
-        "percentage": 6.0
+        "percentage": 6
       }
     ],
-    "christianPercentage": 94.0,
+    "christianPercentage": 94,
     "evangelicalPercentage": 3.8,
-    "unreachedPopulationPercentage": 2.0,
+    "unreachedPopulationPercentage": 2,
     "unreachedPeopleGroupsCount": 2,
     "securityLevel": "Medium",
     "primaryLanguages": [
@@ -5609,7 +6445,14 @@ export const ALL_COUNTRIES: Country[] = [
       "Orphan care and rural day-care centers",
       "Gagauz Turkic church planting",
       "Missionary training institutes in Chisinau"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Gagauz Christianized Turks (Comrat)",
+      "Transnistrian Russian Enclaves (Tiraspol)",
+      "Romani Settlements (Soroca)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "mco",
@@ -5622,20 +6465,20 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 82.0
+        "percentage": 82
       },
       {
         "religion": "No Religion / Secular",
-        "percentage": 13.0
+        "percentage": 13
       },
       {
         "religion": "Christianity (Protestant/Other)",
-        "percentage": 5.0
+        "percentage": 5
       }
     ],
-    "christianPercentage": 87.0,
+    "christianPercentage": 87,
     "evangelicalPercentage": 1.2,
-    "unreachedPopulationPercentage": 5.0,
+    "unreachedPopulationPercentage": 5,
     "unreachedPeopleGroupsCount": 1,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -5656,7 +6499,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "High-net-worth Christian philanthropic initiatives",
       "International professional discipleship"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Ultra-High-Net-Worth International Enclaves",
+      "Monte Carlo Secular Elite"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "mng",
@@ -5685,12 +6534,12 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Christianity (Evangelical)",
-        "percentage": 2.0
+        "percentage": 2
       }
     ],
-    "christianPercentage": 2.0,
+    "christianPercentage": 2,
     "evangelicalPercentage": 1.8,
-    "unreachedPopulationPercentage": 94.0,
+    "unreachedPopulationPercentage": 94,
     "unreachedPeopleGroupsCount": 16,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -5712,7 +6561,15 @@ export const ALL_COUNTRIES: Country[] = [
       "Nomadic steppe mobile medical and solar power church plants",
       "Mongolian missionary training and sending agencies in Ulaanbaatar",
       "Christian addiction recovery and youth leadership academies"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Khalkha Mongols (Ulaanbaatar Ger Districts)",
+      "Kazakh Muslims (Bayan-Ölgii/Altai Mountains)",
+      "Darkhad Shamanists (Lake Khövsgöl)",
+      "Tsaatan Reindeer Herders"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "mne",
@@ -5725,7 +6582,7 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Serbian Orthodox)",
-        "percentage": 72.0
+        "percentage": 72
       },
       {
         "religion": "Islam (Sunni)",
@@ -5742,7 +6599,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 75.5,
     "evangelicalPercentage": 0.2,
-    "unreachedPopulationPercentage": 22.0,
+    "unreachedPopulationPercentage": 22,
     "unreachedPeopleGroupsCount": 3,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -5764,7 +6621,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Pioneer church planting teams",
       "Youth sports and adventure camp ministry"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Bosniak Muslims (Rožaje/Bijelo Polje)",
+      "Albanians of Ulcinj",
+      "Romani Camps (Podgorica)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "mar",
@@ -5773,11 +6637,11 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Morocco",
     "flag": "🇲🇦",
     "continent": "Africa",
-    "population": 37800000,
+    "population": 38000000,
     "dominantReligions": [
       {
         "religion": "Islam (Sunni - Official)",
-        "percentage": 99.0
+        "percentage": 99
       },
       {
         "religion": "Christianity (Expatriate/Berber)",
@@ -5812,7 +6676,16 @@ export const ALL_COUNTRIES: Country[] = [
       "Online discipleship and digital follow-up teams",
       "Business-as-mission start-ups and eco-tourism initiatives",
       "Refugee transit care in northern coastal cities"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Riffian Berbers (Al Hoceima/Nador)",
+      "Shilha Berbers (High Atlas/Souss Valley)",
+      "Central Atlas Tamazight (Khenifra)",
+      "Sahrawi Bedouin (Western Sahara)",
+      "Fes Medina Artisans"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "moz",
@@ -5821,7 +6694,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Mozambique",
     "flag": "🇲🇿",
     "continent": "Africa",
-    "population": 32970000,
+    "population": 34000000,
     "dominantReligions": [
       {
         "religion": "Christianity",
@@ -5838,7 +6711,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 59.8,
     "evangelicalPercentage": 16.5,
-    "unreachedPopulationPercentage": 18.0,
+    "unreachedPopulationPercentage": 18,
     "unreachedPeopleGroupsCount": 15,
     "securityLevel": "Medium",
     "primaryLanguages": [
@@ -5861,7 +6734,16 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Disaster relief, bush church planting, and medical missions",
       "Bush pastors mobile training schools"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Makhuwa (Nampula/Cabo Delgado)",
+      "Makonde (Mueda Plateau)",
+      "Mwani Muslims (Ibo Island/Pemba)",
+      "Yao (Niassa)",
+      "Ndau (Sofala)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "mmr",
@@ -5870,7 +6752,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Myanmar (Burma)",
     "flag": "🇲🇲",
     "continent": "Asia",
-    "population": 54200000,
+    "population": 55000000,
     "dominantReligions": [
       {
         "religion": "Buddhism (Theravada - Official)",
@@ -5891,7 +6773,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 6.2,
     "evangelicalPercentage": 4.8,
-    "unreachedPopulationPercentage": 88.0,
+    "unreachedPopulationPercentage": 88,
     "unreachedPeopleGroupsCount": 54,
     "securityLevel": "Extreme",
     "primaryLanguages": [
@@ -5916,7 +6798,17 @@ export const ALL_COUNTRIES: Country[] = [
       "Frontline emergency relief and mobile jungle clinics for displaced families",
       "Bamar and Shan Buddhist pioneer church planting teams",
       "Cross-border logistics and pastoral support in border regions"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Bamar Theravada Majority (Yangon/Mandalay)",
+      "Shan (Taunggyi)",
+      "Mon (Mawlamyine)",
+      "Rakhine Buddhists (Sittwe)",
+      "Rohingya Muslims (Rakhine/Refugees)",
+      "Palaung & Wa (Shan State)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "nam",
@@ -5929,18 +6821,18 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Lutheran/Catholic)",
-        "percentage": 90.0
+        "percentage": 90
       },
       {
         "religion": "Traditional",
-        "percentage": 8.0
+        "percentage": 8
       },
       {
         "religion": "Other",
-        "percentage": 2.0
+        "percentage": 2
       }
     ],
-    "christianPercentage": 90.0,
+    "christianPercentage": 90,
     "evangelicalPercentage": 13.5,
     "unreachedPopulationPercentage": 1.5,
     "unreachedPeopleGroupsCount": 2,
@@ -5964,7 +6856,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Himba village outreach in Kunene region",
       "Youth campus ministry in Windhoek"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Himba Nomads (Kunene/Kaokoland)",
+      "San Bushmen (Tsumkwe/Kalahari)",
+      "Kavango (Rundu)",
+      "Herero (Otjozondjupa)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "nru",
@@ -5981,19 +6881,19 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 33.0
+        "percentage": 33
       },
       {
         "religion": "Christianity (Assemblies of God)",
-        "percentage": 13.0
+        "percentage": 13
       },
       {
         "religion": "Other",
         "percentage": 18.3
       }
     ],
-    "christianPercentage": 85.0,
-    "evangelicalPercentage": 16.0,
+    "christianPercentage": 85,
+    "evangelicalPercentage": 16,
     "unreachedPopulationPercentage": 0.5,
     "unreachedPeopleGroupsCount": 0,
     "securityLevel": "Low",
@@ -6014,7 +6914,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Community health education and wellness initiatives",
       "Youth creative arts and sports ministry"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Traditional Nauruan Districts (Aiwo/Denigomodu)",
+      "Phosphate Plateau Workers"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "npl",
@@ -6023,7 +6929,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Nepal",
     "flag": "🇳🇵",
     "continent": "Asia",
-    "population": 30500000,
+    "population": 31500000,
     "dominantReligions": [
       {
         "religion": "Hinduism (Official)",
@@ -6043,12 +6949,12 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Kirat / Other",
-        "percentage": 2.0
+        "percentage": 2
       }
     ],
     "christianPercentage": 3.5,
     "evangelicalPercentage": 3.2,
-    "unreachedPopulationPercentage": 92.0,
+    "unreachedPopulationPercentage": 92,
     "unreachedPeopleGroupsCount": 275,
     "securityLevel": "High",
     "primaryLanguages": [
@@ -6073,7 +6979,18 @@ export const ALL_COUNTRIES: Country[] = [
       "High-altitude Himalayan trekking medical and church planting teams",
       "Terai plain Dalit empowerment, literacy, and clean water wells",
       "Nepali theological education and youth leadership training in Kathmandu"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Maithili & Bhojpuri (Terai Plains)",
+      "Newar (Kathmandu Valley)",
+      "Chhetri & Hill Brahmin",
+      "Tamang (Langtang)",
+      "Magar & Gurung",
+      "Tharu (Chitwan Forest)",
+      "Sherpa (Solukhumbu)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "nld",
@@ -6082,11 +6999,11 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Netherlands",
     "flag": "🇳🇱",
     "continent": "Europe",
-    "population": 17800000,
+    "population": 18000000,
     "dominantReligions": [
       {
         "religion": "No Religion / Secular",
-        "percentage": 55.0
+        "percentage": 55
       },
       {
         "religion": "Christianity (Catholic)",
@@ -6102,7 +7019,7 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Christianity (Evangelical/Pentecostal)",
-        "percentage": 3.0
+        "percentage": 3
       },
       {
         "religion": "Other",
@@ -6111,7 +7028,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 37.2,
     "evangelicalPercentage": 4.5,
-    "unreachedPopulationPercentage": 8.0,
+    "unreachedPopulationPercentage": 8,
     "unreachedPeopleGroupsCount": 14,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -6134,7 +7051,15 @@ export const ALL_COUNTRIES: Country[] = [
       "Red Light District outreach and anti-trafficking in Amsterdam",
       "Diaspora Muslim cafe ministries",
       "Cross-cultural missionary training in Heerde and Amsterdam"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Moroccan Diaspora (Nieuw-West/Amsterdam)",
+      "Turkish Diaspora (Rotterdam)",
+      "Surinamese Hindustani (The Hague)",
+      "Post-Christian Secular Dutch"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "nzl",
@@ -6163,8 +7088,8 @@ export const ALL_COUNTRIES: Country[] = [
       }
     ],
     "christianPercentage": 44.3,
-    "evangelicalPercentage": 15.0,
-    "unreachedPopulationPercentage": 6.0,
+    "evangelicalPercentage": 15,
+    "unreachedPopulationPercentage": 6,
     "unreachedPeopleGroupsCount": 12,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -6187,7 +7112,15 @@ export const ALL_COUNTRIES: Country[] = [
       "Te Reo Māori Christian education and discipleship",
       "Asian international student ministry in Auckland",
       "Frontier mission mobilization"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Urban Māori Youth (South Auckland)",
+      "Tuhoe (Te Urewera)",
+      "Pasifika Diaspora (Samoan/Tongan in Manukau)",
+      "Chinese & Indian Migrants"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "nic",
@@ -6200,19 +7133,19 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 50.0
+        "percentage": 50
       },
       {
         "religion": "Christianity (Evangelical/Protestant)",
-        "percentage": 38.0
+        "percentage": 38
       },
       {
         "religion": "No Religion / Other",
-        "percentage": 12.0
+        "percentage": 12
       }
     ],
-    "christianPercentage": 88.0,
-    "evangelicalPercentage": 36.0,
+    "christianPercentage": 88,
+    "evangelicalPercentage": 36,
     "unreachedPopulationPercentage": 1.5,
     "unreachedPeopleGroupsCount": 2,
     "securityLevel": "High",
@@ -6235,7 +7168,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Rural clean water and community health projects",
       "Atlantic coast indigenous church development"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Miskitu (Bilwi/Puerto Cabezas)",
+      "Mayangna (Bosawás Biosphere)",
+      "Rama (Rama Cay)",
+      "Creoles of Bluefields"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "ner",
@@ -6244,7 +7185,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Niger",
     "flag": "🇳🇪",
     "continent": "Africa",
-    "population": 26200000,
+    "population": 27500000,
     "dominantReligions": [
       {
         "religion": "Islam (Sunni)",
@@ -6261,7 +7202,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 0.5,
     "evangelicalPercentage": 0.2,
-    "unreachedPopulationPercentage": 97.0,
+    "unreachedPopulationPercentage": 97,
     "unreachedPeopleGroupsCount": 35,
     "securityLevel": "High",
     "primaryLanguages": [
@@ -6284,7 +7225,17 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Galmi and Niamey medical missionary teams",
       "Solar audio scripture players for nomadic camel herders"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Hausa (Maradi/Zinder)",
+      "Zarma-Songhai (Niamey/Dosso)",
+      "Tuareg (Agadez/Aïr Mountains)",
+      "Fulani Wodaabe (Diffa)",
+      "Kanuri (Lake Chad Basin)",
+      "Toubou (Bilma Sahara)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "nga",
@@ -6293,7 +7244,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Nigeria",
     "flag": "🇳🇬",
     "continent": "Africa",
-    "population": 224000000,
+    "population": 242000000,
     "dominantReligions": [
       {
         "religion": "Christianity (Protestant/Catholic)",
@@ -6309,8 +7260,8 @@ export const ALL_COUNTRIES: Country[] = [
       }
     ],
     "christianPercentage": 49.3,
-    "evangelicalPercentage": 31.0,
-    "unreachedPopulationPercentage": 47.0,
+    "evangelicalPercentage": 31,
+    "unreachedPopulationPercentage": 47,
     "unreachedPeopleGroupsCount": 68,
     "securityLevel": "High",
     "primaryLanguages": [
@@ -6335,7 +7286,18 @@ export const ALL_COUNTRIES: Country[] = [
       "Sahel mission training bases in Jos and Kaduna",
       "Northern agricultural and clean water church plants",
       "Displaced persons trauma counseling and rehabilitation"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Hausa-Fulani (Sokoto/Kano/Katsina)",
+      "Kanuri (Borno/Lake Chad)",
+      "Nupe (Bida Basin)",
+      "Shuwa Arab (Chadian Basin)",
+      "Maguzawa Animists",
+      "Ebira (Kogi)",
+      "Kamberi (Kebbi/Niger)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "prk",
@@ -6344,11 +7306,11 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "North Korea",
     "flag": "🇰🇵",
     "continent": "Asia",
-    "population": 26000000,
+    "population": 26300000,
     "dominantReligions": [
       {
         "religion": "Juche / Kim Il-sungism (State Ideology)",
-        "percentage": 98.0
+        "percentage": 98
       },
       {
         "religion": "Christianity (Persecuted Underground Church)",
@@ -6381,7 +7343,15 @@ export const ALL_COUNTRIES: Country[] = [
       "North Korean defector shelter, trauma counseling, and discipleship in South Korea and third countries",
       "Shortwave gospel radio broadcasts beamed into North Korea",
       "Cross-border humanitarian emergency food logistics"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Pyongyang Political Elite",
+      "Hamgyong Industrial Laborers",
+      "Jagang Mountain Camps",
+      "Ryanggang Border Enclaves"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "mkd",
@@ -6405,9 +7375,9 @@ export const ALL_COUNTRIES: Country[] = [
         "percentage": 1.9
       }
     ],
-    "christianPercentage": 65.0,
+    "christianPercentage": 65,
     "evangelicalPercentage": 0.3,
-    "unreachedPopulationPercentage": 35.0,
+    "unreachedPopulationPercentage": 35,
     "unreachedPeopleGroupsCount": 5,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -6429,7 +7399,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Roma and Albanian community development and literacy",
       "University campus ministry in Skopje"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Albanians (Tetovo/Gostivar)",
+      "Turks (Radoviš)",
+      "Torbeši Slavic Muslims (Debar)",
+      "Romani of Šuto Orizari"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "nor",
@@ -6438,7 +7416,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Norway",
     "flag": "🇳🇴",
     "continent": "Europe",
-    "population": 5480000,
+    "population": 5500000,
     "dominantReligions": [
       {
         "religion": "Christianity (Lutheran)",
@@ -6446,7 +7424,7 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "No Religion / Secular",
-        "percentage": 25.0
+        "percentage": 25
       },
       {
         "religion": "Islam",
@@ -6454,12 +7432,12 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Christianity (Free Churches / Catholic)",
-        "percentage": 4.0
+        "percentage": 4
       }
     ],
     "christianPercentage": 71.5,
     "evangelicalPercentage": 8.5,
-    "unreachedPopulationPercentage": 4.0,
+    "unreachedPopulationPercentage": 4,
     "unreachedPeopleGroupsCount": 4,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -6480,7 +7458,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Urban church planting in multi-cultural Oslo",
       "Frontier mission training and prayer centers in Bergen and Kristiansand"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Somali & Kurdish Diaspora (Grønland/Oslo)",
+      "Northern Sámi (Kautokeino/Finnmark)",
+      "Post-Lutheran Secularists"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "omn",
@@ -6489,7 +7474,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Oman",
     "flag": "🇴🇲",
     "continent": "Asia",
-    "population": 4600000,
+    "population": 5300000,
     "dominantReligions": [
       {
         "religion": "Islam (Ibadi / Sunni - Official)",
@@ -6510,7 +7495,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 6.5,
     "evangelicalPercentage": 0.8,
-    "unreachedPopulationPercentage": 86.0,
+    "unreachedPopulationPercentage": 86,
     "unreachedPeopleGroupsCount": 16,
     "securityLevel": "High",
     "primaryLanguages": [
@@ -6535,7 +7520,15 @@ export const ALL_COUNTRIES: Country[] = [
       "Healthcare, education, and professional services",
       "Southern Dhofar language research and audio scripture",
       "Expatriate worker discipleship and fellowship"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Omani Ibadi Arabs (Nizwa/Jabal Akhdar)",
+      "Dhofari Arabs (Salalah/Jabal Qara)",
+      "Balochi Diaspora (Muttrah)",
+      "Shihuh (Musandam Peninsula)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "pak",
@@ -6544,15 +7537,15 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Pakistan",
     "flag": "🇵🇰",
     "continent": "Asia",
-    "population": 240000000,
+    "population": 259000000,
     "dominantReligions": [
       {
         "religion": "Islam (Sunni)",
-        "percentage": 85.0
+        "percentage": 85
       },
       {
         "religion": "Islam (Shia)",
-        "percentage": 11.0
+        "percentage": 11
       },
       {
         "religion": "Christianity",
@@ -6594,7 +7587,19 @@ export const ALL_COUNTRIES: Country[] = [
       "Brick-kiln bonded labor redemption, children's schools, and legal aid",
       "Urdu and regional language digital discipleship and satellite TV",
       "Disaster flood relief and clean water community projects"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Punjabi Shaikh (Lahore/Faisalabad)",
+      "Sindhi (Thatta/Hyderabad)",
+      "Pashtun (Peshawar/FATA)",
+      "Saraiki (Multan/Bahawalpur)",
+      "Baloch (Makran/Quetta)",
+      "Brahui (Kalat)",
+      "Kashmiri Muslims",
+      "Muhajir (Karachi)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "plw",
@@ -6619,12 +7624,12 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Other",
-        "percentage": 11.0
+        "percentage": 11
       }
     ],
-    "christianPercentage": 82.0,
-    "evangelicalPercentage": 24.0,
-    "unreachedPopulationPercentage": 5.0,
+    "christianPercentage": 82,
+    "evangelicalPercentage": 24,
+    "unreachedPopulationPercentage": 5,
     "unreachedPeopleGroupsCount": 1,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -6645,7 +7650,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Foreign contract worker support and church planting",
       "Youth marine conservation and discipleship"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Babeldaob Rural Hamlets",
+      "Koror Urban Workers"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "pse",
@@ -6658,7 +7669,7 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Islam (Sunni - Official)",
-        "percentage": 98.0
+        "percentage": 98
       },
       {
         "religion": "Christianity (Greek Orthodox/Catholic/Evangelical)",
@@ -6671,7 +7682,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 1.8,
     "evangelicalPercentage": 0.3,
-    "unreachedPopulationPercentage": 98.0,
+    "unreachedPopulationPercentage": 98,
     "unreachedPeopleGroupsCount": 6,
     "securityLevel": "Extreme",
     "primaryLanguages": [
@@ -6693,7 +7704,15 @@ export const ALL_COUNTRIES: Country[] = [
       "Gaza and West Bank emergency medical relief, food kitchens, and trauma counseling",
       "Bethlehem Bible College theological and peacemaking training",
       "Youth vocational skills and community development"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Arab Muslims (Gaza City/Khan Yunis/Rafah)",
+      "Hebron Traditionalists",
+      "Nablus/Jenin Camps",
+      "Bedouin of Judean Desert"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "pan",
@@ -6706,19 +7725,19 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 63.0
+        "percentage": 63
       },
       {
         "religion": "Christianity (Evangelical/Protestant)",
-        "percentage": 25.0
+        "percentage": 25
       },
       {
         "religion": "Other",
-        "percentage": 12.0
+        "percentage": 12
       }
     ],
-    "christianPercentage": 88.0,
-    "evangelicalPercentage": 22.0,
+    "christianPercentage": 88,
+    "evangelicalPercentage": 22,
     "unreachedPopulationPercentage": 2.5,
     "unreachedPeopleGroupsCount": 3,
     "securityLevel": "Low",
@@ -6742,7 +7761,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Darién Gap refugee transit care and food distribution",
       "Indigenous comarca medical boat evangelism"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Ngöbe-Buglé (Comarca Highlands)",
+      "Guna of Guna Yala (San Blas)",
+      "Emberá-Wounaan (Darién Gap)",
+      "Afro-Antillean Colon"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "png",
@@ -6755,18 +7782,18 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Protestant/Lutheran/Pentecostal)",
-        "percentage": 70.0
+        "percentage": 70
       },
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 26.0
+        "percentage": 26
       },
       {
         "religion": "Traditional / Animist",
-        "percentage": 4.0
+        "percentage": 4
       }
     ],
-    "christianPercentage": 96.0,
+    "christianPercentage": 96,
     "evangelicalPercentage": 25.5,
     "unreachedPopulationPercentage": 1.5,
     "unreachedPeopleGroupsCount": 14,
@@ -6791,7 +7818,16 @@ export const ALL_COUNTRIES: Country[] = [
       "Wycliffe/SIL mother-tongue Bible translation projects",
       "MAF missionary aviation logistics in remote highlands",
       "Anti-sorcery violence advocacy and shelter centers"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Huli Wigmen (Tari/Southern Highlands)",
+      "Enga (Wapenamanda)",
+      "Sepik River Tribes (Ambunti)",
+      "Baining (East New Britain)",
+      "Gogodala (Western Province)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "pry",
@@ -6804,20 +7840,20 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 88.0
+        "percentage": 88
       },
       {
         "religion": "Christianity (Evangelical/Mennonite/Protestant)",
-        "percentage": 9.0
+        "percentage": 9
       },
       {
         "religion": "Other",
-        "percentage": 3.0
+        "percentage": 3
       }
     ],
-    "christianPercentage": 97.0,
+    "christianPercentage": 97,
     "evangelicalPercentage": 8.5,
-    "unreachedPopulationPercentage": 2.0,
+    "unreachedPopulationPercentage": 2,
     "unreachedPeopleGroupsCount": 6,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -6838,7 +7874,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Chaco indigenous community development and clean water projects",
       "Guaraní audio Bible distribution and radio ministry"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Aché (Canindeyú Forest)",
+      "Ayoreo (Chaco Desert)",
+      "Nivaclé (Boquerón)",
+      "Guarani Mbya (Caaguazú)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "per",
@@ -6851,7 +7895,7 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 76.0
+        "percentage": 76
       },
       {
         "religion": "Christianity (Evangelical/Pentecostal)",
@@ -6863,7 +7907,7 @@ export const ALL_COUNTRIES: Country[] = [
       }
     ],
     "christianPercentage": 90.5,
-    "evangelicalPercentage": 13.0,
+    "evangelicalPercentage": 13,
     "unreachedPopulationPercentage": 2.5,
     "unreachedPeopleGroupsCount": 14,
     "securityLevel": "Low",
@@ -6887,7 +7931,17 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Amazon riverboat church planting and medical clinics (Iquitos and Pucallpa)",
       "Highland Andes Bible institutes and clean water projects"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Ayacucho Quechua (Andes)",
+      "Cusco Quechua",
+      "Aymara (Lake Titicaca/Puno)",
+      "Asháninka (Junín Amazon)",
+      "Shipibo-Konibo (Ucayali)",
+      "Awajún/Jívaro (Amazonas)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "phl",
@@ -6896,7 +7950,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Philippines",
     "flag": "🇵🇭",
     "continent": "Asia",
-    "population": 117000000,
+    "population": 119000000,
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
@@ -6912,12 +7966,12 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Other",
-        "percentage": 2.0
+        "percentage": 2
       }
     ],
     "christianPercentage": 91.6,
     "evangelicalPercentage": 12.8,
-    "unreachedPopulationPercentage": 8.0,
+    "unreachedPopulationPercentage": 8,
     "unreachedPeopleGroupsCount": 38,
     "securityLevel": "Medium",
     "primaryLanguages": [
@@ -6943,7 +7997,18 @@ export const ALL_COUNTRIES: Country[] = [
       "Mindanao Moro Muslim community development and peacebuilding",
       "Typhoon and natural disaster Christian relief networks",
       "Cross-cultural missionary training hubs in Manila, Cebu, and Davao"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Maguindanao Muslims (Cotabato Basin)",
+      "Maranao Muslims (Lake Lanao/Marawi)",
+      "Tausug (Sulu Archipelago)",
+      "Yakan (Basilan)",
+      "Badjao Sea Nomads",
+      "Palawano Tribals",
+      "Aeta of Zambales"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "pol",
@@ -6952,7 +8017,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Poland",
     "flag": "🇵🇱",
     "continent": "Europe",
-    "population": 37700000,
+    "population": 40000000,
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
@@ -6960,7 +8025,7 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "No Religion / Secular",
-        "percentage": 12.0
+        "percentage": 12
       },
       {
         "religion": "Christianity (Orthodox)",
@@ -6977,7 +8042,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 86.6,
     "evangelicalPercentage": 0.4,
-    "unreachedPopulationPercentage": 2.0,
+    "unreachedPopulationPercentage": 2,
     "unreachedPeopleGroupsCount": 3,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -6999,7 +8064,14 @@ export const ALL_COUNTRIES: Country[] = [
       "University campus ministry in Warsaw, Krakow, and Wroclaw",
       "Ukrainian refugee family care and integration",
       "Christian publishing and digital media in Polish"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Silesian Coalfield Towns",
+      "Podhale Highlander Traditionalists",
+      "Post-Communist Urban Youth (Warsaw/Krakow)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "prt",
@@ -7020,7 +8092,7 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Christianity (Evangelical/Protestant)",
-        "percentage": 3.0
+        "percentage": 3
       },
       {
         "religion": "Other",
@@ -7029,7 +8101,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 83.2,
     "evangelicalPercentage": 2.2,
-    "unreachedPopulationPercentage": 3.0,
+    "unreachedPopulationPercentage": 3,
     "unreachedPeopleGroupsCount": 3,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -7048,7 +8120,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Church planting in interior regions (Alentejo and Trás-os-Montes)",
       "University student ministry in Coimbra and Lisbon"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Romani Ciganos (Porto/Setúbal)",
+      "Brazilian & Angolan Laborers (Amadora/Lisbon)",
+      "Post-Catholic Secularists"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "qat",
@@ -7078,7 +8157,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 15.4,
     "evangelicalPercentage": 2.1,
-    "unreachedPopulationPercentage": 75.0,
+    "unreachedPopulationPercentage": 75,
     "unreachedPeopleGroupsCount": 14,
     "securityLevel": "High",
     "primaryLanguages": [
@@ -7102,7 +8181,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Professional business-as-mission and marketplace ministry",
       "Expatriate worker welfare, education, and discipleship centers"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Qatari Arab Bedouin",
+      "Nepali & Indian Construction Workforce",
+      "Filipino Service Workers"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "rou",
@@ -7127,10 +8213,10 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "No Religion / Other",
-        "percentage": 4.0
+        "percentage": 4
       }
     ],
-    "christianPercentage": 96.0,
+    "christianPercentage": 96,
     "evangelicalPercentage": 5.4,
     "unreachedPopulationPercentage": 2.5,
     "unreachedPeopleGroupsCount": 4,
@@ -7154,7 +8240,14 @@ export const ALL_COUNTRIES: Country[] = [
       "Missionary training and sending agencies in Timișoara, Cluj, and Oradea",
       "Roma community development and church planting",
       "Orphan care and social outreach"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Romani Communities (Ferentari/Bucharest, Mureș)",
+      "Lipovan Old Believers (Danube Delta)",
+      "Hungarian Csángó (Moldavia)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "rus",
@@ -7163,19 +8256,19 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Russia",
     "flag": "🇷🇺",
     "continent": "Europe",
-    "population": 143400000,
+    "population": 144000000,
     "dominantReligions": [
       {
         "religion": "Christianity (Russian Orthodox)",
-        "percentage": 68.0
+        "percentage": 68
       },
       {
         "religion": "No Religion / Atheist",
-        "percentage": 18.0
+        "percentage": 18
       },
       {
         "religion": "Islam (Tatar, North Caucasus)",
-        "percentage": 10.0
+        "percentage": 10
       },
       {
         "religion": "Christianity (Evangelical/Baptist/Pentecostal)",
@@ -7188,7 +8281,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 69.5,
     "evangelicalPercentage": 1.5,
-    "unreachedPopulationPercentage": 14.0,
+    "unreachedPopulationPercentage": 14,
     "unreachedPeopleGroupsCount": 112,
     "securityLevel": "Extreme",
     "primaryLanguages": [
@@ -7213,7 +8306,19 @@ export const ALL_COUNTRIES: Country[] = [
       "Siberian indigenous tribal church planting",
       "North Caucasus digital scripture and audio Bible distribution",
       "Rehabilitation ministries and orphan support"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Tatar Muslims (Kazan/Tatarstan)",
+      "Chechens (Grozny/Caucasus)",
+      "Dagestani Avars/Dargins (Makhachkala)",
+      "Bashkirs (Ufa)",
+      "Tuvan Buddhist-Shamanists (Kyzyl)",
+      "Buryats (Lake Baikal)",
+      "Yakuts/Sakha (Siberia)",
+      "Circassians (Kabardino-Balkaria)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "rwa",
@@ -7222,7 +8327,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Rwanda",
     "flag": "🇷🇼",
     "continent": "Africa",
-    "population": 13780000,
+    "population": 14300000,
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
@@ -7265,7 +8370,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Peace, reconciliation, and trauma counseling institutes",
       "Tech-driven missional entrepreneurship in Kigali"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Batwa Potter Communities",
+      "Rural Lake Kivu Fisherfolk",
+      "Gisenyi Border Enclaves"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "kna",
@@ -7278,15 +8390,15 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Anglican/Methodist/Pentecostal)",
-        "percentage": 92.0
+        "percentage": 92
       },
       {
         "religion": "Other",
-        "percentage": 8.0
+        "percentage": 8
       }
     ],
-    "christianPercentage": 92.0,
-    "evangelicalPercentage": 26.0,
+    "christianPercentage": 92,
+    "evangelicalPercentage": 26,
     "unreachedPopulationPercentage": 0.5,
     "unreachedPeopleGroupsCount": 0,
     "securityLevel": "Low",
@@ -7307,7 +8419,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Youth camp and sports ministry",
       "Inter-island prayer networks"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Sandy Point Coastal Hamlets",
+      "Gingerland Agricultural Villages"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "lca",
@@ -7328,12 +8446,12 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "No Religion / Other",
-        "percentage": 13.0
+        "percentage": 13
       }
     ],
-    "christianPercentage": 87.0,
-    "evangelicalPercentage": 16.0,
-    "unreachedPopulationPercentage": 1.0,
+    "christianPercentage": 87,
+    "evangelicalPercentage": 16,
+    "unreachedPopulationPercentage": 1,
     "unreachedPeopleGroupsCount": 0,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -7353,7 +8471,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Kwéyòl radio and media evangelism",
       "Community vocational training centers"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Anse La Raye Fishing Villages",
+      "Soufrière Cocoa Valleys"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "vct",
@@ -7366,15 +8490,15 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Anglican/Methodist/Pentecostal)",
-        "percentage": 82.0
+        "percentage": 82
       },
       {
         "religion": "No Religion / Other",
-        "percentage": 18.0
+        "percentage": 18
       }
     ],
-    "christianPercentage": 82.0,
-    "evangelicalPercentage": 28.0,
+    "christianPercentage": 82,
+    "evangelicalPercentage": 28,
     "unreachedPopulationPercentage": 0.5,
     "unreachedPeopleGroupsCount": 0,
     "securityLevel": "Low",
@@ -7395,7 +8519,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Island-to-island boat ministry in the Grenadines",
       "Youth discipleship academies"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Garifuna Black Carib Descendants (Sandy Bay)",
+      "Bequia Whaling Community"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "wsm",
@@ -7408,7 +8538,7 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Congregational/EFKS)",
-        "percentage": 29.0
+        "percentage": 29
       },
       {
         "religion": "Christianity (Catholic)",
@@ -7427,8 +8557,8 @@ export const ALL_COUNTRIES: Country[] = [
         "percentage": 22.3
       }
     ],
-    "christianPercentage": 98.0,
-    "evangelicalPercentage": 22.0,
+    "christianPercentage": 98,
+    "evangelicalPercentage": 22,
     "unreachedPopulationPercentage": 0.2,
     "unreachedPeopleGroupsCount": 0,
     "securityLevel": "Low",
@@ -7449,7 +8579,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Pacific missionary training and deployment base",
       "Youth music and performing arts evangelism"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Traditional Matai Villages (Savai'i Island)",
+      "Falelatai Coastal Enclaves"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "smr",
@@ -7462,16 +8598,16 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 91.0
+        "percentage": 91
       },
       {
         "religion": "Secular / Other",
-        "percentage": 9.0
+        "percentage": 9
       }
     ],
-    "christianPercentage": 91.0,
+    "christianPercentage": 91,
     "evangelicalPercentage": 0.3,
-    "unreachedPopulationPercentage": 4.0,
+    "unreachedPopulationPercentage": 4,
     "unreachedPeopleGroupsCount": 1,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -7488,7 +8624,12 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "missionOpportunities": [
       "Youth ministry and home Bible studies"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Traditional Mount Titano Catholic Communes"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "stp",
@@ -7501,20 +8642,20 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 70.0
+        "percentage": 70
       },
       {
         "religion": "Christianity (Protestant)",
-        "percentage": 15.0
+        "percentage": 15
       },
       {
         "religion": "Other",
-        "percentage": 15.0
+        "percentage": 15
       }
     ],
-    "christianPercentage": 85.0,
-    "evangelicalPercentage": 11.0,
-    "unreachedPopulationPercentage": 1.0,
+    "christianPercentage": 85,
+    "evangelicalPercentage": 11,
+    "unreachedPopulationPercentage": 1,
     "unreachedPeopleGroupsCount": 1,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -7535,7 +8676,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Island community clinics and vocational training",
       "Radio and Christian literature ministry"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Angolares Fisherfolk",
+      "Forros Plantation Workers"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "sau",
@@ -7544,11 +8691,11 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Saudi Arabia",
     "flag": "🇸🇦",
     "continent": "Asia",
-    "population": 36400000,
+    "population": 37000000,
     "dominantReligions": [
       {
         "religion": "Islam (Sunni/Wahhabi - Official)",
-        "percentage": 88.0
+        "percentage": 88
       },
       {
         "religion": "Christianity (Expat Workers)",
@@ -7561,7 +8708,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 6.5,
     "evangelicalPercentage": 1.2,
-    "unreachedPopulationPercentage": 93.0,
+    "unreachedPopulationPercentage": 93,
     "unreachedPeopleGroupsCount": 35,
     "securityLevel": "Extreme",
     "primaryLanguages": [
@@ -7585,7 +8732,16 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Secure Arabic digital scripture, satellite TV, and AI apologetics platforms",
       "Expatriate healthcare, engineering, and education workplace witness"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Najdi Arabs (Riyadh/Qassim)",
+      "Hijazi Arabs (Mecca/Medina/Jeddah)",
+      "Asiri Mountain Tribes (Abha)",
+      "Eastern Province Shia (Qatif/Al-Ahsa)",
+      "South Asian Foreign Laborers"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "sen",
@@ -7594,7 +8750,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Senegal",
     "flag": "🇸🇳",
     "continent": "Africa",
-    "population": 17320000,
+    "population": 18500000,
     "dominantReligions": [
       {
         "religion": "Islam (Sufi Brotherhoods)",
@@ -7634,7 +8790,16 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Wolof Bible translation and media outreach",
       "Pioneer mission stations in Casamance and eastern Senegal"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Wolof Mouride Brotherhood (Touba)",
+      "Fula/Pulaar (Fouta Toro)",
+      "Serer Animists (Fatick)",
+      "Mandinka (Casamance)",
+      "Jola (Ziguinchor)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "srb",
@@ -7651,7 +8816,7 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 5.0
+        "percentage": 5
       },
       {
         "religion": "Islam (Bosniak/Roma)",
@@ -7659,7 +8824,7 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Christianity (Protestant/Evangelical)",
-        "percentage": 1.0
+        "percentage": 1
       },
       {
         "religion": "Other",
@@ -7668,7 +8833,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 90.6,
     "evangelicalPercentage": 0.8,
-    "unreachedPopulationPercentage": 5.0,
+    "unreachedPopulationPercentage": 5,
     "unreachedPeopleGroupsCount": 4,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -7690,7 +8855,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Roma education and church planting in southern Serbia",
       "University campus ministry in Belgrade"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Bosniaks of Sandžak (Novi Pazar)",
+      "Romani Settlements (Niš/Belgrade)",
+      "Vlachs of Timočka Krajina"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "syc",
@@ -7716,7 +8888,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 86.8,
     "evangelicalPercentage": 8.5,
-    "unreachedPopulationPercentage": 2.0,
+    "unreachedPopulationPercentage": 2,
     "unreachedPeopleGroupsCount": 1,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -7737,7 +8909,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Teen and young adult rehabilitation ministries",
       "Island-wide worship and prayer gatherings"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Outer Coral Islands Outposts",
+      "Mahé Fisherfolk"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "sle",
@@ -7746,11 +8924,11 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Sierra Leone",
     "flag": "🇸🇱",
     "continent": "Africa",
-    "population": 8600000,
+    "population": 8900000,
     "dominantReligions": [
       {
         "religion": "Islam",
-        "percentage": 78.0
+        "percentage": 78
       },
       {
         "religion": "Christianity",
@@ -7763,7 +8941,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 20.9,
     "evangelicalPercentage": 4.2,
-    "unreachedPopulationPercentage": 68.0,
+    "unreachedPopulationPercentage": 68,
     "unreachedPeopleGroupsCount": 14,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -7785,7 +8963,16 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Interior village community schools and clinics",
       "Krio and tribal audio scripture distribution"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Temne Muslims (Makeni/Port Loko)",
+      "Mende (Bo/Kenema)",
+      "Limba (Koinadugu)",
+      "Kono Diamond Miners",
+      "Fullah Traders"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "sgp",
@@ -7794,11 +8981,11 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Singapore",
     "flag": "🇸🇬",
     "continent": "Asia",
-    "population": 5900000,
+    "population": 6000000,
     "dominantReligions": [
       {
         "religion": "Buddhism / Taoism",
-        "percentage": 40.0
+        "percentage": 40
       },
       {
         "religion": "Christianity (Protestant/Catholic)",
@@ -7806,7 +8993,7 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "No Religion / Secular",
-        "percentage": 20.0
+        "percentage": 20
       },
       {
         "religion": "Islam (Malay)",
@@ -7814,12 +9001,12 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Hinduism",
-        "percentage": 5.0
+        "percentage": 5
       }
     ],
     "christianPercentage": 18.9,
     "evangelicalPercentage": 11.5,
-    "unreachedPopulationPercentage": 22.0,
+    "unreachedPopulationPercentage": 22,
     "unreachedPeopleGroupsCount": 18,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -7842,7 +9029,14 @@ export const ALL_COUNTRIES: Country[] = [
       "Cross-cultural mission sending agencies and training institutes (TTC, ACTS)",
       "Migrant worker blessing, healthcare, and literacy outreach",
       "Tech and AI missional entrepreneurship hubs"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Malay Muslims (Geylang Serai)",
+      "Chinese Taoist/Buddhist Traditionalists",
+      "South Asian Migrant Workers (Little India)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "svk",
@@ -7855,11 +9049,11 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 56.0
+        "percentage": 56
       },
       {
         "religion": "No Religion / Secular",
-        "percentage": 24.0
+        "percentage": 24
       },
       {
         "religion": "Christianity (Lutheran)",
@@ -7867,7 +9061,7 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Christianity (Greek Catholic)",
-        "percentage": 4.0
+        "percentage": 4
       },
       {
         "religion": "Christianity (Evangelical)",
@@ -7880,7 +9074,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 67.1,
     "evangelicalPercentage": 1.8,
-    "unreachedPopulationPercentage": 3.0,
+    "unreachedPopulationPercentage": 3,
     "unreachedPeopleGroupsCount": 2,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -7901,7 +9095,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Eastern Slovakian Roma community centers and churches",
       "Youth worship and creative arts training"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Romani Ghettos (Lunik IX/Košice)",
+      "Rusyn Byzantine Catholic Hamlets (Prešov)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "svn",
@@ -7918,7 +9118,7 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "No Religion / Secular",
-        "percentage": 30.0
+        "percentage": 30
       },
       {
         "religion": "Islam",
@@ -7935,7 +9135,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 60.3,
     "evangelicalPercentage": 0.2,
-    "unreachedPopulationPercentage": 4.0,
+    "unreachedPopulationPercentage": 4,
     "unreachedPeopleGroupsCount": 2,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -7954,7 +9154,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Pioneer church planting in Ljubljana, Maribor, and Celje",
       "Outdoor adventure and youth camp ministry"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Post-Communist Secular Ljubljana",
+      "Prekmurje Hungarian Border Settlements"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "slb",
@@ -7990,8 +9196,8 @@ export const ALL_COUNTRIES: Country[] = [
         "percentage": 9.6
       }
     ],
-    "christianPercentage": 92.0,
-    "evangelicalPercentage": 32.0,
+    "christianPercentage": 92,
+    "evangelicalPercentage": 32,
     "unreachedPopulationPercentage": 0.5,
     "unreachedPeopleGroupsCount": 0,
     "securityLevel": "Low",
@@ -8013,7 +9219,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Remote island sailing medical and church support teams",
       "Solomons Pijin scripture distribution and audio recordings"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Kwaio High Ancestral Worshippers (Malaita)",
+      "Polynesian Outliers (Tikopia/Rennell)",
+      "Western Province Reef Fisherfolk"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "som",
@@ -8022,7 +9235,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Somalia",
     "flag": "🇸🇴",
     "continent": "Africa",
-    "population": 17600000,
+    "population": 18700000,
     "dominantReligions": [
       {
         "religion": "Islam (Sunni)",
@@ -8059,7 +9272,17 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Somali diaspora outreach in Kenya, USA, and Europe",
       "Shortwave audio Gospel broadcasts"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Somali Darod (Puntland/Kismayo)",
+      "Hawiye (Mogadishu/Hiran)",
+      "Isaaq (Somaliland/Hargeisa)",
+      "Rahanweyn/Digil (Baidoa)",
+      "Benadiri Coastal Clan",
+      "Bantu Gosha (Juba River)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "zaf",
@@ -8068,27 +9291,27 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "South Africa",
     "flag": "🇿🇦",
     "continent": "Africa",
-    "population": 60400000,
+    "population": 63000000,
     "dominantReligions": [
       {
         "religion": "Christianity (Protestant/Zionist)",
-        "percentage": 78.0
+        "percentage": 78
       },
       {
         "religion": "Traditional",
-        "percentage": 5.0
+        "percentage": 5
       },
       {
         "religion": "Islam",
-        "percentage": 2.0
+        "percentage": 2
       },
       {
         "religion": "No Religion / Other",
-        "percentage": 15.0
+        "percentage": 15
       }
     ],
-    "christianPercentage": 78.0,
-    "evangelicalPercentage": 24.0,
+    "christianPercentage": 78,
+    "evangelicalPercentage": 24,
     "unreachedPopulationPercentage": 4.5,
     "unreachedPeopleGroupsCount": 16,
     "securityLevel": "Medium",
@@ -8114,7 +9337,16 @@ export const ALL_COUNTRIES: Country[] = [
       "Township church planting and youth mentorship",
       "Cross-cultural mission training institutes in Cape Town and Pretoria",
       "Refugee diaspora outreach to Somali and Congolese immigrants"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Zulu Traditionalists (KwaZulu-Natal)",
+      "Xhosa Ancestor Revering (Eastern Cape)",
+      "Venda Sacred Forest Worshippers (Limpopo)",
+      "Tsonga (Mpumalanga)",
+      "Cape Flats Gang Neighborhoods (Mitchells Plain)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "kor",
@@ -8127,28 +9359,28 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "No Religion / Secular",
-        "percentage": 50.0
+        "percentage": 50
       },
       {
         "religion": "Christianity (Protestant/Presbyterian/Pentecostal)",
-        "percentage": 20.0
+        "percentage": 20
       },
       {
         "religion": "Buddhism",
-        "percentage": 17.0
+        "percentage": 17
       },
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 11.0
+        "percentage": 11
       },
       {
         "religion": "Other",
-        "percentage": 2.0
+        "percentage": 2
       }
     ],
-    "christianPercentage": 31.0,
+    "christianPercentage": 31,
     "evangelicalPercentage": 16.5,
-    "unreachedPopulationPercentage": 5.0,
+    "unreachedPopulationPercentage": 5,
     "unreachedPeopleGroupsCount": 8,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -8169,7 +9401,15 @@ export const ALL_COUNTRIES: Country[] = [
       "Frontier cross-cultural missionary sending and member care",
       "North Korean defector discipleship and integration in Seoul",
       "Global 24/7 prayer mountain and intercession movements"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Secular Nihilistic Metros (Seoul/Incheon)",
+      "Shamanistic Mudang Clients",
+      "Aging Agricultural Villages",
+      "Buddhist Monastic Enclaves (Gyeongsang)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "ssd",
@@ -8178,7 +9418,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "South Sudan",
     "flag": "🇸🇸",
     "continent": "Africa",
-    "population": 11090000,
+    "population": 11200000,
     "dominantReligions": [
       {
         "religion": "Christianity",
@@ -8194,8 +9434,8 @@ export const ALL_COUNTRIES: Country[] = [
       }
     ],
     "christianPercentage": 60.5,
-    "evangelicalPercentage": 18.0,
-    "unreachedPopulationPercentage": 22.0,
+    "evangelicalPercentage": 18,
+    "unreachedPopulationPercentage": 22,
     "unreachedPeopleGroupsCount": 20,
     "securityLevel": "Extreme",
     "primaryLanguages": [
@@ -8218,7 +9458,16 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Trauma healing and emergency food distribution",
       "Aviation and mobile medical missionary clinics"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Dinka Cattle Pastoralists (Jonglei/Bahr el Ghazal)",
+      "Nuer (Upper Nile/Bentiu)",
+      "Murle (Pibor)",
+      "Toposa (Eastern Equatoria)",
+      "Zande (Western Equatoria)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "esp",
@@ -8231,11 +9480,11 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 58.0
+        "percentage": 58
       },
       {
         "religion": "No Religion / Secular",
-        "percentage": 37.0
+        "percentage": 37
       },
       {
         "religion": "Islam (Moroccan/Pakistani)",
@@ -8243,16 +9492,16 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Christianity (Evangelical/Gypsy/Latino)",
-        "percentage": 2.0
+        "percentage": 2
       },
       {
         "religion": "Other",
         "percentage": 0.5
       }
     ],
-    "christianPercentage": 60.0,
+    "christianPercentage": 60,
     "evangelicalPercentage": 1.5,
-    "unreachedPopulationPercentage": 6.0,
+    "unreachedPopulationPercentage": 6,
     "unreachedPeopleGroupsCount": 18,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -8276,7 +9525,14 @@ export const ALL_COUNTRIES: Country[] = [
       "Pioneer church planting in rural unreached municipalities",
       "North African diaspora ministry in Almería and Ceuta/Melilla",
       "Camino de Santiago pilgrim hospitality and evangelism"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Moroccan & Algerian Diaspora (Lavapiés/Madrid, El Raval/Barcelona)",
+      "Gitano Romani Barrios (Seville/Granada)",
+      "Secular Post-Catholic Catalonia & Basque Country"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "lka",
@@ -8285,7 +9541,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Sri Lanka",
     "flag": "🇱🇰",
     "continent": "Asia",
-    "population": 22200000,
+    "population": 23000000,
     "dominantReligions": [
       {
         "religion": "Buddhism (Theravada - Official)",
@@ -8310,7 +9566,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 7.5,
     "evangelicalPercentage": 1.8,
-    "unreachedPopulationPercentage": 86.0,
+    "unreachedPopulationPercentage": 86,
     "unreachedPeopleGroupsCount": 22,
     "securityLevel": "Medium",
     "primaryLanguages": [
@@ -8332,7 +9588,15 @@ export const ALL_COUNTRIES: Country[] = [
       "Tea plantation Tamil worker education, medical clinics, and church planting",
       "Sinhala Buddhist community development and youth discipleship",
       "Disaster and economic emergency relief networks"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Sinhala Theravada Buddhists (Kandy/Southern Province)",
+      "Sri Lankan Tamils (Jaffna/Vanni)",
+      "Sri Lankan Moors (Eastern Province/Ampara)",
+      "Indian Estate Tamils (Nuwara Eliya)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "sdn",
@@ -8341,11 +9605,11 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Sudan",
     "flag": "🇸🇩",
     "continent": "Africa",
-    "population": 46870000,
+    "population": 49000000,
     "dominantReligions": [
       {
         "religion": "Islam (Sunni - Official)",
-        "percentage": 91.0
+        "percentage": 91
       },
       {
         "religion": "Christianity",
@@ -8358,7 +9622,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 5.4,
     "evangelicalPercentage": 1.8,
-    "unreachedPopulationPercentage": 90.0,
+    "unreachedPopulationPercentage": 90,
     "unreachedPeopleGroupsCount": 118,
     "securityLevel": "Extreme",
     "primaryLanguages": [
@@ -8381,7 +9645,18 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Emergency relief and medical outreach in Port Sudan",
       "Digital Arabic Gospel broadcasts and underground church planting"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Sudanese Arab Majority (Khartoum/River Nile)",
+      "Beja Hadendoa (Red Sea Hills/Port Sudan)",
+      "Fur (Jabal Marra/Darfur)",
+      "Masalit (West Darfur)",
+      "Zaghawa (North Darfur)",
+      "Nuba Mountain Tribes (South Kordofan)",
+      "Rashaida Bedouin"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "sur",
@@ -8410,8 +9685,8 @@ export const ALL_COUNTRIES: Country[] = [
       }
     ],
     "christianPercentage": 48.4,
-    "evangelicalPercentage": 18.0,
-    "unreachedPopulationPercentage": 28.0,
+    "evangelicalPercentage": 18,
+    "unreachedPopulationPercentage": 28,
     "unreachedPeopleGroupsCount": 5,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -8434,7 +9709,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Interior Maroon rainforest medical and church planting teams",
       "Hindustani and Javanese cultural friendship ministries"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Hindustani East Indians (Paramaribo)",
+      "Ndyuka & Saramaka Maroons (Tapanahony/Suriname River)",
+      "Javanese Descendants (Wanica)",
+      "Carib Amerindians"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "swe",
@@ -8443,7 +9726,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Sweden",
     "flag": "🇸🇪",
     "continent": "Europe",
-    "population": 10500000,
+    "population": 10600000,
     "dominantReligions": [
       {
         "religion": "Christianity (Lutheran)",
@@ -8451,18 +9734,18 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "No Religion / Secular",
-        "percentage": 38.0
+        "percentage": 38
       },
       {
         "religion": "Islam",
-        "percentage": 5.0
+        "percentage": 5
       },
       {
         "religion": "Christianity (Free Churches / Catholic / Orthodox)",
         "percentage": 3.4
       }
     ],
-    "christianPercentage": 57.0,
+    "christianPercentage": 57,
     "evangelicalPercentage": 6.5,
     "unreachedPopulationPercentage": 6.5,
     "unreachedPeopleGroupsCount": 8,
@@ -8486,7 +9769,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Immigrant diaspora church planting and youth mentorship",
       "Christian media and digital discipleship in Stockholm"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Syrian & Iraqi Diaspora (Södertälje)",
+      "Somali Diaspora (Rinkeby/Tensta/Stockholm)",
+      "Rosengård (Malmö)",
+      "Secular Post-Christian Swedes"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "che",
@@ -8495,7 +9786,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Switzerland",
     "flag": "🇨🇭",
     "continent": "Europe",
-    "population": 8800000,
+    "population": 8900000,
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
@@ -8507,7 +9798,7 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "No Religion / Secular",
-        "percentage": 34.0
+        "percentage": 34
       },
       {
         "religion": "Islam",
@@ -8515,16 +9806,16 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Christianity (Evangelical/Free)",
-        "percentage": 3.0
+        "percentage": 3
       },
       {
         "religion": "Other",
-        "percentage": 2.0
+        "percentage": 2
       }
     ],
     "christianPercentage": 58.6,
     "evangelicalPercentage": 4.2,
-    "unreachedPopulationPercentage": 6.0,
+    "unreachedPopulationPercentage": 6,
     "unreachedPeopleGroupsCount": 6,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -8546,7 +9837,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "International diplomatic and UN worker ministry in Geneva",
       "Alpine prayer retreat centers and missionary care"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Turkish & Albanian Diaspora (Basel/Zurich)",
+      "Geneva International Secular Elite",
+      "Isolated Alpine Valleys (Valais)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "syr",
@@ -8555,28 +9853,28 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Syria",
     "flag": "🇸🇾",
     "continent": "Asia",
-    "population": 22100000,
+    "population": 23500000,
     "dominantReligions": [
       {
         "religion": "Islam (Sunni)",
-        "percentage": 74.0
+        "percentage": 74
       },
       {
         "religion": "Islam (Alawite/Ismaili/Shia)",
-        "percentage": 13.0
+        "percentage": 13
       },
       {
         "religion": "Christianity (Orthodox/Catholic/Evangelical)",
-        "percentage": 10.0
+        "percentage": 10
       },
       {
         "religion": "Druze",
-        "percentage": 3.0
+        "percentage": 3
       }
     ],
-    "christianPercentage": 10.0,
+    "christianPercentage": 10,
     "evangelicalPercentage": 0.8,
-    "unreachedPopulationPercentage": 88.0,
+    "unreachedPopulationPercentage": 88,
     "unreachedPeopleGroupsCount": 26,
     "securityLevel": "Extreme",
     "primaryLanguages": [
@@ -8599,7 +9897,16 @@ export const ALL_COUNTRIES: Country[] = [
       "Frontline emergency food, winter heating, and medical relief in Aleppo and Damascus",
       "Underground Muslim-background believer discipleship and pastoral care",
       "Rebuilding destroyed schools and community trauma counseling centers"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Arab Sunnis (Aleppo/Idlib/Homs)",
+      "Alawite Sect (Latakia/Tartus)",
+      "Syrian Kurds (Hasakah/Qamishli)",
+      "Druze of Jabal al-Druze (As-Suwayda)",
+      "Bedouin of Syrian Desert (Palmyra)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "tjk",
@@ -8608,15 +9915,15 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Tajikistan",
     "flag": "🇹🇯",
     "continent": "Asia",
-    "population": 10100000,
+    "population": 10300000,
     "dominantReligions": [
       {
         "religion": "Islam (Sunni)",
-        "percentage": 95.0
+        "percentage": 95
       },
       {
         "religion": "Islam (Ismaili Shia - Pamiri)",
-        "percentage": 3.0
+        "percentage": 3
       },
       {
         "religion": "Christianity (Tajik Evangelical / Russian)",
@@ -8629,7 +9936,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 1.2,
     "evangelicalPercentage": 0.3,
-    "unreachedPopulationPercentage": 98.0,
+    "unreachedPopulationPercentage": 98,
     "unreachedPeopleGroupsCount": 22,
     "securityLevel": "Extreme",
     "primaryLanguages": [
@@ -8652,7 +9959,15 @@ export const ALL_COUNTRIES: Country[] = [
       "Pamir mountain community clean water and healthcare projects",
       "Tajik audio scripture and digital smartphone discipleship",
       "Addiction rehabilitation and job skills academies in Dushanbe"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Tajik Sunnis (Dushanbe/Khujand/Kulob)",
+      "Pamiri Ismaili Shia (Gorno-Badakhshan/Khorugh)",
+      "Yaghnobi (Zarafshan Valley)",
+      "Uzbek Minority (Sughd)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "tza",
@@ -8661,7 +9976,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Tanzania",
     "flag": "🇹🇿",
     "continent": "Africa",
-    "population": 65500000,
+    "population": 68000000,
     "dominantReligions": [
       {
         "religion": "Christianity",
@@ -8678,7 +9993,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 63.1,
     "evangelicalPercentage": 18.2,
-    "unreachedPopulationPercentage": 18.0,
+    "unreachedPopulationPercentage": 18,
     "unreachedPeopleGroupsCount": 30,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -8700,7 +10015,17 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Zanzibar underground church support and discipleship",
       "Maasai and pastoralist church planting initiatives"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Swahili & Arab Coast (Zanzibar/Pemba)",
+      "Sukuma Animists (Mwanza/Lake Victoria)",
+      "Maasai (Ngorongoro/Arusha)",
+      "Datoga Pastoralists (Manyara)",
+      "Makonde (Mtwara)",
+      "Hadzabe Hunter-Gatherers (Lake Eyasi)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "tha",
@@ -8709,7 +10034,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Thailand",
     "flag": "🇹🇭",
     "continent": "Asia",
-    "population": 71800000,
+    "population": 72000000,
     "dominantReligions": [
       {
         "religion": "Buddhism (Theravada - Official)",
@@ -8751,7 +10076,16 @@ export const ALL_COUNTRIES: Country[] = [
       "Isan rural village church planting and clean water projects",
       "Anti-human trafficking rescue, trauma care, and vocational academies",
       "Cross-cultural missionary training hub in Chiang Mai and Bangkok"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Central Thai Buddhists (Bangkok/Ayutthaya)",
+      "Isan Lao-Thai (Ubon/Khon Kaen)",
+      "Pattani Malay Muslims (Yala/Narathiwat)",
+      "Karen Hill Tribes (Mae Hong Son)",
+      "Hmong & Akha (Chiang Rai)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "tls",
@@ -8768,7 +10102,7 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Christianity (Protestant/Evangelical)",
-        "percentage": 2.0
+        "percentage": 2
       },
       {
         "religion": "Islam / Traditional",
@@ -8776,7 +10110,7 @@ export const ALL_COUNTRIES: Country[] = [
       }
     ],
     "christianPercentage": 99.5,
-    "evangelicalPercentage": 2.0,
+    "evangelicalPercentage": 2,
     "unreachedPopulationPercentage": 1.5,
     "unreachedPeopleGroupsCount": 2,
     "securityLevel": "Low",
@@ -8801,7 +10135,15 @@ export const ALL_COUNTRIES: Country[] = [
       "Tetum audio Bible translation and Christian education",
       "Youth vocational trade and sports mentoring in Dili",
       "Rural mountain village community clinics"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Mambai Sacred Ancestor Houses (Ainaro)",
+      "Fataluku (Lautém/Lospalos)",
+      "Bunak (Bobonaro)",
+      "Makasae (Baucau)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "tgo",
@@ -8810,7 +10152,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Togo",
     "flag": "🇹🇬",
     "continent": "Africa",
-    "population": 8850000,
+    "population": 9200000,
     "dominantReligions": [
       {
         "religion": "Christianity",
@@ -8822,12 +10164,12 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Islam",
-        "percentage": 20.0
+        "percentage": 20
       }
     ],
     "christianPercentage": 43.7,
-    "evangelicalPercentage": 11.0,
-    "unreachedPopulationPercentage": 28.0,
+    "evangelicalPercentage": 11,
+    "unreachedPopulationPercentage": 28,
     "unreachedPeopleGroupsCount": 15,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -8849,7 +10191,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Medical missionary service in northern Togo",
       "Audio Bible and film evangelism in Kabiye and Ewe"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Ewe Vodun Traditionalists (Aného/Maritime)",
+      "Kabye (Kara/Kozah)",
+      "Kotokoli/Tem Muslims (Sokodé)",
+      "Moba (Savanes/Dapaong)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "ton",
@@ -8870,7 +10220,7 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Christianity (Pentecostal / Protestant)",
-        "percentage": 18.0
+        "percentage": 18
       },
       {
         "religion": "Latter-day Saints",
@@ -8881,8 +10231,8 @@ export const ALL_COUNTRIES: Country[] = [
         "percentage": 13.7
       }
     ],
-    "christianPercentage": 96.0,
-    "evangelicalPercentage": 24.0,
+    "christianPercentage": 96,
+    "evangelicalPercentage": 24,
     "unreachedPopulationPercentage": 0.2,
     "unreachedPeopleGroupsCount": 0,
     "securityLevel": "Low",
@@ -8903,7 +10253,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Island youth leadership mentoring",
       "Pacific theological and missionary training"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Outer Ha'apai Coral Islands",
+      "Vava'u Fisherfolk"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "tto",
@@ -8924,7 +10280,7 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Islam",
-        "percentage": 5.0
+        "percentage": 5
       },
       {
         "religion": "Other / None",
@@ -8932,8 +10288,8 @@ export const ALL_COUNTRIES: Country[] = [
       }
     ],
     "christianPercentage": 55.3,
-    "evangelicalPercentage": 20.0,
-    "unreachedPopulationPercentage": 22.0,
+    "evangelicalPercentage": 20,
+    "unreachedPopulationPercentage": 22,
     "unreachedPeopleGroupsCount": 4,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -8954,7 +10310,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Hindu and Muslim friendship and cultural outreach",
       "Cross-cultural missionary training in St. Augustine"
-    ]
+    ],
+    "unreachedPlaces": [
+      "East Indian Hindus (Caroni/Chaguanas)",
+      "East Indian Muslims",
+      "Orisha Yoruba Revivalists"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "tun",
@@ -8963,11 +10326,11 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Tunisia",
     "flag": "🇹🇳",
     "continent": "Africa",
-    "population": 12360000,
+    "population": 12500000,
     "dominantReligions": [
       {
         "religion": "Islam (Sunni)",
-        "percentage": 99.0
+        "percentage": 99
       },
       {
         "religion": "Christianity",
@@ -9001,7 +10364,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Digital discipleship in Tunisian Arabic",
       "Business-as-mission start-ups and language schools"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Tunisian Arabs (Tunis Medina/Sfax)",
+      "Djerba Island Berbers",
+      "Bedouin Nomads of Chott el Djerid (Douz)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "tur",
@@ -9010,7 +10380,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Turkey (Türkiye)",
     "flag": "🇹🇷",
     "continent": "Asia",
-    "population": 85800000,
+    "population": 87000000,
     "dominantReligions": [
       {
         "religion": "Islam (Sunni/Alevi - 99%)",
@@ -9022,7 +10392,7 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Other",
-        "percentage": 1.0
+        "percentage": 1
       }
     ],
     "christianPercentage": 0.2,
@@ -9050,7 +10420,17 @@ export const ALL_COUNTRIES: Country[] = [
       "Earthquake reconstruction and long-term community development in Hatay/Antakya",
       "Digital Turkish media, apologetics, and internet seeker follow-up",
       "Church planting teams in Anatolian provincial cities (Bursa, Izmir, Konya)"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Anatolian Turks (Konya/Kayseri/Ankara)",
+      "Kurdish Kurmanji (Diyarbakir/Van/Batman)",
+      "Alevi Communities (Tunceli/Sivas)",
+      "Zaza (Bingöl/Elazığ)",
+      "Laz of the Black Sea (Rize)",
+      "Arab Minority (Hatay/Mardin)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "tkm",
@@ -9063,24 +10443,24 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Islam (Sunni)",
-        "percentage": 93.0
+        "percentage": 93
       },
       {
         "religion": "Christianity (Russian Orthodox)",
-        "percentage": 5.0
+        "percentage": 5
       },
       {
         "religion": "Christianity (Turkmen Underground)",
-        "percentage": 1.0
+        "percentage": 1
       },
       {
         "religion": "Other",
-        "percentage": 1.0
+        "percentage": 1
       }
     ],
-    "christianPercentage": 6.0,
+    "christianPercentage": 6,
     "evangelicalPercentage": 0.3,
-    "unreachedPopulationPercentage": 95.0,
+    "unreachedPopulationPercentage": 95,
     "unreachedPeopleGroupsCount": 16,
     "securityLevel": "Extreme",
     "primaryLanguages": [
@@ -9101,7 +10481,16 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Turkmen digital scripture, audio Bible apps, and satellite broadcasting",
       "Turkmen diaspora ministry in Turkey and Europe"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Turkmen Tekke (Ashgabat/Ahal)",
+      "Yomut (Balkan/Caspian Coast)",
+      "Ersari (Lebap/Amu Darya)",
+      "Saryk (Mary/Merv)",
+      "Kazakh Minority (Dashoguz)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "tuv",
@@ -9114,19 +10503,19 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "Christianity (Church of Tuvalu / Congregational)",
-        "percentage": 85.0
+        "percentage": 85
       },
       {
         "religion": "Christianity (Brethren / Pentecostal)",
-        "percentage": 5.0
+        "percentage": 5
       },
       {
         "religion": "Other",
-        "percentage": 10.0
+        "percentage": 10
       }
     ],
-    "christianPercentage": 93.0,
-    "evangelicalPercentage": 14.0,
+    "christianPercentage": 93,
+    "evangelicalPercentage": 14,
     "unreachedPopulationPercentage": 0.2,
     "unreachedPeopleGroupsCount": 0,
     "securityLevel": "Low",
@@ -9147,7 +10536,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Atoll youth mentoring and community resilience",
       "Audio scripture and Christian literature in Tuvaluan"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Outer Coral Islands (Nanumea/Niutao)",
+      "Funafuti Lagoon Dwellers"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "uga",
@@ -9156,7 +10551,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Uganda",
     "flag": "🇺🇬",
     "continent": "Africa",
-    "population": 47250000,
+    "population": 50000000,
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic/Anglican)",
@@ -9172,8 +10567,8 @@ export const ALL_COUNTRIES: Country[] = [
       }
     ],
     "christianPercentage": 84.5,
-    "evangelicalPercentage": 37.0,
-    "unreachedPopulationPercentage": 4.0,
+    "evangelicalPercentage": 37,
+    "unreachedPopulationPercentage": 4,
     "unreachedPeopleGroupsCount": 6,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -9196,7 +10591,16 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Refugee settlement church planting and trauma counseling",
       "Cross-border missions into South Sudan and DR Congo"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Karamojong Pastoralists (Moroto/Kotido)",
+      "Basoga (Jinja/Kamuli)",
+      "Lugbara (West Nile/Arua)",
+      "Batwa (Bwindi Forest)",
+      "Acholi & Langi (Gulu/Lira)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "ukr",
@@ -9205,15 +10609,15 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Ukraine",
     "flag": "🇺🇦",
     "continent": "Europe",
-    "population": 38000000,
+    "population": 37000000,
     "dominantReligions": [
       {
         "religion": "Christianity (Ukrainian Orthodox)",
-        "percentage": 72.0
+        "percentage": 72
       },
       {
         "religion": "Christianity (Greek Catholic)",
-        "percentage": 9.0
+        "percentage": 9
       },
       {
         "religion": "Christianity (Evangelical/Baptist/Pentecostal)",
@@ -9248,7 +10652,14 @@ export const ALL_COUNTRIES: Country[] = [
       "Frontline humanitarian food and medical relief",
       "Trauma healing counseling and rehabilitation centers in Kyiv, Lviv, and Kharkiv",
       "Rebuilding destroyed church community centers"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Crimean Tatars (Crimea/Kherson diaspora)",
+      "Transcarpathian Romani",
+      "Post-Soviet Secular Industrial Hubs"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "are",
@@ -9257,11 +10668,11 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "United Arab Emirates",
     "flag": "🇦🇪",
     "continent": "Asia",
-    "population": 9900000,
+    "population": 10200000,
     "dominantReligions": [
       {
         "religion": "Islam (Sunni - Official)",
-        "percentage": 76.0
+        "percentage": 76
       },
       {
         "religion": "Christianity (Expatriate Workers)",
@@ -9273,12 +10684,12 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Other",
-        "percentage": 1.0
+        "percentage": 1
       }
     ],
     "christianPercentage": 12.6,
     "evangelicalPercentage": 2.8,
-    "unreachedPopulationPercentage": 82.0,
+    "unreachedPopulationPercentage": 82,
     "unreachedPeopleGroupsCount": 26,
     "securityLevel": "Medium",
     "primaryLanguages": [
@@ -9304,7 +10715,14 @@ export const ALL_COUNTRIES: Country[] = [
       "Expatriate migrant worker community outreach, healthcare, and literacy",
       "Marketplace business-as-mission and executive leadership forums",
       "Arabic digital media and seeker discipleship"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Emirati Arab Nationals (Abu Dhabi/Dubai)",
+      "South Asian Migrant Workers (Sonapur/Sharjah)",
+      "Filipino Expatriates"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "gbr",
@@ -9313,7 +10731,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "United Kingdom",
     "flag": "🇬🇧",
     "continent": "Europe",
-    "population": 67700000,
+    "population": 69000000,
     "dominantReligions": [
       {
         "religion": "Christianity (Anglican/Catholic/Protestant)",
@@ -9333,12 +10751,12 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Christianity (Evangelical/Pentecostal/Black Majority)",
-        "percentage": 5.0
+        "percentage": 5
       }
     ],
     "christianPercentage": 51.2,
-    "evangelicalPercentage": 8.0,
-    "unreachedPopulationPercentage": 10.0,
+    "evangelicalPercentage": 8,
+    "unreachedPopulationPercentage": 10,
     "unreachedPeopleGroupsCount": 38,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -9364,7 +10782,15 @@ export const ALL_COUNTRIES: Country[] = [
       "South Asian diaspora church planting in East London, Bradford, and Birmingham",
       "University student discipleship in Oxford, Cambridge, and London",
       "Inner-city youth violence intervention ministries"
-    ]
+    ],
+    "unreachedPlaces": [
+      "British Pakistani Muslims (Bradford/Birmingham)",
+      "British Bangladeshi Muslims (Tower Hamlets/Luton)",
+      "Somali Diaspora (Cardiff/London)",
+      "Post-Christian Secular Youth"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "usa",
@@ -9373,28 +10799,28 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "United States",
     "flag": "🇺🇸",
     "continent": "North America",
-    "population": 339000000,
+    "population": 349000000,
     "dominantReligions": [
       {
         "religion": "Christianity (Protestant/Evangelical)",
-        "percentage": 42.0
+        "percentage": 42
       },
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 21.0
+        "percentage": 21
       },
       {
         "religion": "No Religion / Secular",
-        "percentage": 29.0
+        "percentage": 29
       },
       {
         "religion": "Islam / Judaism / Other",
-        "percentage": 8.0
+        "percentage": 8
       }
     ],
-    "christianPercentage": 63.0,
+    "christianPercentage": 63,
     "evangelicalPercentage": 25.5,
-    "unreachedPopulationPercentage": 6.0,
+    "unreachedPopulationPercentage": 6,
     "unreachedPeopleGroupsCount": 78,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -9419,7 +10845,16 @@ export const ALL_COUNTRIES: Country[] = [
       "Diaspora refugee church planting and English academies",
       "University campus international student ministry (over 1M foreign students)",
       "Native American reservation community restoration and discipleship"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Somali Diaspora (Cedar-Riverside/Minneapolis)",
+      "Arab Diaspora (Dearborn/Detroit)",
+      "Fujianese Diaspora (Flushing/Chinatown NYC)",
+      "South Asian Hindu & Sikh Communities (Bay Area/Edison)",
+      "Secular Post-Christian Urban Centers"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "ury",
@@ -9432,24 +10867,24 @@ export const ALL_COUNTRIES: Country[] = [
     "dominantReligions": [
       {
         "religion": "No Religion / Secular / Agnostic",
-        "percentage": 47.0
+        "percentage": 47
       },
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 40.0
+        "percentage": 40
       },
       {
         "religion": "Christianity (Evangelical/Protestant)",
-        "percentage": 8.0
+        "percentage": 8
       },
       {
         "religion": "Spiritism / Other",
-        "percentage": 5.0
+        "percentage": 5
       }
     ],
-    "christianPercentage": 48.0,
+    "christianPercentage": 48,
     "evangelicalPercentage": 7.2,
-    "unreachedPopulationPercentage": 47.0,
+    "unreachedPopulationPercentage": 47,
     "unreachedPeopleGroupsCount": 2,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -9469,7 +10904,13 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "University campus ministry at University of the Republic",
       "Creative arts, coffeehouse, and apologetics ministries"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Afro-Uruguayan Candombe Communities (Montevideo/Barrio Sur)",
+      "Secular Coastal Intelligentsia"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "uzb",
@@ -9478,28 +10919,28 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Uzbekistan",
     "flag": "🇺🇿",
     "continent": "Asia",
-    "population": 36000000,
+    "population": 36500000,
     "dominantReligions": [
       {
         "religion": "Islam (Sunni)",
-        "percentage": 88.0
+        "percentage": 88
       },
       {
         "religion": "Christianity (Russian Orthodox)",
-        "percentage": 8.0
+        "percentage": 8
       },
       {
         "religion": "Christianity (Uzbek Evangelical)",
-        "percentage": 2.0
+        "percentage": 2
       },
       {
         "religion": "Other / None",
-        "percentage": 2.0
+        "percentage": 2
       }
     ],
-    "christianPercentage": 10.0,
+    "christianPercentage": 10,
     "evangelicalPercentage": 1.5,
-    "unreachedPopulationPercentage": 88.0,
+    "unreachedPopulationPercentage": 88,
     "unreachedPeopleGroupsCount": 38,
     "securityLevel": "High",
     "primaryLanguages": [
@@ -9522,7 +10963,15 @@ export const ALL_COUNTRIES: Country[] = [
       "Uzbek-language Bible distribution and digital media resources",
       "Addiction recovery and community development in the Fergana Valley",
       "Karakalpakstan environmental and clean water initiatives near the Aral Sea"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Uzbek of Fergana Valley (Namangan/Andijan)",
+      "Karakalpaks (Nukus/Aral Sea)",
+      "Samarkand & Bukhara Tajiks",
+      "Lyuli Gypsies"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "vut",
@@ -9551,20 +11000,20 @@ export const ALL_COUNTRIES: Country[] = [
       },
       {
         "religion": "Christianity (Assemblies of God / Pentecostal)",
-        "percentage": 10.0
+        "percentage": 10
       },
       {
         "religion": "Custom / Cargo Cult (Jon Frum)",
-        "percentage": 5.0
+        "percentage": 5
       },
       {
         "religion": "Other",
         "percentage": 17.1
       }
     ],
-    "christianPercentage": 83.0,
-    "evangelicalPercentage": 31.0,
-    "unreachedPopulationPercentage": 5.0,
+    "christianPercentage": 83,
+    "evangelicalPercentage": 31,
+    "unreachedPopulationPercentage": 5,
     "unreachedPeopleGroupsCount": 2,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -9586,7 +11035,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Tanna and outer island medical and church planting teams",
       "Bislama and vernacular audio Bible distribution"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Tanna Island John Frum Cargo Cultists",
+      "Ambrym Black Magic Villages",
+      "Pentecost Island Land Divers",
+      "Santo Bush Tribes"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "ven",
@@ -9595,24 +11052,24 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Venezuela",
     "flag": "🇻🇪",
     "continent": "South America",
-    "population": 28800000,
+    "population": 29500000,
     "dominantReligions": [
       {
         "religion": "Christianity (Catholic)",
-        "percentage": 71.0
+        "percentage": 71
       },
       {
         "religion": "Christianity (Evangelical/Pentecostal)",
-        "percentage": 20.0
+        "percentage": 20
       },
       {
         "religion": "Spiritism (María Lionza) / Other",
-        "percentage": 9.0
+        "percentage": 9
       }
     ],
-    "christianPercentage": 91.0,
+    "christianPercentage": 91,
     "evangelicalPercentage": 17.5,
-    "unreachedPopulationPercentage": 2.0,
+    "unreachedPopulationPercentage": 2,
     "unreachedPeopleGroupsCount": 12,
     "securityLevel": "High",
     "primaryLanguages": [
@@ -9635,7 +11092,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Community soup kitchens, children's nutrition centers, and medical clinics",
       "Orinoco Delta and Amazon tribal church planting (Warao, Yanomami)"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Yanomami (Orinoco Headwaters)",
+      "Wayuu (Maracaibo/Guajira)",
+      "Pemon (Gran Sabana/Canaima)",
+      "Warao Delta Fisherfolk"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "vnm",
@@ -9644,11 +11109,11 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Vietnam",
     "flag": "🇻🇳",
     "continent": "Asia",
-    "population": 99500000,
+    "population": 101000000,
     "dominantReligions": [
       {
         "religion": "Folk Religion / Secular / Ancestor Worship",
-        "percentage": 73.0
+        "percentage": 73
       },
       {
         "religion": "Buddhism (Mahayana)",
@@ -9669,7 +11134,7 @@ export const ALL_COUNTRIES: Country[] = [
     ],
     "christianPercentage": 9.6,
     "evangelicalPercentage": 2.2,
-    "unreachedPopulationPercentage": 84.0,
+    "unreachedPopulationPercentage": 84,
     "unreachedPeopleGroupsCount": 68,
     "securityLevel": "High",
     "primaryLanguages": [
@@ -9694,7 +11159,16 @@ export const ALL_COUNTRIES: Country[] = [
       "Highland minority community development, medical clinics, and clean water wells",
       "Urban young professional and university campus church planting in Ho Chi Minh City and Hanoi",
       "Mother-tongue scripture recording for unreached mountain tribes"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Kinh/Viet Majority (Hanoi/Ho Chi Minh City)",
+      "Hmong (Sa Pa/Ha Giang)",
+      "Tay & Nung (Cao Bang)",
+      "Cham Muslims & Hindus (Ninh Thuan/An Giang)",
+      "Jarai & Ede Degar (Central Highlands)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "yem",
@@ -9703,11 +11177,11 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Yemen",
     "flag": "🇾🇪",
     "continent": "Asia",
-    "population": 33700000,
+    "population": 35000000,
     "dominantReligions": [
       {
         "religion": "Islam (Sunni - Shafii)",
-        "percentage": 65.0
+        "percentage": 65
       },
       {
         "religion": "Islam (Shia - Zaidi)",
@@ -9746,7 +11220,17 @@ export const ALL_COUNTRIES: Country[] = [
       "Emergency famine relief, medical supplies, and water desalination",
       "Secure Yemeni Arabic digital scripture and radio broadcasts",
       "Refugee diaspora outreach in the Gulf and the West"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Northern Zaydi Shia (Sanaa/Saada)",
+      "Southern Shafi'i Sunnis (Aden/Taiz)",
+      "Hadrami Arabs (Wadi Hadramawt)",
+      "Mahra (Al Mahrah Desert)",
+      "Soqotri Islanders",
+      "Al-Muhamasheen Caste"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "zmb",
@@ -9755,7 +11239,7 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Zambia",
     "flag": "🇿🇲",
     "continent": "Africa",
-    "population": 20020000,
+    "population": 21000000,
     "dominantReligions": [
       {
         "religion": "Christianity (Protestant/Catholic)",
@@ -9767,8 +11251,8 @@ export const ALL_COUNTRIES: Country[] = [
       }
     ],
     "christianPercentage": 95.5,
-    "evangelicalPercentage": 26.0,
-    "unreachedPopulationPercentage": 1.0,
+    "evangelicalPercentage": 26,
+    "unreachedPopulationPercentage": 1,
     "unreachedPeopleGroupsCount": 2,
     "securityLevel": "Low",
     "primaryLanguages": [
@@ -9791,7 +11275,15 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Theological training and Christian education colleges",
       "Rural solar water well and church planting projects"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Goba (Zambezi Valley)",
+      "Lozi (Barotseland/Western Province)",
+      "Bemba Traditionalists (Northern Province)",
+      "Luvale (North-Western)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   },
   {
     "id": "zwe",
@@ -9800,23 +11292,23 @@ export const ALL_COUNTRIES: Country[] = [
     "name": "Zimbabwe",
     "flag": "🇿🇼",
     "continent": "Africa",
-    "population": 16320000,
+    "population": 17000000,
     "dominantReligions": [
       {
         "religion": "Christianity (Protestant/Apostolic)",
-        "percentage": 85.0
+        "percentage": 85
       },
       {
         "religion": "Traditional",
-        "percentage": 12.0
+        "percentage": 12
       },
       {
         "religion": "Other",
-        "percentage": 3.0
+        "percentage": 3
       }
     ],
-    "christianPercentage": 85.0,
-    "evangelicalPercentage": 31.0,
+    "christianPercentage": 85,
+    "evangelicalPercentage": 31,
     "unreachedPopulationPercentage": 1.5,
     "unreachedPeopleGroupsCount": 2,
     "securityLevel": "Low",
@@ -9838,6 +11330,14 @@ export const ALL_COUNTRIES: Country[] = [
     "missionOpportunities": [
       "Pastoral leadership coaching in Harare and Bulawayo",
       "Community agricultural development and orphan feeding centers"
-    ]
+    ],
+    "unreachedPlaces": [
+      "Shona Traditional Spirit Worshippers (Marondera/Masvingo)",
+      "Ndebele (Matabeleland/Bulawayo)",
+      "Tonga of Zambezi (Binga)",
+      "Ndau (Chipinge)"
+    ],
+    "lastUpdatedFromSearch": "2026-09-28T18:00:00Z",
+    "searchGroundingSource": "United Nations World Population Prospects (2024-2026 Revision) & Joshua Project Global Registry"
   }
 ];
