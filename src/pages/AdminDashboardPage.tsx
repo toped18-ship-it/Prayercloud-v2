@@ -66,9 +66,11 @@ import {
 import { User, UserRole, Country, PrayerRequest, MissionReport, EventMeeting, MissionaryResource, MeetingRecording } from '../types';
 import { compressAvatarImage } from '../utils/imageUtils';
 
-interface AdminDashboardPageProps {}
+interface AdminDashboardPageProps {
+  onNavigate?: (page: string) => void;
+}
 
-export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = () => {
+export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onNavigate }) => {
   const { currentUser, isAdmin, isSuperAdmin, login, logout, updateProfile } = useAuth();
   const { branding, updateBranding } = useBranding();
 
@@ -989,6 +991,22 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = () => {
               <span className="font-semibold text-slate-300">Cloud SQL:</span>
               <span className="font-mono text-emerald-400">PostgreSQL (europe-west1)</span>
             </div>
+
+            {/* View Public Platform button */}
+            <button
+              onClick={() => {
+                if (onNavigate) {
+                  onNavigate('home');
+                } else {
+                  window.location.hash = '';
+                }
+              }}
+              className="px-3 py-1 bg-[#182133] hover:bg-[#202c44] border border-[#283856] text-slate-300 hover:text-white text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5 shadow-sm"
+              title="Switch to Public App UI"
+            >
+              <Eye className="w-3.5 h-3.5 text-blue-400" />
+              <span>Public App</span>
+            </button>
 
             {/* Admin Logout */}
             <button

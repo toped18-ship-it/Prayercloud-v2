@@ -13,20 +13,17 @@ import { useAuth } from '../../context/AuthContext';
 interface BottomNavbarProps {
   currentPage: string;
   onNavigate: (page: string, param?: string) => void;
-  onOpenGeminiAI?: () => void;
 }
 
 export const BottomNavbar: React.FC<BottomNavbarProps> = ({
   currentPage,
-  onNavigate,
-  onOpenGeminiAI
+  onNavigate
 }) => {
   const { currentUser } = useAuth();
 
   const navTabs = [
     { id: 'user-profile', label: 'Profile', icon: User, isProfile: true },
     { id: 'home', label: 'Home', icon: Globe },
-    { id: 'gemini-ai', label: 'Gemini AI', icon: Sparkles, isAction: true, badge: 'AI' },
     { id: 'devotionals', label: 'Devotional', icon: BookOpen, badge: 'Daily' },
     { id: 'missionary-hub', label: 'Hub', icon: Compass },
     { id: 'chat', label: 'Chat', icon: MessageSquare, badge: 'Live' },
@@ -34,10 +31,6 @@ export const BottomNavbar: React.FC<BottomNavbarProps> = ({
   ];
 
   const handleNavClick = (tab: any) => {
-    if (tab.id === 'gemini-ai' && onOpenGeminiAI) {
-      onOpenGeminiAI();
-      return;
-    }
     onNavigate(tab.id);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };

@@ -71,114 +71,128 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ onNavigate }
       </button>
 
       {isOpen && (
-        <div className="absolute top-11 right-0 w-80 sm:w-96 bg-[#161b26] border border-[#283247] rounded-2xl shadow-2xl z-50 overflow-hidden flex flex-col text-slate-200 animate-fadeIn">
-          {/* Header */}
-          <div className="px-4 py-3 bg-[#111622] border-b border-[#232b3d] flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Bell className="w-4 h-4 text-amber-400" />
-              <h4 className="font-bold text-xs sm:text-sm text-white">System Notifications</h4>
-              {unreadCount > 0 && (
-                <span className="px-1.5 py-0.5 rounded-full bg-red-950 text-red-300 text-[10px] font-bold border border-red-800">
-                  {unreadCount} new
-                </span>
-              )}
-            </div>
-
-            <div className="flex items-center gap-1.5 text-[11px]">
-              {unreadCount > 0 && (
-                <button
-                  onClick={handleMarkAllRead}
-                  className="text-blue-400 hover:text-blue-300 font-medium px-1.5 py-0.5 rounded hover:bg-[#1a2236] transition-colors"
-                  title="Mark all as read"
-                >
-                  <Check className="w-3.5 h-3.5 inline mr-0.5" />
-                  Read All
-                </button>
-              )}
-              {notifications.length > 0 && (
-                <button
-                  onClick={handleClearAll}
-                  className="text-slate-400 hover:text-red-400 p-1 rounded hover:bg-[#1a2236] transition-colors"
-                  title="Clear all notifications"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
-              )}
-              <button
-                onClick={() => setIsOpen(false)}
-                className="text-slate-400 hover:text-white p-1 rounded hover:bg-[#1a2236]"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </div>
-
-          {/* List */}
-          <div className="max-h-[380px] overflow-y-auto divide-y divide-[#202738]">
-            {notifications.length === 0 ? (
-              <div className="p-8 text-center text-slate-400 space-y-2">
-                <Bell className="w-8 h-8 mx-auto text-slate-600" />
-                <p className="text-xs font-semibold">No notifications right now</p>
-                <p className="text-[11px] text-slate-500">
-                  You will receive real-time alerts when new prayer requests are posted or live conferences start.
-                </p>
-              </div>
-            ) : (
-              notifications.map((notif) => (
-                <div
-                  key={notif.id}
-                  onClick={() => handleNotificationClick(notif)}
-                  className={`p-3.5 hover:bg-[#1c2333] transition-colors cursor-pointer flex gap-3 items-start ${
-                    !notif.read ? 'bg-[#182030]/80' : ''
-                  }`}
-                >
-                  <div className="shrink-0 mt-0.5">
-                    {notif.type === 'conference' ? (
-                      <div className="w-8 h-8 rounded-xl bg-red-950/80 border border-red-500/40 text-red-400 flex items-center justify-center">
-                        <Video className="w-4 h-4 animate-pulse" />
-                      </div>
-                    ) : (
-                      <div className="w-8 h-8 rounded-xl bg-amber-950/80 border border-amber-500/40 text-amber-400 flex items-center justify-center">
-                        <span className="text-sm">🙏</span>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-1">
-                      <h5 className={`text-xs font-bold truncate ${!notif.read ? 'text-white' : 'text-slate-300'}`}>
-                        {notif.title}
-                      </h5>
-                      {!notif.read && (
-                        <span className="w-2 h-2 rounded-full bg-blue-500 shrink-0" />
-                      )}
-                    </div>
-                    <p className="text-[11px] text-slate-400 mt-0.5 leading-snug line-clamp-2">
-                      {notif.message}
-                    </p>
-                    <div className="flex items-center justify-between mt-2 pt-1 text-[10px] text-slate-500">
-                      <span className="flex items-center gap-1 font-mono">
-                        <Clock className="w-3 h-3 text-slate-500" />
-                        {new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </span>
-                      {notif.actionLabel && (
-                        <span className="text-blue-400 font-semibold flex items-center gap-0.5 hover:underline">
-                          <span>{notif.actionLabel}</span>
-                          <ExternalLink className="w-2.5 h-2.5" />
-                        </span>
-                      )}
-                    </div>
-                  </div>
+        <div 
+          className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-xs flex items-start justify-end p-2 sm:p-4 pt-14 sm:pt-16 animate-fadeIn"
+          onClick={() => setIsOpen(false)}
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-sm sm:max-w-md bg-[#141926] border border-[#2a3449] rounded-2xl shadow-2xl overflow-hidden flex flex-col text-slate-200 animate-slideInRight"
+          >
+            {/* Header */}
+            <div className="px-4 py-3 bg-[#0f1420] border-b border-[#232b3d] flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
+                  <Bell className="w-4 h-4 text-amber-400" />
                 </div>
-              ))
-            )}
-          </div>
+                <div>
+                  <h4 className="font-bold text-xs sm:text-sm text-white">Notifications Layer</h4>
+                  <span className="text-[10px] text-slate-400 font-medium">Real-time alerts & dispatches</span>
+                </div>
+                {unreadCount > 0 && (
+                  <span className="px-1.5 py-0.5 rounded-full bg-red-950 text-red-300 text-[10px] font-bold border border-red-800">
+                    {unreadCount} new
+                  </span>
+                )}
+              </div>
 
-          {/* Footer */}
-          <div className="p-2.5 bg-[#111622] border-t border-[#232b3d] text-center">
-            <span className="text-[10px] text-slate-400 font-mono">
-              Live Intercession & Conference Dispatch Online
-            </span>
+              <div className="flex items-center gap-1 text-[11px]">
+                {unreadCount > 0 && (
+                  <button
+                    onClick={handleMarkAllRead}
+                    className="text-blue-400 hover:text-blue-300 font-medium px-2 py-1 rounded-lg hover:bg-[#1a2236] transition-colors"
+                    title="Mark all as read"
+                  >
+                    <Check className="w-3.5 h-3.5 inline mr-1" />
+                    Read All
+                  </button>
+                )}
+                {notifications.length > 0 && (
+                  <button
+                    onClick={handleClearAll}
+                    className="text-slate-400 hover:text-red-400 p-1.5 rounded-lg hover:bg-[#1a2236] transition-colors"
+                    title="Clear all notifications"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                )}
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-[#1a2236] transition-colors"
+                  title="Close notifications"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* List */}
+            <div className="max-h-[60vh] sm:max-h-[480px] overflow-y-auto divide-y divide-[#202738]">
+              {notifications.length === 0 ? (
+                <div className="p-8 text-center text-slate-400 space-y-2">
+                  <Bell className="w-8 h-8 mx-auto text-slate-600" />
+                  <p className="text-xs font-semibold">No notifications right now</p>
+                  <p className="text-[11px] text-slate-500">
+                    You will receive real-time alerts when new prayer requests are posted or live conferences start.
+                  </p>
+                </div>
+              ) : (
+                notifications.map((notif) => (
+                  <div
+                    key={notif.id}
+                    onClick={() => handleNotificationClick(notif)}
+                    className={`p-3.5 hover:bg-[#1c2333] transition-colors cursor-pointer flex gap-3 items-start ${
+                      !notif.read ? 'bg-[#182030]/80' : ''
+                    }`}
+                  >
+                    <div className="shrink-0 mt-0.5">
+                      {notif.type === 'conference' ? (
+                        <div className="w-8 h-8 rounded-xl bg-red-950/80 border border-red-500/40 text-red-400 flex items-center justify-center">
+                          <Video className="w-4 h-4 animate-pulse" />
+                        </div>
+                      ) : (
+                        <div className="w-8 h-8 rounded-xl bg-amber-950/80 border border-amber-500/40 text-amber-400 flex items-center justify-center">
+                          <span className="text-sm">🙏</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-1">
+                        <h5 className={`text-xs font-bold truncate ${!notif.read ? 'text-white' : 'text-slate-300'}`}>
+                          {notif.title}
+                        </h5>
+                        {!notif.read && (
+                          <span className="w-2 h-2 rounded-full bg-blue-500 shrink-0" />
+                        )}
+                      </div>
+                      <p className="text-[11px] text-slate-400 mt-0.5 leading-snug line-clamp-2">
+                        {notif.message}
+                      </p>
+                      <div className="flex items-center justify-between mt-2 pt-1 text-[10px] text-slate-500">
+                        <span className="flex items-center gap-1 font-mono">
+                          <Clock className="w-3 h-3 text-slate-500" />
+                          {new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                        {notif.actionLabel && (
+                          <span className="text-blue-400 font-semibold flex items-center gap-0.5 hover:underline">
+                            <span>{notif.actionLabel}</span>
+                            <ExternalLink className="w-2.5 h-2.5" />
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="p-2.5 bg-[#0f1420] border-t border-[#232b3d] text-center">
+              <span className="text-[10px] text-slate-400 font-mono">
+                Live Intercession & Conference Dispatch Online
+              </span>
+            </div>
           </div>
         </div>
       )}

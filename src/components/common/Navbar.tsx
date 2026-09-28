@@ -20,15 +20,13 @@ interface NavbarProps {
   onOpenSearch: () => void;
   onRestartTour?: () => void;
   onLaunchInstantCall?: () => void;
-  onOpenGeminiAI?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   currentPage,
   onNavigate,
   onOpenSearch,
-  onLaunchInstantCall,
-  onOpenGeminiAI
+  onLaunchInstantCall
 }) => {
   const { branding } = useBranding();
   const { currentUser, isAdmin, isSuperAdmin } = useAuth();
@@ -129,18 +127,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             
             {/* System Notifications Bell */}
             <NotificationBell onNavigate={handleNavClick} />
-
-            {/* Gemini Missions Intelligence Button */}
-            {onOpenGeminiAI && (
-              <button
-                onClick={onOpenGeminiAI}
-                className="flex items-center gap-1.5 px-2.5 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-lg text-[11px] font-bold shadow-sm shadow-blue-500/20 transition-all hover:scale-105 active:scale-95"
-                title="Gemini Missions & Prayer Intelligence AI"
-              >
-                <Sparkles className="w-3.5 h-3.5 animate-pulse text-amber-300" />
-                <span className="hidden sm:inline">Gemini AI</span>
-              </button>
-            )}
 
             {/* Admin Control Portal Button for Admins */}
             {(isAdmin || isSuperAdmin || currentUser?.email?.toLowerCase() === 'admin@prayercloud.org' || currentUser?.email?.toLowerCase() === 'dtemitope60@gmail.com') && (

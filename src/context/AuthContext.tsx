@@ -3,6 +3,7 @@ import { User, UserRole } from '../types';
 import { storage, DEFAULT_ADMIN_USER } from '../services/storageService';
 import { apiClient } from '../services/apiClient';
 import { firestoreService } from '../services/firestoreService';
+import { notificationService } from '../services/notificationService';
 
 interface AuthContextType {
   currentUser: User | null;
@@ -60,6 +61,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (currentUser.mustChangePassword) {
         setForcePasswordModalOpen(true);
       }
+      // Ensure welcome notification is queued for user
+      notificationService.sendWelcomeNotification(currentUser.fullName);
     } else {
       localStorage.removeItem(CURRENT_USER_KEY);
     }

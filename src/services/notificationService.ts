@@ -99,7 +99,12 @@ class NotificationService {
         if (payload.targetUrl) {
           nativeNotif.onclick = () => {
             window.focus();
-            window.location.hash = payload.targetUrl!;
+            const currentHash = window.location.hash.toLowerCase();
+            const currentPath = window.location.pathname.toLowerCase();
+            // Do not kick out an active admin session unless user clicks on a modal action
+            if (!currentHash.includes('admin') && !currentPath.includes('admin')) {
+              window.location.hash = payload.targetUrl!;
+            }
             nativeNotif.close();
           };
         }
@@ -116,6 +121,24 @@ class NotificationService {
     );
 
     return notification;
+  }
+
+  // Welcome notification for new users
+  public sendWelcomeNotification(userName?: string): SystemNotification | null {
+    const list = this.getNotifications();
+    const hasWelcome = list.some(n => n.id.startsWith('welcome-notif') || n.title.includes('Welcome to PrayerCloud'));
+    if (hasWelcome) {
+      return null;
+    }
+
+    const name = userName ? userName.split(' ')[0] : 'Beloved Intercessor';
+    return this.triggerNotification({
+      title: `🕊️ Welcome to PrayerCloud, ${name}!`,
+      message: 'We are thrilled to partner with you in global intercession and missions. Explore unreached nations, pray with fellow warriors, and connect in 24/7 watches.',
+      type: 'general',
+      targetUrl: 'home',
+      actionLabel: 'Get Started'
+    });
   }
 
   // Explicit handler when a new prayer request is added

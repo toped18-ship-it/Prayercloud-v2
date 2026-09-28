@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { APIProvider } from '@vis.gl/react-google-maps';
-import { Shield, Globe, Database, Sparkles } from 'lucide-react';
+import { Shield, Globe, Database, Sparkles, Heart } from 'lucide-react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeAndBrandingProvider } from './context/ThemeAndBrandingContext';
 import { firebaseService } from './services/firebase';
@@ -37,8 +37,10 @@ import { AuthPages } from './pages/AuthPages';
 import { UserProfilePage } from './pages/UserProfilePage';
 import { DevotionalHubPage } from './pages/DevotionalHubPage';
 
+const CURRENT_PAGE_STORAGE_KEY = 'prayercloud_current_active_page_v3';
+
 function MainAppContent() {
-  const { isAuthenticated, isOnboardingOpen, setIsOnboardingOpen, currentUser } = useAuth();
+  const { isAuthenticated, isOnboardingOpen, setIsOnboardingOpen, currentUser, isAdmin } = useAuth();
   const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   // Global active zoom meeting room state
@@ -49,12 +51,16 @@ function MainAppContent() {
     passcode?: string;
   } | null>(null);
 
-  // Navigation state
+  // Navigation state with persistent recall for admin and active view
   const [currentPage, setCurrentPage] = useState<string>(() => {
     const hash = window.location.hash.toLowerCase().replace('#', '');
     const path = window.location.pathname.toLowerCase();
     if (hash === 'admin' || path === '/admin' || hash.startsWith('admin')) {
       return 'admin';
+    }
+    const saved = localStorage.getItem(CURRENT_PAGE_STORAGE_KEY);
+    if (saved) {
+      return saved;
     }
     return 'home';
   });
@@ -119,13 +125,14 @@ function MainAppContent() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // URL Path and Hash listener for direct /admin navigation
+  // URL Path and Hash listener for direct /admin navigation and back/forward
   useEffect(() => {
     const handleUrlSync = () => {
       const hash = window.location.hash.toLowerCase().replace('#', '');
       const path = window.location.pathname.toLowerCase();
       if (path === '/admin' || hash === 'admin' || hash.startsWith('admin')) {
         setCurrentPage('admin');
+        localStorage.setItem(CURRENT_PAGE_STORAGE_KEY, 'admin');
       }
     };
     handleUrlSync();
@@ -136,6 +143,13 @@ function MainAppContent() {
       window.removeEventListener('popstate', handleUrlSync);
     };
   }, []);
+
+  // Guard admin session state: preserve admin portal if active
+  useEffect(() => {
+    if (currentPage === 'admin') {
+      localStorage.setItem(CURRENT_PAGE_STORAGE_KEY, 'admin');
+    }
+  }, [currentPage]);
 
   // Automatic onboarding tour on first launch
   useEffect(() => {
@@ -157,19 +171,19 @@ function MainAppContent() {
   const navigateTo = (page: string, param?: string) => {
     setCurrentPage(page);
     setPageParam(param);
+    localStorage.setItem(CURRENT_PAGE_STORAGE_KEY, page);
+
     if (page === 'admin') {
+      window.location.hash = 'admin';
       try {
         window.history.pushState({ page: 'admin' }, '', '/admin');
-      } catch {
-        window.location.hash = 'admin';
-      }
+      } catch {}
     } else {
-      if (window.location.pathname === '/admin' || window.location.hash.includes('admin')) {
+      if (window.location.hash.includes('admin') || window.location.pathname === '/admin') {
+        window.location.hash = page === 'home' ? '' : page;
         try {
-          window.history.pushState({ page }, '', '/');
-        } catch {
-          window.location.hash = '';
-        }
+          window.history.pushState({ page }, '', page === 'home' ? '/' : `/${page}`);
+        } catch {}
       }
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -180,7 +194,7 @@ function MainAppContent() {
     setCreatePrayerOpen(true);
   };
 
-  const handleOpenGeminiWithContext = (topic = '') => {
+  const handleOpenPrayerCompanion = (topic = '') => {
     setGeminiInitialTopic(topic);
     setGeminiChatOpen(true);
   };
@@ -219,7 +233,7 @@ function MainAppContent() {
     return (
       <div className="min-h-screen w-full max-w-full overflow-x-hidden flex flex-col bg-[#0b0e14] text-slate-100 antialiased font-sans transition-colors selection:bg-blue-600 selection:text-white">
         <main className="flex-1 w-full max-w-[1700px] mx-auto p-2 sm:p-4">
-          <AdminDashboardPage />
+          <AdminDashboardPage onNavigate={navigateTo} />
         </main>
       </div>
     );
@@ -248,7 +262,6 @@ function MainAppContent() {
           onOpenSearch={() => setSearchOpen(true)}
           onRestartTour={() => setIsOnboardingOpen(true)}
           onLaunchInstantCall={handleLaunchInstantMeeting}
-          onOpenGeminiAI={() => handleOpenGeminiWithContext()}
         />
       )}
 
@@ -368,20 +381,16 @@ function MainAppContent() {
         )}
       </main>
 
-      {/* Floating Gemini Missions Intelligence Action Beacon */}
+      {/* Discreet Prayer Companion Pop-up Trigger */}
       {currentPage !== 'admin' && (
-        <div className="fixed bottom-16 sm:bottom-6 right-4 sm:right-6 z-30 flex items-center">
+        <div className="fixed bottom-16 sm:bottom-6 right-3 sm:right-6 z-30 flex items-center">
           <button
-            onClick={() => handleOpenGeminiWithContext()}
-            className="group relative flex items-center gap-2 px-3.5 sm:px-4 py-2.5 sm:py-3 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-full font-bold text-xs sm:text-sm shadow-xl shadow-blue-600/30 hover:shadow-blue-500/50 hover:scale-105 active:scale-95 transition-all"
-            title="Open Gemini Missions & Prayer Intelligence AI"
+            onClick={() => handleOpenPrayerCompanion()}
+            className="flex items-center gap-2 px-3 sm:px-3.5 py-2 sm:py-2.5 bg-[#121726]/95 hover:bg-[#1a2136] text-amber-300 hover:text-amber-200 border border-amber-500/30 rounded-full font-bold text-xs shadow-xl shadow-black/40 hover:shadow-amber-500/10 hover:scale-105 active:scale-95 transition-all backdrop-blur-md"
+            title="Open Prayer Companion"
           >
-            <span className="relative flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-300"></span>
-            </span>
-            <Sparkles className="w-4 h-4 text-amber-300" />
-            <span className="tracking-wide">Ask Gemini AI</span>
+            <Heart className="w-3.5 h-3.5 text-amber-400 fill-amber-400/20" />
+            <span className="font-semibold text-[11px] sm:text-xs tracking-wide">Prayer Companion</span>
           </button>
         </div>
       )}
@@ -394,7 +403,6 @@ function MainAppContent() {
         <BottomNavbar
           currentPage={currentPage}
           onNavigate={navigateTo}
-          onOpenGeminiAI={() => handleOpenGeminiWithContext()}
         />
       )}
 
