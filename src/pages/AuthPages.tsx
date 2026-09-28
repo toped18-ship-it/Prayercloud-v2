@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Lock,
   Mail,
@@ -9,9 +9,12 @@ import {
   ArrowRight,
   AlertCircle,
   CheckCircle,
-  Sparkles
+  Sparkles,
+  KeyRound,
+  Check
 } from 'lucide-react';
 import { PrayerCloudLogo } from '../components/common/PrayerCloudLogo';
+import { EmailOtpVerificationModal } from '../components/common/EmailOtpVerificationModal';
 import { useAuth } from '../context/AuthContext';
 import { useBranding } from '../context/ThemeAndBrandingContext';
 import { UserRole } from '../types';
@@ -22,7 +25,15 @@ interface AuthPagesProps {
 }
 
 export const AuthPages: React.FC<AuthPagesProps> = ({ mode, onNavigate }) => {
-  const { login, register } = useAuth();
+  const {
+    login,
+    register,
+    requestPasswordReset,
+    resetPasswordWithToken,
+    isOtpModalOpen,
+    setIsOtpModalOpen,
+    pendingVerificationEmail
+  } = useAuth();
   const { branding } = useBranding();
 
   // Login form state
@@ -42,9 +53,36 @@ export const AuthPages: React.FC<AuthPagesProps> = ({ mode, onNavigate }) => {
   // UI state
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Password Reset Modal state
   const [forgotModalOpen, setForgotModalOpen] = useState(false);
+  const [resetStep, setResetStep] = useState<'REQUEST' | 'SUBMIT'>('REQUEST');
   const [forgotEmail, setForgotEmail] = useState('');
-  const [forgotSuccess, setForgotSuccess] = useState(false);
+  const [resetTokenOrCode, setResetTokenOrCode] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [resetMsg, setResetMsg] = useState<string | null>(null);
+  const [resetError, setResetError] = useState<string | null>(null);
+
+  // Detect URL query reset parameters (e.g. ?reset_token=...&email=...)
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('reset_token');
+      const paramEmail = params.get('email');
+
+      if (token) {
+        setResetTokenOrCode(token);
+        if (paramEmail) {
+          setForgotEmail(paramEmail);
+        }
+        setResetStep('SUBMIT');
+        setForgotModalOpen(true);
+      } else if (window.location.hash === '#reset-password') {
+        setForgotModalOpen(true);
+      }
+    } catch {}
+  }, []);
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,10 +136,66 @@ export const AuthPages: React.FC<AuthPagesProps> = ({ mode, onNavigate }) => {
     setIsLoading(false);
 
     if (res.success) {
-      // automatically log in and redirect to /home as specified
-      onNavigate('home');
+      if (res.requiresVerification) {
+        // OTP modal is triggered by context, do not navigate yet
+      } else {
+        onNavigate('home');
+      }
     } else {
       setError(res.error || 'Registration failed.');
+    }
+  };
+
+  const handleRequestReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setResetError(null);
+    setResetMsg(null);
+    setIsLoading(true);
+
+    const res = await requestPasswordReset(forgotEmail);
+    setIsLoading(false);
+
+    if (res.success) {
+      setResetMsg(res.message || 'If an account matches, instructions have been sent.');
+      // Proceed to step 2 after brief notification
+      setTimeout(() => {
+        setResetStep('SUBMIT');
+      }, 1500);
+    } else {
+      setResetError(res.error || 'Failed to dispatch reset email.');
+    }
+  };
+
+  const handleConfirmReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setResetError(null);
+    setResetMsg(null);
+
+    if (newPassword.length < 6) {
+      setResetError('New password must be at least 6 characters long.');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setResetError('Passwords do not match. Please verify.');
+      return;
+    }
+
+    setIsLoading(true);
+    const res = await resetPasswordWithToken(forgotEmail || undefined, resetTokenOrCode, newPassword);
+    setIsLoading(false);
+
+    if (res.success) {
+      setResetMsg('Password successfully updated! You can now log in.');
+      setTimeout(() => {
+        setForgotModalOpen(false);
+        setResetStep('REQUEST');
+        setResetTokenOrCode('');
+        setNewPassword('');
+        setConfirmPassword('');
+        onNavigate('login');
+      }, 1800);
+    } else {
+      setResetError(res.error || 'Password reset failed.');
     }
   };
 
@@ -347,42 +441,152 @@ export const AuthPages: React.FC<AuthPagesProps> = ({ mode, onNavigate }) => {
         </div>
       </div>
 
-      {/* Forgot Password Modal */}
+      {/* Interactive Email OTP Verification Modal */}
+      <EmailOtpVerificationModal
+        isOpen={isOtpModalOpen}
+        onClose={() => setIsOtpModalOpen(false)}
+        onSuccess={() => onNavigate('home')}
+        purpose="VERIFY_EMAIL"
+      />
+
+      {/* Secure Real Password Reset Modal */}
       {forgotModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
-          <div className="w-full max-w-sm bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
-            <h3 className="font-bold text-base text-slate-900 dark:text-white">Reset Account Password</h3>
-            {forgotSuccess ? (
-              <div className="p-3 bg-emerald-50 text-emerald-700 text-xs rounded-xl font-medium">
-                Password reset link has been dispatched to {forgotEmail}.
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
+          <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-7 space-y-4">
+            
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="p-2 bg-blue-600/10 text-blue-600 dark:text-blue-400 rounded-xl">
+                  <KeyRound className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-base text-slate-900 dark:text-white">
+                    {resetStep === 'REQUEST' ? 'Reset Password' : 'Set New Password'}
+                  </h3>
+                  <p className="text-[11px] text-slate-500">
+                    {resetStep === 'REQUEST' ? 'Enter email to receive instructions' : 'Enter reset token and new password'}
+                  </p>
+                </div>
               </div>
-            ) : (
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  setForgotSuccess(true);
-                  setTimeout(() => {
-                    setForgotSuccess(false);
-                    setForgotModalOpen(false);
-                  }, 2000);
-                }}
-                className="space-y-3 text-xs"
+              <button
+                type="button"
+                onClick={() => setForgotModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-white text-xs font-semibold"
               >
-                <p className="text-slate-500">Enter your email address to receive reset instructions.</p>
-                <input
-                  type="email"
-                  required
-                  value={forgotEmail}
-                  onChange={(e) => setForgotEmail(e.target.value)}
-                  placeholder="name@organization.org"
-                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border rounded-xl"
-                />
-                <div className="flex justify-end gap-2 pt-2">
-                  <button type="button" onClick={() => setForgotModalOpen(false)} className="px-3 py-1.5 text-slate-500">Cancel</button>
-                  <button type="submit" className="px-4 py-1.5 bg-blue-600 text-white font-bold rounded-xl shadow">Send Reset Email</button>
+                Close
+              </button>
+            </div>
+
+            {resetError && (
+              <div className="p-3 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/40 rounded-xl text-xs text-red-700 dark:text-red-300 flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 text-red-500" />
+                <span>{resetError}</span>
+              </div>
+            )}
+
+            {resetMsg && (
+              <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/40 rounded-xl text-xs text-emerald-700 dark:text-emerald-300 flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 shrink-0 text-emerald-500" />
+                <span>{resetMsg}</span>
+              </div>
+            )}
+
+            {resetStep === 'REQUEST' ? (
+              <form onSubmit={handleRequestReset} className="space-y-3.5 text-xs">
+                <div>
+                  <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
+                    Your Registered Email or Username *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={forgotEmail}
+                    onChange={(e) => setForgotEmail(e.target.value)}
+                    placeholder="name@organization.org or username"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div className="flex justify-between items-center pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setResetStep('SUBMIT')}
+                    className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                  >
+                    I already have a code / token &rarr;
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md transition-all"
+                  >
+                    {isLoading ? 'Dispatching...' : 'Send Reset Link'}
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <form onSubmit={handleConfirmReset} className="space-y-3.5 text-xs">
+                <div>
+                  <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
+                    Reset Token or 6-Digit Code *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={resetTokenOrCode}
+                    onChange={(e) => setResetTokenOrCode(e.target.value)}
+                    placeholder="Paste link token or 6-digit code from email"
+                    className="w-full px-3.5 py-2.5 font-mono bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
+                    New Password *
+                  </label>
+                  <input
+                    type="password"
+                    required
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Minimum 6 characters"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
+                    Confirm New Password *
+                  </label>
+                  <input
+                    type="password"
+                    required
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Re-enter new password"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div className="flex justify-between items-center pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setResetStep('REQUEST')}
+                    className="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium"
+                  >
+                    &larr; Back
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md transition-all"
+                  >
+                    {isLoading ? 'Updating...' : 'Set New Password'}
+                  </button>
                 </div>
               </form>
             )}
+
           </div>
         </div>
       )}

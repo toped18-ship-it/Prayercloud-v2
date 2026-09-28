@@ -1,6 +1,6 @@
 import { db } from './index.ts';
 import { users, prayerRequests, auditLogs, syncStatus } from './schema.ts';
-import { desc, eq, ne, and } from 'drizzle-orm';
+import { desc, eq, ne, and, or } from 'drizzle-orm';
 
 // Fetch all users from Cloud SQL
 export async function getAllUsersFromDb() {
@@ -60,11 +60,13 @@ export async function getOrCreateUser(
     role?: string;
     avatarUrl?: string;
     bio?: string;
+    isVerified?: boolean;
   }
 ) {
   try {
     const isAdminAccount = uid === 'usr-admin-1' || email.toLowerCase() === 'admin@prayercloud.org';
     const finalRole = extra?.role || (isAdminAccount ? 'Super Admin' : 'Prayer Warrior');
+    const isVerifiedVal = extra?.isVerified !== undefined ? extra.isVerified : isAdminAccount;
 
     const result = await db
       .insert(users)
@@ -78,6 +80,7 @@ export async function getOrCreateUser(
         role: finalRole,
         avatarUrl: extra?.avatarUrl || '',
         bio: extra?.bio || 'Dedicated intercessor standing in the gap.',
+        isVerified: isVerifiedVal,
         joinedAt: new Date().toISOString(),
       })
       .onConflictDoUpdate({
@@ -91,6 +94,7 @@ export async function getOrCreateUser(
           role: finalRole,
           ...(extra?.avatarUrl ? { avatarUrl: extra.avatarUrl } : {}),
           ...(extra?.bio ? { bio: extra.bio } : {}),
+          ...(extra?.isVerified !== undefined ? { isVerified: extra.isVerified } : {}),
         },
       })
       .returning();
@@ -99,6 +103,37 @@ export async function getOrCreateUser(
   } catch (error) {
     console.error('Failed to create or update user in Cloud SQL:', error);
     throw new Error('Failed to synchronize user to Cloud SQL database.', { cause: error });
+  }
+}
+
+// Update user verified status in Cloud SQL
+export async function updateUserVerifiedInDb(uidOrEmail: string, isVerified = true) {
+  try {
+    const updated = await db
+      .update(users)
+      .set({ isVerified })
+      .where(or(eq(users.uid, uidOrEmail), eq(users.email, uidOrEmail.toLowerCase())))
+      .returning();
+    return updated[0] || null;
+  } catch (error) {
+    console.warn(`Failed to update verified status for ${uidOrEmail} in Cloud SQL:`, error);
+    return null;
+  }
+}
+
+// Find user by email or username
+export async function findUserByEmailOrUsername(identifier: string) {
+  try {
+    const clean = identifier.trim().toLowerCase();
+    const list = await db
+      .select()
+      .from(users)
+      .where(or(eq(users.email, clean), eq(users.username, clean), eq(users.uid, clean)))
+      .limit(1);
+    return list[0] || null;
+  } catch (error) {
+    console.warn('Failed to query user by identifier in Cloud SQL:', error);
+    return null;
   }
 }
 

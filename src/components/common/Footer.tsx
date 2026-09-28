@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Cloud, Heart, Globe, Shield, Sparkles, Mail, Lock } from 'lucide-react';
 import { useBranding } from '../../context/ThemeAndBrandingContext';
 import { PrayerCloudLogo } from './PrayerCloudLogo';
+import { ContactModal } from './ContactModal';
 
 interface FooterProps {
   onNavigate: (page: string, param?: string) => void;
@@ -9,6 +10,7 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   const { branding } = useBranding();
+  const [contactOpen, setContactOpen] = useState(false);
 
   return (
     <footer className="bg-slate-900 text-slate-400 border-t border-slate-800 pt-16 pb-12 transition-colors">
@@ -141,8 +143,14 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   <span>www.livingtech.name.ng</span>
                 </a>
               </li>
-              <li className="text-[11px] text-slate-500">
-                Contact: {branding.contactEmail || 'missions@prayercloud.org'}
+              <li className="text-[11px] text-slate-400 pt-1">
+                <button
+                  onClick={() => setContactOpen(true)}
+                  className="inline-flex items-center gap-1 text-amber-400 hover:text-amber-300 hover:underline transition-colors"
+                >
+                  <Mail className="w-3 h-3" />
+                  <span>Contact Missions Support</span>
+                </button>
               </li>
             </ul>
           </div>
@@ -160,6 +168,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           </div>
         </div>
       </div>
+
+      <ContactModal
+        isOpen={contactOpen}
+        onClose={() => setContactOpen(false)}
+      />
     </footer>
   );
 };

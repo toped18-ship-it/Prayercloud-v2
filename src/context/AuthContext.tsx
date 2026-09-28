@@ -19,7 +19,11 @@ interface AuthContextType {
     country: string;
     role: UserRole;
     password: string;
-  }) => Promise<{ success: boolean; error?: string }>;
+  }) => Promise<{ success: boolean; error?: string; requiresVerification?: boolean }>;
+  verifyEmailOtp: (code: string, purpose?: 'VERIFY_EMAIL' | 'LOGIN_VERIFICATION' | 'PASSWORD_RESET') => Promise<{ success: boolean; error?: string; attemptsLeft?: number }>;
+  resendEmailOtp: (purpose?: 'VERIFY_EMAIL' | 'LOGIN_VERIFICATION' | 'PASSWORD_RESET') => Promise<{ success: boolean; error?: string; waitSeconds?: number }>;
+  requestPasswordReset: (identifier: string) => Promise<{ success: boolean; message?: string; error?: string }>;
+  resetPasswordWithToken: (email: string | undefined, tokenOrCode: string, newPass: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   switchAccount: (userId: string) => void;
   changePassword: (newPass: string) => boolean;
@@ -28,6 +32,10 @@ interface AuthContextType {
   setIsOnboardingOpen: (open: boolean) => void;
   forcePasswordModalOpen: boolean;
   setForcePasswordModalOpen: (open: boolean) => void;
+  isOtpModalOpen: boolean;
+  setIsOtpModalOpen: (open: boolean) => void;
+  pendingVerificationEmail: string | null;
+  setPendingVerificationEmail: (email: string | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -49,6 +57,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const [isOnboardingOpen, setIsOnboardingOpen] = useState<boolean>(false);
   const [forcePasswordModalOpen, setForcePasswordModalOpen] = useState<boolean>(false);
+  const [isOtpModalOpen, setIsOtpModalOpen] = useState<boolean>(false);
+  const [pendingVerificationEmail, setPendingVerificationEmail] = useState<string | null>(null);
 
   // Sync users from Cloud SQL backend on mount
   useEffect(() => {
@@ -236,7 +246,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     country: string;
     role: UserRole;
     password: string;
-  }): Promise<{ success: boolean; error?: string }> => {
+  }): Promise<{ success: boolean; error?: string; requiresVerification?: boolean }> => {
     const users = storage.getUsers();
     const cleanEmail = data.email.trim().toLowerCase();
     const cleanUsername = data.username.trim().toLowerCase();
@@ -257,6 +267,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const safeRole: UserRole = allowedRegRoles.includes(data.role) ? data.role : 'Prayer Warrior';
 
     const newUserId = `usr-${Date.now()}`;
+    const isSeedAdmin = newUserId === 'usr-admin-1' || cleanEmail === 'admin@prayercloud.org';
     const newUser: User = {
       id: newUserId,
       fullName: data.fullName,
@@ -267,7 +278,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       role: safeRole,
       avatarUrl: '',
       bio: `Dedicated ${safeRole} committed to fulfilling the Great Commission.`,
-      isVerified: true,
+      isVerified: isSeedAdmin, // Regular accounts verify via email OTP
       isActive: true,
       mustChangePassword: false,
       joinedAt: new Date().toISOString(),
@@ -297,12 +308,116 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.warn('Dual database registration notice:', e);
     }
 
-    setCurrentUser(newUser);
     storage.logAudit(newUser.id, newUser.fullName, 'USER_REGISTER', 'Auth', `New registration as ${newUser.role}`);
 
-    setIsOnboardingOpen(true);
+    if (!isSeedAdmin) {
+      setPendingVerificationEmail(newUser.email);
+      setIsOtpModalOpen(true);
+      return { success: true, requiresVerification: true };
+    }
 
-    return { success: true };
+    setCurrentUser(newUser);
+    setIsOnboardingOpen(true);
+    return { success: true, requiresVerification: false };
+  };
+
+  const verifyEmailOtp = async (
+    code: string,
+    purpose: 'VERIFY_EMAIL' | 'LOGIN_VERIFICATION' | 'PASSWORD_RESET' = 'VERIFY_EMAIL'
+  ): Promise<{ success: boolean; error?: string; attemptsLeft?: number }> => {
+    const targetEmail = pendingVerificationEmail || currentUser?.email;
+    if (!targetEmail) {
+      return { success: false, error: 'No pending email to verify.' };
+    }
+
+    try {
+      const res = await apiClient.verifyEmailOtp(targetEmail, code, purpose);
+      if (!res.success) {
+        return { success: false, error: res.error || 'Verification failed.', attemptsLeft: res.attemptsLeft };
+      }
+
+      // Mark user as verified in local storage and active state
+      const users = storage.getUsers();
+      const matched = users.find(u => u.email.toLowerCase() === targetEmail.toLowerCase());
+      if (matched) {
+        const verifiedUser: User = { ...matched, isVerified: true };
+        storage.updateUser(verifiedUser);
+        setCurrentUser(verifiedUser);
+      } else if (currentUser) {
+        const verifiedUser: User = { ...currentUser, isVerified: true };
+        storage.updateUser(verifiedUser);
+        setCurrentUser(verifiedUser);
+      }
+
+      setIsOtpModalOpen(false);
+      setPendingVerificationEmail(null);
+      setIsOnboardingOpen(true);
+      notificationService.sendWelcomeNotification(currentUser?.fullName || 'Beloved Intercessor');
+
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'Verification network error.' };
+    }
+  };
+
+  const resendEmailOtp = async (
+    purpose: 'VERIFY_EMAIL' | 'LOGIN_VERIFICATION' | 'PASSWORD_RESET' = 'VERIFY_EMAIL'
+  ): Promise<{ success: boolean; error?: string; waitSeconds?: number }> => {
+    const targetEmail = pendingVerificationEmail || currentUser?.email;
+    if (!targetEmail) {
+      return { success: false, error: 'No email address specified.' };
+    }
+
+    try {
+      const res = await apiClient.resendEmailOtp(targetEmail, purpose);
+      if (!res.success) {
+        return { success: false, error: res.error || 'Failed to resend code.', waitSeconds: res.waitSeconds };
+      }
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'Resend network error.' };
+    }
+  };
+
+  const requestPasswordReset = async (identifier: string): Promise<{ success: boolean; message?: string; error?: string }> => {
+    try {
+      const res = await apiClient.requestPasswordReset(identifier);
+      return {
+        success: res.success,
+        message: res.message || 'If an account matches this identifier, instructions have been sent.',
+        error: res.error,
+      };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'Password reset request failed.' };
+    }
+  };
+
+  const resetPasswordWithToken = async (
+    email: string | undefined,
+    tokenOrCode: string,
+    newPass: string
+  ): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const res = await apiClient.submitPasswordReset(email, tokenOrCode, newPass);
+      if (!res.success) {
+        return { success: false, error: res.error || 'Failed to reset password.' };
+      }
+
+      // If user is stored locally, update their password
+      if (res.email) {
+        const users = storage.getUsers();
+        const matched = users.find(u => u.email.toLowerCase() === res.email!.toLowerCase());
+        if (matched) {
+          storage.setUserPassword(matched.id, newPass);
+          const updated = { ...matched, mustChangePassword: false };
+          storage.updateUser(updated);
+        }
+      }
+
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'Failed to reset password.' };
+    }
   };
 
   const logout = () => {
@@ -369,6 +484,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isSuperAdmin,
         login,
         register,
+        verifyEmailOtp,
+        resendEmailOtp,
+        requestPasswordReset,
+        resetPasswordWithToken,
         logout,
         switchAccount,
         changePassword,
@@ -376,7 +495,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isOnboardingOpen,
         setIsOnboardingOpen,
         forcePasswordModalOpen,
-        setForcePasswordModalOpen
+        setForcePasswordModalOpen,
+        isOtpModalOpen,
+        setIsOtpModalOpen,
+        pendingVerificationEmail,
+        setPendingVerificationEmail,
       }}
     >
       {children}

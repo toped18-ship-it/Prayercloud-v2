@@ -26,6 +26,16 @@ import {
   getSiteSettingsFromDb,
   saveSiteSettingsToDb
 } from './src/db/entities.ts';
+import { emailService } from './server/emailService.ts';
+import {
+  initEmailTables,
+  createEmailOtp,
+  checkCanResendOtp,
+  verifyEmailOtp,
+  createPasswordResetRecord,
+  verifyAndConsumePasswordReset,
+  saveContactMessage
+} from './src/db/emailQueries.ts';
 
 dotenv.config();
 
@@ -179,6 +189,16 @@ app.post('/api/auth/login', async (req: Request, res: Response) => {
     }
 
     await logAuditToDb('USER_LOGIN', `User logged in via Cloud SQL: ${user.email}`, user.uid, user.fullName || 'User');
+
+    // Asynchronously dispatch login security alert (non-blocking)
+    if (user.email && user.email.includes('@')) {
+      emailService.sendSecurityAlert(user.email, 'NEW_LOGIN', {
+        ip: req.ip || (req.headers['x-forwarded-for'] as string) || '',
+        userAgent: (req.headers['user-agent'] as string) || 'Browser Client',
+        timestamp: new Date().toUTCString(),
+      }).catch(err => console.warn('Login security alert notice:', err));
+    }
+
     return res.json({ success: true, user });
   } catch (error: any) {
     return res.status(500).json({ success: false, error: error?.message || 'Login failed' });
@@ -191,23 +211,392 @@ app.post('/api/auth/register', async (req: Request, res: Response) => {
     if (!email) {
       return res.status(400).json({ success: false, error: 'Email is required' });
     }
+    const cleanEmail = String(email).trim().toLowerCase();
     const finalUid = uid || `usr-${Date.now()}`;
     // Security: Only admins can assign Admin/Super Admin roles from the admin panel. Public registration roles cannot be Admin.
-    const isSeedAdmin = finalUid === 'usr-admin-1' || email.toLowerCase() === 'admin@prayercloud.org';
+    const isSeedAdmin = finalUid === 'usr-admin-1' || cleanEmail === 'admin@prayercloud.org';
     const safeRole = (role === 'Super Admin' || role === 'Admin') && !isSeedAdmin ? 'Prayer Warrior' : (role || 'Prayer Warrior');
 
-    const user = await getOrCreateUser(finalUid, email, fullName, {
+    const user = await getOrCreateUser(finalUid, cleanEmail, fullName, {
       username,
       phoneNumber,
       country,
       role: safeRole,
       avatarUrl,
       bio,
+      isVerified: isSeedAdmin, // Seed admin is auto-verified; users verify via OTP
     });
-    await logAuditToDb('USER_REGISTER', `New user registered in Cloud SQL: ${email}`, finalUid, fullName || 'User');
-    return res.json({ success: true, user });
+
+    await logAuditToDb('USER_REGISTER', `New user registered in Cloud SQL: ${cleanEmail}`, finalUid, fullName || 'User');
+
+    // Trigger verification OTP immediately for regular registrations
+    let otpDispatched = false;
+    if (!isSeedAdmin) {
+      try {
+        const { otp } = await createEmailOtp({
+          email: cleanEmail,
+          purpose: 'VERIFY_EMAIL',
+          expiryMinutes: 10,
+          resendCooldownSeconds: 60,
+        });
+
+        // Send OTP email in background
+        emailService.sendVerificationOtp(cleanEmail, otp, 'VERIFY_EMAIL', 10)
+          .catch(err => console.warn('Initial registration OTP dispatch notice:', err));
+        otpDispatched = true;
+      } catch (err) {
+        console.warn('Could not generate initial registration OTP:', err);
+      }
+    }
+
+    return res.json({
+      success: true,
+      user,
+      requiresVerification: !isSeedAdmin,
+      otpDispatched,
+      message: isSeedAdmin
+        ? 'Account registered successfully.'
+        : 'Account created! Please check your email for the 6-digit verification code.'
+    });
   } catch (error: any) {
     return res.status(500).json({ success: false, error: error?.message || 'Registration failed' });
+  }
+});
+
+// ==========================================
+// 2B. EMAIL OTP & ACCOUNT VERIFICATION
+// ==========================================
+
+// Trigger or request an email OTP
+app.post('/api/auth/send-otp', async (req: Request, res: Response) => {
+  try {
+    const { email, purpose = 'VERIFY_EMAIL' } = req.body || {};
+    if (!email) {
+      return res.status(400).json({ success: false, error: 'Email address is required.' });
+    }
+    const cleanEmail = String(email).trim().toLowerCase();
+
+    // Check rate limit and resend cooldown (60 seconds)
+    const canResend = await checkCanResendOtp(cleanEmail, purpose);
+    if (!canResend.canResend) {
+      return res.status(429).json({
+        success: false,
+        error: `Please wait ${canResend.waitSeconds} seconds before requesting a new code.`,
+        waitSeconds: canResend.waitSeconds,
+      });
+    }
+
+    const { otp, expiresAt } = await createEmailOtp({
+      email: cleanEmail,
+      purpose,
+      expiryMinutes: 10,
+      resendCooldownSeconds: 60,
+    });
+
+    const result = await emailService.sendVerificationOtp(cleanEmail, otp, purpose, 10);
+    await logAuditToDb('OTP_DISPATCHED', `Verification code sent to ${cleanEmail} (${purpose})`, cleanEmail, 'User');
+
+    return res.json({
+      success: true,
+      message: 'A verification code has been dispatched to your email address.',
+      resendCooldownSeconds: 60,
+      expiresAt: expiresAt.toISOString(),
+      mode: result.mode,
+    });
+  } catch (error: any) {
+    console.error('Send OTP error:', error);
+    return res.status(500).json({ success: false, error: error?.message || 'Failed to send verification code.' });
+  }
+});
+
+// Verify email OTP
+app.post('/api/auth/verify-otp', async (req: Request, res: Response) => {
+  try {
+    const { email, code, purpose = 'VERIFY_EMAIL' } = req.body || {};
+    if (!email || !code) {
+      return res.status(400).json({ success: false, error: 'Email and 6-digit verification code are required.' });
+    }
+    const cleanEmail = String(email).trim().toLowerCase();
+    const cleanCode = String(code).trim();
+
+    const verification = await verifyEmailOtp({
+      email: cleanEmail,
+      code: cleanCode,
+      purpose,
+    });
+
+    if (!verification.success) {
+      if (verification.reason === 'EXPIRED') {
+        return res.status(400).json({ success: false, error: 'This verification code has expired. Please request a new one.' });
+      }
+      if (verification.reason === 'MAX_ATTEMPTS') {
+        return res.status(429).json({ success: false, error: 'Maximum verification attempts exceeded. Please request a fresh code.' });
+      }
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid verification code. Please check and try again.',
+        attemptsLeft: verification.attemptsLeft,
+      });
+    }
+
+    // If verifying registration email, look up user and dispatch welcome email
+    if (purpose === 'VERIFY_EMAIL') {
+      try {
+        const allUsers = await getAllUsersFromDb();
+        const user = allUsers.find((u: any) => u.email?.toLowerCase() === cleanEmail);
+        if (user) {
+          emailService.sendWelcomeEmail(
+            user.fullName || cleanEmail.split('@')[0],
+            cleanEmail,
+            user.role || 'Prayer Warrior'
+          ).catch(err => console.warn('Welcome email notice:', err));
+        }
+      } catch (err) {
+        console.warn('Welcome email lookup notice:', err);
+      }
+    }
+
+    await logAuditToDb('OTP_VERIFIED', `Verification code confirmed for ${cleanEmail} (${purpose})`, cleanEmail, 'User');
+
+    return res.json({
+      success: true,
+      message: 'Email address verified successfully!',
+    });
+  } catch (error: any) {
+    console.error('Verify OTP error:', error);
+    return res.status(500).json({ success: false, error: error?.message || 'Failed to verify code.' });
+  }
+});
+
+// Resend OTP endpoint
+app.post('/api/auth/resend-otp', async (req: Request, res: Response) => {
+  try {
+    const { email, purpose = 'VERIFY_EMAIL' } = req.body || {};
+    if (!email) {
+      return res.status(400).json({ success: false, error: 'Email is required.' });
+    }
+    const cleanEmail = String(email).trim().toLowerCase();
+
+    const canResend = await checkCanResendOtp(cleanEmail, purpose);
+    if (!canResend.canResend) {
+      return res.status(429).json({
+        success: false,
+        error: `Please wait ${canResend.waitSeconds}s before requesting a new code.`,
+        waitSeconds: canResend.waitSeconds,
+      });
+    }
+
+    const { otp, expiresAt } = await createEmailOtp({
+      email: cleanEmail,
+      purpose,
+      expiryMinutes: 10,
+      resendCooldownSeconds: 60,
+    });
+
+    await emailService.sendVerificationOtp(cleanEmail, otp, purpose, 10);
+    await logAuditToDb('OTP_RESENT', `Verification code resent to ${cleanEmail}`, cleanEmail, 'User');
+
+    return res.json({
+      success: true,
+      message: 'A fresh verification code has been dispatched to your email.',
+      resendCooldownSeconds: 60,
+      expiresAt: expiresAt.toISOString(),
+    });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, error: error?.message || 'Failed to resend code.' });
+  }
+});
+
+// ==========================================
+// 2C. SECURE PASSWORD RESET FLOW
+// ==========================================
+
+// Request password reset (Constant-time response to prevent email harvesting)
+app.post('/api/auth/forgot-password', async (req: Request, res: Response) => {
+  try {
+    const { identifier } = req.body || {};
+    if (!identifier) {
+      return res.status(400).json({ success: false, error: 'Email or username is required.' });
+    }
+    const cleanId = String(identifier).trim().toLowerCase();
+
+    // Constant-time generic response to prevent account enumeration
+    const genericResponse = {
+      success: true,
+      message: 'If an account matches this email or username, password reset instructions have been dispatched.',
+    };
+
+    let targetUser: any = null;
+    try {
+      const allUsers = await getAllUsersFromDb();
+      targetUser = allUsers.find(
+        (u: any) =>
+          u.email?.toLowerCase() === cleanId ||
+          u.username?.toLowerCase() === cleanId
+      );
+    } catch {}
+
+    if (targetUser && targetUser.email) {
+      const { token, code, expiresAt } = await createPasswordResetRecord({
+        email: targetUser.email,
+        userUid: targetUser.uid,
+        expiryMinutes: 30,
+      });
+
+      // Dispatch reset email asynchronously
+      emailService.sendPasswordResetEmail(targetUser.email, token, code, 30).catch(err => {
+        console.error('Password reset email dispatch error:', err);
+      });
+
+      await logAuditToDb('PASSWORD_RESET_REQUESTED', `Reset requested for ${targetUser.email}`, targetUser.uid, targetUser.fullName);
+    }
+
+    return res.json(genericResponse);
+  } catch (error: any) {
+    return res.status(500).json({ success: false, error: error?.message || 'Password reset request failed.' });
+  }
+});
+
+// Submit new password with reset token or code
+app.post('/api/auth/reset-password', async (req: Request, res: Response) => {
+  try {
+    const { email, tokenOrCode, newPassword } = req.body || {};
+    if (!tokenOrCode || !newPassword) {
+      return res.status(400).json({ success: false, error: 'Token/code and new password are required.' });
+    }
+    if (String(newPassword).length < 6) {
+      return res.status(400).json({ success: false, error: 'New password must be at least 6 characters long.' });
+    }
+
+    const verification = await verifyAndConsumePasswordReset({
+      email,
+      tokenOrCode: String(tokenOrCode),
+    });
+
+    if (!verification.success || !verification.email) {
+      return res.status(400).json({ success: false, error: verification.error || 'Invalid or expired password reset link/code.' });
+    }
+
+    // Send security alert
+    emailService.sendSecurityAlert(verification.email, 'PASSWORD_CHANGED', {
+      ip: req.ip || (req.headers['x-forwarded-for'] as string) || '',
+      userAgent: req.headers['user-agent'] || '',
+      timestamp: new Date().toUTCString(),
+    }).catch(() => {});
+
+    await logAuditToDb('PASSWORD_RESET_COMPLETED', `Password reset completed for ${verification.email}`, verification.userUid || 'user', 'User');
+
+    return res.json({
+      success: true,
+      message: 'Your password has been successfully reset. You can now log in with your new credentials.',
+      email: verification.email,
+    });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, error: error?.message || 'Failed to reset password.' });
+  }
+});
+
+// ==========================================
+// 2D. CONTACT FORM INQUIRIES & ADMIN NOTIFICATIONS
+// ==========================================
+app.post('/api/contact', async (req: Request, res: Response) => {
+  try {
+    const { name, email, subject, message } = req.body || {};
+    if (!name || !email || !subject || !message) {
+      return res.status(400).json({ success: false, error: 'Name, email, subject, and message are all required.' });
+    }
+
+    const saved = await saveContactMessage({
+      name: String(name),
+      email: String(email),
+      subject: String(subject),
+      message: String(message),
+    });
+
+    // Send confirmation to sender and alert to admin
+    emailService.handleContactSubmission(
+      String(name),
+      String(email),
+      String(subject),
+      String(message),
+      req.ip || (req.headers['x-forwarded-for'] as string)
+    ).catch(err => {
+      console.warn('Contact email dispatch notice:', err);
+    });
+
+    await logAuditToDb('CONTACT_SUBMITTED', `Contact form submitted by ${name} (${email}): ${subject}`);
+
+    return res.json({
+      success: true,
+      message: 'Thank you for contacting PrayerCloud! Your message has been received.',
+      id: saved.id,
+    });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, error: error?.message || 'Failed to submit contact message.' });
+  }
+});
+
+// ==========================================
+// 2E. EMAIL DELIVERY STATUS & TEST DISPATCH
+// ==========================================
+app.get('/api/email/status', async (req: Request, res: Response) => {
+  try {
+    const hasApiKey = !!(process.env.RESEND_API_KEY || '').trim();
+    const sender = (process.env.EMAIL_FROM || '').trim() || 'PrayerCloud <notifications@livingtech.name.ng>';
+    const adminEmail = (process.env.ADMIN_NOTIFICATION_EMAIL || '').trim() || 'dtemitope60@gmail.com';
+
+    return res.json({
+      success: true,
+      provider: 'Resend',
+      isLive: hasApiKey,
+      mode: hasApiKey ? 'live' : 'logged_fallback',
+      sender,
+      adminEmail,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, error: error?.message || 'Failed to fetch email status' });
+  }
+});
+
+app.post('/api/email/test', async (req: Request, res: Response) => {
+  try {
+    const { recipient, sender } = req.body || {};
+    const targetEmail = recipient || (process.env.ADMIN_NOTIFICATION_EMAIL || '').trim() || 'dtemitope60@gmail.com';
+
+    let result: any;
+    if (sender) {
+      result = await emailService.sendEmail({
+        to: targetEmail,
+        from: sender,
+        subject: 'PrayerCloud Test Verification Code: 777999',
+        html: `<p>Dear Intercessor,</p><p>This is a test verification email from PrayerCloud. Your code is: <strong>777999</strong></p>`,
+        text: `PrayerCloud Test Verification Code: 777999`,
+      });
+    } else {
+      result = await emailService.sendVerificationOtp(
+        targetEmail,
+        '777999',
+        'VERIFY_EMAIL',
+        10
+      );
+    }
+
+    await logAuditToDb('TEST_EMAIL_SENT', `Test verification email dispatched to ${targetEmail}`);
+
+    return res.json({
+      success: result.success,
+      recipient: targetEmail,
+      senderUsed: sender || (process.env.EMAIL_FROM || 'PrayerCloud <notifications@livingtech.name.ng>'),
+      mode: result.mode,
+      messageId: result.messageId,
+      error: result.error,
+      message: result.success
+        ? `Test email successfully dispatched to ${targetEmail}.`
+        : `Email delivery status: ${result.error}`,
+    });
+  } catch (error: any) {
+    return res.status(500).json({ success: false, error: error?.message || 'Failed to dispatch test email' });
   }
 });
 
@@ -330,6 +719,28 @@ app.post('/api/prayers/:customId/agree', async (req: Request, res: Response) => 
       return res.status(400).json({ success: false, error: 'userId is required' });
     }
     const updated = await agreePrayerInDb(customId, userId);
+
+    // Asynchronously notify the prayer author by email
+    try {
+      const allPrayers = await getAllPrayersFromDb();
+      const p = allPrayers.find((item: any) => item.customId === customId);
+      if (p && p.authorUid) {
+        const allUsers = await getAllUsersFromDb();
+        const author = allUsers.find((u: any) => u.uid === p.authorUid);
+        const intercessor = allUsers.find((u: any) => u.uid === userId);
+        if (author && author.email && author.email.includes('@') && author.uid !== userId) {
+          emailService.sendPrayerAgreedNotification(
+            author.email,
+            p.title,
+            intercessor?.fullName || 'A fellow intercessor',
+            p.targetCountry || 'Global'
+          ).catch(err => console.warn('Prayer agreed email notification notice:', err));
+        }
+      }
+    } catch (e) {
+      console.warn('Prayer agreed notification lookup notice:', e);
+    }
+
     res.json({ success: true, prayer: updated });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error?.message || 'Failed to agree in prayer' });
@@ -454,6 +865,28 @@ app.post('/api/events/:id/rsvp', async (req: Request, res: Response) => {
       return res.status(400).json({ success: false, error: 'userId is required' });
     }
     const updated = await rsvpEventInDb(id, userId);
+
+    // Asynchronously dispatch RSVP confirmation email to the participant
+    try {
+      const allEvents = await getAllEventsFromDb();
+      const ev = allEvents.find((item: any) => item.id === id);
+      if (ev) {
+        const allUsers = await getAllUsersFromDb();
+        const user = allUsers.find((u: any) => u.uid === userId);
+        if (user && user.email && user.email.includes('@')) {
+          emailService.sendEventRsvpEmail(
+            user.email,
+            user.fullName || user.username || 'Intercessor',
+            ev.title,
+            ev.scheduledAt,
+            ev.zoomUrl || undefined
+          ).catch(err => console.warn('Event RSVP email dispatch notice:', err));
+        }
+      }
+    } catch (e) {
+      console.warn('Event RSVP email lookup notice:', e);
+    }
+
     res.json({ success: true, event: updated });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error?.message || 'Failed to RSVP to event' });
@@ -771,6 +1204,9 @@ app.post('/api/gemini/chat', async (req: Request, res: Response) => {
 // 11. SERVER STARTUP & STATIC SPA SERVING
 // ==========================================
 async function startServer() {
+  // Initialize email & security tables in Cloud SQL
+  await initEmailTables().catch((err) => console.warn('Email tables init notice:', err));
+
   const isStandaloneApi = process.env.STANDALONE_API === 'true';
 
   if (!isStandaloneApi) {

@@ -376,5 +376,86 @@ export const apiClient = {
   // Audit Logs
   async logAuditInCloudSql(action: string, details?: string, actorId?: string, actorName?: string) {
     return this.post('/api/audit', { action, details, actorId, actorName });
+  },
+
+  // Email System & OTP Verification
+  async sendEmailOtp(email: string, purpose: 'VERIFY_EMAIL' | 'LOGIN_VERIFICATION' | 'PASSWORD_RESET' = 'VERIFY_EMAIL') {
+    return this.post<{
+      success: boolean;
+      message?: string;
+      error?: string;
+      resendCooldownSeconds?: number;
+      expiresAt?: string;
+    }>('/api/auth/send-otp', { email, purpose });
+  },
+
+  async verifyEmailOtp(email: string, code: string, purpose: 'VERIFY_EMAIL' | 'LOGIN_VERIFICATION' | 'PASSWORD_RESET' = 'VERIFY_EMAIL') {
+    return this.post<{
+      success: boolean;
+      message?: string;
+      error?: string;
+      attemptsLeft?: number;
+    }>('/api/auth/verify-otp', { email, code, purpose });
+  },
+
+  async resendEmailOtp(email: string, purpose: 'VERIFY_EMAIL' | 'LOGIN_VERIFICATION' | 'PASSWORD_RESET' = 'VERIFY_EMAIL') {
+    return this.post<{
+      success: boolean;
+      message?: string;
+      error?: string;
+      resendCooldownSeconds?: number;
+      expiresAt?: string;
+      waitSeconds?: number;
+    }>('/api/auth/resend-otp', { email, purpose });
+  },
+
+  async requestPasswordReset(identifier: string) {
+    return this.post<{
+      success: boolean;
+      message?: string;
+      error?: string;
+    }>('/api/auth/forgot-password', { identifier });
+  },
+
+  async submitPasswordReset(email: string | undefined, tokenOrCode: string, newPassword: string) {
+    return this.post<{
+      success: boolean;
+      message?: string;
+      error?: string;
+      email?: string;
+    }>('/api/auth/reset-password', { email, tokenOrCode, newPassword });
+  },
+
+  async submitContactForm(name: string, email: string, subject: string, message: string) {
+    return this.post<{
+      success: boolean;
+      message?: string;
+      error?: string;
+      id?: any;
+    }>('/api/contact', { name, email, subject, message });
+  },
+
+  // Email Health & Diagnostic Testing
+  async getEmailStatus() {
+    return this.get<{
+      success: boolean;
+      provider: string;
+      isLive: boolean;
+      mode: string;
+      sender: string;
+      adminEmail: string;
+      timestamp: string;
+    }>('/api/email/status');
+  },
+
+  async sendTestEmail(recipient?: string) {
+    return this.post<{
+      success: boolean;
+      recipient: string;
+      mode: string;
+      messageId?: string;
+      error?: string;
+      message?: string;
+    }>('/api/email/test', { recipient });
   }
 };

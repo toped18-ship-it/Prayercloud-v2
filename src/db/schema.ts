@@ -141,6 +141,55 @@ export const syncStatus = pgTable('sync_status', {
   updatedAt: timestamp('updated_at').defaultNow(),
 });
 
+// Email One-Time Passcodes (OTP) for Verification and Authentication Challenges
+export const emailOtps = pgTable('email_otps', {
+  id: serial('id').primaryKey(),
+  email: text('email').notNull(),
+  codeHash: text('code_hash').notNull(),
+  purpose: text('purpose').default('VERIFY_EMAIL'), // 'VERIFY_EMAIL' | 'LOGIN_VERIFICATION' | 'PASSWORD_RESET'
+  attempts: integer('attempts').default(0),
+  maxAttempts: integer('max_attempts').default(5),
+  expiresAt: timestamp('expires_at').notNull(),
+  resendAvailableAt: timestamp('resend_available_at').notNull(),
+  isUsed: boolean('is_used').default(false),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+// Password Reset Tokens
+export const passwordResetTokens = pgTable('password_reset_tokens', {
+  id: serial('id').primaryKey(),
+  tokenHash: text('token_hash').notNull(),
+  codeHash: text('code_hash'), // Optional 6-digit numeric companion code hash
+  email: text('email').notNull(),
+  userUid: text('user_uid'),
+  expiresAt: timestamp('expires_at').notNull(),
+  isUsed: boolean('is_used').default(false),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+// Contact Form Inquiries
+export const contactMessages = pgTable('contact_messages', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  email: text('email').notNull(),
+  subject: text('subject').notNull(),
+  message: text('message').notNull(),
+  status: text('status').default('NEW'),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+// Transactional Email Dispatch Logs (with Idempotency Keys)
+export const emailLogs = pgTable('email_logs', {
+  id: serial('id').primaryKey(),
+  idempotencyKey: text('idempotency_key').unique(),
+  recipient: text('recipient').notNull(),
+  subject: text('subject').notNull(),
+  template: text('template').notNull(),
+  status: text('status').default('SENT'),
+  providerMessageId: text('provider_message_id'),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   prayers: many(prayerRequests),
