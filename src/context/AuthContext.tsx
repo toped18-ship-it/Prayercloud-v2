@@ -96,6 +96,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const firestoreRes = await firestoreService.authenticateUser(cleanId, cleanPass);
       if (firestoreRes?.success && firestoreRes?.user) {
         const matchedFs = firestoreRes.user;
+        if (matchedFs.role === 'Super Admin' || matchedFs.id === 'usr-admin-1') {
+          storage.setSavedAdminProfile(matchedFs);
+        }
         storage.updateUser(matchedFs);
         storage.setUserPassword(matchedFs.id, cleanPass);
         setCurrentUser(matchedFs);
@@ -142,6 +145,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           prayersOfferedCount: u.prayersOfferedCount || u.prayers_offered_count || 0,
         };
 
+        if (matchedCloud.role === 'Super Admin' || matchedCloud.id === 'usr-admin-1') {
+          storage.setSavedAdminProfile(matchedCloud);
+        }
         storage.updateUser(matchedCloud);
         storage.setUserPassword(matchedCloud.id, cleanPass);
         firestoreService.saveUserWithCredentials(matchedCloud, cleanPass).catch(() => {});
@@ -161,16 +167,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return uEmail === cleanId || uUser === cleanId;
     });
 
-    // If an admin identifier is used and no account was found, instantiate the Super Admin user immediately
+    // If an admin identifier is used and no account was found, check if a saved admin profile exists
     if (!matched && isAdminIdentifier) {
-      matched = {
-        ...DEFAULT_ADMIN_USER,
-        email: cleanId.includes('@') ? cleanId : 'admin@prayercloud.org',
-        username: cleanId.includes('@') ? cleanId.split('@')[0] : 'admin',
-        role: 'Super Admin',
-        isActive: true,
-        mustChangePassword: false,
-      };
+      const savedAdmin = storage.getSavedAdminProfile();
+      if (savedAdmin) {
+        matched = savedAdmin;
+      } else {
+        matched = {
+          ...DEFAULT_ADMIN_USER,
+          email: cleanId.includes('@') ? cleanId : 'admin@prayercloud.org',
+          username: cleanId.includes('@') ? cleanId.split('@')[0] : 'admin',
+          role: 'Super Admin',
+          isActive: true,
+          mustChangePassword: false,
+        };
+      }
       storage.updateUser(matched);
       storage.setUserPassword(matched.id, cleanPass);
     }
@@ -328,6 +339,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const updated: User = { ...currentUser, ...data };
     setCurrentUser(updated);
     storage.updateUser(updated);
+    if (updated.role === 'Super Admin' || updated.id === 'usr-admin-1') {
+      storage.setSavedAdminProfile(updated);
+    }
   };
 
   const isAuthenticated = !!currentUser;

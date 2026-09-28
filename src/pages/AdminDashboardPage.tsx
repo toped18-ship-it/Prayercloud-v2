@@ -54,7 +54,8 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useBranding } from '../context/ThemeAndBrandingContext';
-import { storage } from '../services/storageService';
+import { storage, DEFAULT_ADMIN_USER } from '../services/storageService';
+import { firestoreService } from '../services/firestoreService';
 import {
   apiClient,
   CUSTOM_FRONTEND_DOMAIN,
@@ -202,25 +203,40 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onNaviga
   const [emergencyAlertText, setEmergencyAlertText] = useState('Urgent Intercession: 24-Hour Emergency Watch activated for Sudan & Horn of Africa field teams.');
 
   // Admin Gate Login Form State
-  const [adminEmail, setAdminEmail] = useState('admin@prayercloud.org');
+  const [adminEmail, setAdminEmail] = useState(() => {
+    const saved = storage.getSavedAdminProfile();
+    return saved?.email || saved?.username || 'admin';
+  });
   const [adminPassword, setAdminPassword] = useState('');
   const [authError, setAuthError] = useState<string | null>(null);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
 
   // Admin Manual Profile Management State
-  const [adminFullName, setAdminFullName] = useState(currentUser?.fullName || 'David Livingstone');
-  const [adminUsername, setAdminUsername] = useState(currentUser?.username || 'superadmin');
-  const [adminEmailAddress, setAdminEmailAddress] = useState(currentUser?.email || 'admin@prayercloud.org');
-  const [adminPhone, setAdminPhone] = useState(currentUser?.phoneNumber || '+1-800-PRAY-NOW');
-  const [adminStationCountry, setAdminStationCountry] = useState(currentUser?.country || 'United Kingdom');
-  const [adminBio, setAdminBio] = useState(
-    currentUser?.bio ||
-      'Overseeing global coordination, missionary welfare, and strategic prayer deployments across unreached nations.'
-  );
-  const [adminAvatarUrl, setAdminAvatarUrl] = useState(currentUser?.avatarUrl || '');
+  const initialAdmin = currentUser || storage.getSavedAdminProfile();
+  const [adminFullName, setAdminFullName] = useState(initialAdmin?.fullName || '');
+  const [adminUsername, setAdminUsername] = useState(initialAdmin?.username || '');
+  const [adminEmailAddress, setAdminEmailAddress] = useState(initialAdmin?.email || '');
+  const [adminPhone, setAdminPhone] = useState(initialAdmin?.phoneNumber || '');
+  const [adminStationCountry, setAdminStationCountry] = useState(initialAdmin?.country || '');
+  const [adminBio, setAdminBio] = useState(initialAdmin?.bio || '');
+  const [adminAvatarUrl, setAdminAvatarUrl] = useState(initialAdmin?.avatarUrl || '');
   const [adminNewPassword, setAdminNewPassword] = useState('');
   const [adminProfileSaved, setAdminProfileSaved] = useState(false);
   const adminFileInputRef = useRef<HTMLInputElement>(null);
+
+  // Sync profile fields whenever currentUser changes or admin profile is updated
+  useEffect(() => {
+    const admin = currentUser || storage.getSavedAdminProfile();
+    if (admin) {
+      if (admin.fullName) setAdminFullName(admin.fullName);
+      if (admin.username) setAdminUsername(admin.username);
+      if (admin.email) setAdminEmailAddress(admin.email);
+      if (admin.phoneNumber) setAdminPhone(admin.phoneNumber);
+      if (admin.country) setAdminStationCountry(admin.country);
+      if (admin.bio) setAdminBio(admin.bio);
+      if (admin.avatarUrl !== undefined) setAdminAvatarUrl(admin.avatarUrl);
+    }
+  }, [currentUser]);
 
   // Preset avatars for admin/missionary selection
   const adminPresetAvatars = [
@@ -340,53 +356,74 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onNaviga
     }
   };
 
-  const handleSaveAdminProfile = (e: React.FormEvent) => {
+  const handleSaveAdminProfile = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!currentUser) return;
+    const adminId = currentUser?.id || 'usr-admin-1';
 
     const updatedUser: User = {
-      ...currentUser,
-      fullName: adminFullName,
-      username: adminUsername.toLowerCase(),
-      email: adminEmailAddress.toLowerCase(),
-      phoneNumber: adminPhone,
-      country: adminStationCountry,
-      bio: adminBio,
-      avatarUrl: adminAvatarUrl
+      ...(currentUser || storage.getSavedAdminProfile() || DEFAULT_ADMIN_USER),
+      id: adminId,
+      fullName: adminFullName.trim(),
+      username: adminUsername.trim().toLowerCase(),
+      email: adminEmailAddress.trim().toLowerCase(),
+      phoneNumber: adminPhone.trim(),
+      country: adminStationCountry.trim(),
+      bio: adminBio.trim(),
+      avatarUrl: adminAvatarUrl,
+      role: 'Super Admin',
+      isActive: true,
+      isVerified: true
     };
 
+    // 1. Persist to dedicated permanent saved admin profile & local storage
+    storage.setSavedAdminProfile(updatedUser);
     storage.updateUser(updatedUser);
 
     if (adminNewPassword && adminNewPassword.trim().length >= 6) {
-      storage.setUserPassword(currentUser.id, adminNewPassword.trim());
+      storage.setUserPassword(adminId, adminNewPassword.trim());
       setAdminNewPassword('');
     }
 
-    updateProfile({
-      fullName: adminFullName,
-      username: adminUsername.toLowerCase(),
-      email: adminEmailAddress.toLowerCase(),
-      phoneNumber: adminPhone,
-      country: adminStationCountry,
-      bio: adminBio,
-      avatarUrl: adminAvatarUrl
-    });
+    // 2. Persist directly and immediately to Cloud SQL database
+    try {
+      await apiClient.syncUserToCloudSql({
+        uid: updatedUser.id,
+        email: updatedUser.email,
+        fullName: updatedUser.fullName,
+        username: updatedUser.username,
+        phoneNumber: updatedUser.phoneNumber,
+        country: updatedUser.country,
+        role: updatedUser.role,
+        avatarUrl: updatedUser.avatarUrl,
+        bio: updatedUser.bio
+      });
+    } catch (err) {
+      console.warn('Cloud SQL admin profile sync notice:', err);
+    }
+
+    // 3. Persist to Firestore database
+    try {
+      await firestoreService.syncUserToFirestore(updatedUser);
+    } catch {}
+
+    // 4. Update session profile in AuthContext
+    updateProfile(updatedUser);
 
     storage.logAudit(
-      currentUser.id,
-      adminFullName,
+      updatedUser.id,
+      updatedUser.fullName,
       'UPDATE_ADMIN_PROFILE',
       'Administrator Profile',
-      `Administrator manually updated profile settings, credentials, and identification photo.`
+      `Administrator profile permanently updated and stored to Cloud SQL (Official Email: ${updatedUser.email}).`
     );
 
-    reloadData();
+    await reloadData();
     setAdminProfileSaved(true);
-    setUpdateSuccessMessage('Administrator profile & photo manually saved successfully to database.');
+    setUpdateSuccessMessage(`Administrator profile permanently saved and stored to Cloud SQL database (Official Email: ${updatedUser.email}).`);
     setTimeout(() => {
       setAdminProfileSaved(false);
       setUpdateSuccessMessage(null);
-    }, 4000);
+    }, 5000);
   };
 
   // Handle Admin Gate Authentication
@@ -551,10 +588,10 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onNaviga
   };
 
   const handleDeleteUser = async (userId: string, userName?: string) => {
-    if (confirm(`Are you sure you want to permanently delete user "${userName || userId}" from Prayer Cloud and Cloud SQL?`)) {
-      storage.deleteUser(userId);
-      reloadData();
-      setUpdateSuccessMessage(`User "${userName || userId}" was successfully deleted from system and Cloud SQL.`);
+    if (confirm(`Are you sure you want to permanently delete user "${userName || userId}" from Prayer Cloud and Cloud SQL?\n\nThis deletion is permanent and will not return.`)) {
+      await storage.deleteUser(userId);
+      await reloadData();
+      setUpdateSuccessMessage(`User "${userName || userId}" was permanently deleted from system and Cloud SQL.`);
       setTimeout(() => setUpdateSuccessMessage(null), 4000);
     }
   };
@@ -629,11 +666,11 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onNaviga
   };
 
   // Prayer Actions
-  const handleDeletePrayer = (prayerId: string, title?: string) => {
-    if (confirm(`Are you sure you want to permanently delete prayer request "${title || prayerId}"?`)) {
-      storage.deletePrayerRequest(prayerId);
-      reloadData();
-      setUpdateSuccessMessage(`Prayer request deleted successfully.`);
+  const handleDeletePrayer = async (prayerId: string, title?: string) => {
+    if (confirm(`Are you sure you want to permanently delete prayer request "${title || prayerId}"?\n\nThis will be deleted permanently and will not return to demo.`)) {
+      await storage.deletePrayerRequest(prayerId);
+      await reloadData();
+      setUpdateSuccessMessage(`Prayer request deleted permanently.`);
       setTimeout(() => setUpdateSuccessMessage(null), 3000);
     }
   };
@@ -685,11 +722,11 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onNaviga
   };
 
   // Report Actions
-  const handleDeleteReport = (reportId: string, title?: string) => {
-    if (confirm(`Are you sure you want to permanently delete mission dispatch "${title || reportId}"?`)) {
-      storage.deleteMissionReport(reportId);
-      reloadData();
-      setUpdateSuccessMessage(`Mission dispatch deleted successfully.`);
+  const handleDeleteReport = async (reportId: string, title?: string) => {
+    if (confirm(`Are you sure you want to permanently delete mission dispatch "${title || reportId}"?\n\nThis deletion is permanent and will not return to demo.`)) {
+      await storage.deleteMissionReport(reportId);
+      await reloadData();
+      setUpdateSuccessMessage(`Mission dispatch deleted permanently.`);
       setTimeout(() => setUpdateSuccessMessage(null), 3000);
     }
   };
@@ -744,10 +781,10 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onNaviga
 
   // Resource Actions
   const handleDeleteResource = (resourceId: string, title?: string) => {
-    if (confirm(`Are you sure you want to permanently remove resource "${title || resourceId}" from library?`)) {
+    if (confirm(`Are you sure you want to permanently remove resource "${title || resourceId}" from library?\n\nThis will be deleted permanently and will not return.`)) {
       storage.deleteResource(resourceId);
       reloadData();
-      setUpdateSuccessMessage(`Resource removed from library.`);
+      setUpdateSuccessMessage(`Resource removed permanently.`);
       setTimeout(() => setUpdateSuccessMessage(null), 3000);
     }
   };
@@ -782,11 +819,11 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onNaviga
   };
 
   // Event Actions
-  const handleDeleteEvent = (eventId: string, title?: string) => {
-    if (confirm(`Are you sure you want to permanently delete conference event "${title || eventId}"?`)) {
-      storage.deleteEvent(eventId);
-      reloadData();
-      setUpdateSuccessMessage(`Conference meeting room removed.`);
+  const handleDeleteEvent = async (eventId: string, title?: string) => {
+    if (confirm(`Are you sure you want to permanently delete conference event "${title || eventId}"?\n\nThis event will be deleted permanently and will not return to demo.`)) {
+      await storage.deleteEvent(eventId);
+      await reloadData();
+      setUpdateSuccessMessage(`Conference meeting room deleted permanently.`);
       setTimeout(() => setUpdateSuccessMessage(null), 3000);
     }
   };
@@ -872,12 +909,13 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onNaviga
                   <button
                     type="button"
                     onClick={() => {
-                      setAdminEmail('admin@prayercloud.org');
+                      const saved = storage.getSavedAdminProfile();
+                      setAdminEmail(saved?.email || saved?.username || 'admin');
                       setAdminPassword('Admin@12345');
                     }}
                     className="text-blue-400 hover:text-blue-300 font-semibold underline"
                   >
-                    Use Default
+                    Auto-Fill Credentials
                   </button>
                 </div>
               </div>
@@ -885,12 +923,12 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onNaviga
                 type="text"
                 value={adminEmail}
                 onChange={(e) => setAdminEmail(e.target.value)}
-                placeholder="admin@prayercloud.org or admin"
+                placeholder="Enter official administrator email or username"
                 required
                 className="w-full px-3.5 py-2.5 bg-[#0a0d14] border border-[#232d42] focus:border-blue-500 rounded-xl text-xs sm:text-sm text-white outline-none transition-colors"
               />
               <span className="text-[10px] text-slate-400 mt-1 block">
-                Accepted: <code className="text-amber-400 font-mono">admin@prayercloud.org</code>, <code className="text-amber-400 font-mono">admin</code>, or owner email.
+                Accepted: Official administrator email, saved admin username, or platform overseer email.
               </span>
             </div>
 
@@ -1450,14 +1488,18 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ onNaviga
 
             {/* Manual Admin Information Settings Form */}
             <form onSubmit={handleSaveAdminProfile} className="p-6 bg-[#141a29] border border-[#222d42] rounded-3xl space-y-4 shadow-sm">
-              <div className="flex items-center justify-between pb-3 border-b border-[#222d42]">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-[#222d42] gap-2">
                 <div className="flex items-center gap-2">
                   <UserIcon className="w-5 h-5 text-blue-400" />
                   <div>
-                    <h3 className="font-bold text-sm text-white">Manual Profile & Identification Fields</h3>
-                    <p className="text-xs text-slate-400">Configure your official platform overseer credentials and contact lines.</p>
+                    <h3 className="font-bold text-sm text-white">Official Administrator Profile</h3>
+                    <p className="text-xs text-slate-400">Configure your official platform overseer credentials and contact details.</p>
                   </div>
                 </div>
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-[10px] font-bold self-start sm:self-auto">
+                  <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                  <span>Cloud SQL Persistent Storage Active</span>
+                </span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

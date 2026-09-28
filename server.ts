@@ -147,18 +147,31 @@ app.post('/api/auth/login', async (req: Request, res: Response) => {
     }
 
     if (!user && isAdminIdentifier) {
-      // Auto-provision Super Admin in Cloud SQL
-      user = await getOrCreateUser(
-        'usr-admin-1',
-        cleanId.includes('@') ? cleanId : 'admin@prayercloud.org',
-        'Super Administrator',
-        {
-          username: cleanId.includes('@') ? cleanId.split('@')[0] : 'admin',
-          role: 'Super Admin',
-          country: 'United Kingdom',
-          phoneNumber: '+1-800-PRAY-NOW',
+      // Check if an official administrator account already exists in Cloud SQL
+      try {
+        const allUsers = await getAllUsersFromDb();
+        const existingAdmin = allUsers.find(
+          (u: any) => u.uid === 'usr-admin-1' || u.role === 'Super Admin' || u.role === 'Admin'
+        );
+        if (existingAdmin) {
+          user = existingAdmin;
         }
-      );
+      } catch {}
+
+      if (!user) {
+        // Auto-provision Super Admin in Cloud SQL only if none exists
+        user = await getOrCreateUser(
+          'usr-admin-1',
+          cleanId.includes('@') ? cleanId : 'admin@prayercloud.org',
+          'Super Administrator',
+          {
+            username: cleanId.includes('@') ? cleanId.split('@')[0] : 'admin',
+            role: 'Super Admin',
+            country: 'Global',
+            phoneNumber: '+1-800-PRAY-NOW',
+          }
+        );
+      }
     }
 
     if (!user) {

@@ -45,6 +45,14 @@ const STORAGE_KEYS = {
   AUDIT_LOGS: 'prayercloud_audit_logs_v2'
 };
 
+const TOMBSTONE_KEYS = {
+  USERS: 'prayercloud_deleted_users_set_v2',
+  PRAYERS: 'prayercloud_deleted_prayers_set_v2',
+  REPORTS: 'prayercloud_deleted_reports_set_v2',
+  EVENTS: 'prayercloud_deleted_events_set_v2',
+  RESOURCES: 'prayercloud_deleted_resources_set_v2'
+};
+
 export const DEFAULT_ADMIN_USER: User = {
   id: 'usr-admin-1',
   fullName: 'Super Administrator',
@@ -66,9 +74,11 @@ class StorageService {
   // Generic helper for local storage
   private get<T>(key: string, defaultVal: T): T {
     try {
-      const stored = localStorage.getItem(key);
-      if (stored) {
-        return JSON.parse(stored);
+      if (typeof localStorage !== 'undefined') {
+        const stored = localStorage.getItem(key);
+        if (stored) {
+          return JSON.parse(stored);
+        }
       }
     } catch (e) {
       console.warn('Storage read error for key:', key, e);
@@ -78,15 +88,43 @@ class StorageService {
 
   private set<T>(key: string, val: T): void {
     try {
-      localStorage.setItem(key, JSON.stringify(val));
-      window.dispatchEvent(new CustomEvent('prayercloud_storage_update', { detail: { key } }));
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem(key, JSON.stringify(val));
+      }
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('prayercloud_storage_update', { detail: { key } }));
+      }
     } catch (e) {
       console.warn('Storage write error for key:', key, e);
     }
   }
 
+  // Tombstone helpers to guarantee deleted items never return to demo
+  public getDeletedIds(tombstoneKey: string): Set<string> {
+    const list = this.get<string[]>(tombstoneKey, []);
+    return new Set(list);
+  }
+
+  public markDeletedId(tombstoneKey: string, id: string): void {
+    if (!id) return;
+    const ids = this.getDeletedIds(tombstoneKey);
+    ids.add(id);
+    this.set(tombstoneKey, Array.from(ids));
+  }
+
+  // Saved official administrator profile persistence
+  public getSavedAdminProfile(): User | null {
+    return this.get<User | null>('prayercloud_saved_admin_profile', null);
+  }
+
+  public setSavedAdminProfile(admin: User): void {
+    this.set('prayercloud_saved_admin_profile', admin);
+  }
+
   // Initializer & Background Cloud SQL synchronization
   public init(): void {
+    if (typeof localStorage === 'undefined') return;
+
     if (!localStorage.getItem(STORAGE_KEYS.USERS)) {
       this.set(STORAGE_KEYS.USERS, INITIAL_USERS);
     }
@@ -197,13 +235,26 @@ class StorageService {
 
   // Users
   public getUsers(): User[] {
-    const list = this.get<User[]>(STORAGE_KEYS.USERS, INITIAL_USERS);
-    const adminIdx = list.findIndex(
-      u => u.id === 'usr-admin-1' || u.email.toLowerCase() === 'admin@prayercloud.org'
-    );
-    if (adminIdx === -1) {
-      list.unshift(DEFAULT_ADMIN_USER);
-      this.set(STORAGE_KEYS.USERS, list);
+    const deletedIds = this.getDeletedIds(TOMBSTONE_KEYS.USERS);
+    const savedAdmin = this.getSavedAdminProfile();
+    let list = this.get<User[]>(STORAGE_KEYS.USERS, INITIAL_USERS);
+    
+    // Filter out permanently deleted user IDs
+    list = list.filter(u => !deletedIds.has(u.id));
+
+    // Ensure official saved admin profile is prioritized and not reset to demo
+    if (savedAdmin && !deletedIds.has(savedAdmin.id)) {
+      const idx = list.findIndex(u => u.id === savedAdmin.id || u.role === 'Super Admin');
+      if (idx >= 0) {
+        list[idx] = { ...list[idx], ...savedAdmin };
+      } else {
+        list.unshift(savedAdmin);
+      }
+    } else {
+      const hasAdmin = list.some(u => u.role === 'Super Admin' || u.id === 'usr-admin-1');
+      if (!hasAdmin && !deletedIds.has('usr-admin-1')) {
+        list.unshift(DEFAULT_ADMIN_USER);
+      }
     }
     return list;
   }
@@ -225,6 +276,11 @@ class StorageService {
       list.push(user);
     }
     this.set(STORAGE_KEYS.USERS, list);
+
+    // If updated user is Super Admin or usr-admin-1, persist to saved admin profile
+    if (user.role === 'Super Admin' || user.id === 'usr-admin-1') {
+      this.setSavedAdminProfile(user);
+    }
 
     // Persist to Cloud SQL backend and Firestore
     try {
@@ -291,6 +347,8 @@ class StorageService {
   public async syncUsersFromCloudSql(): Promise<User[]> {
     const localUsers = this.getUsers();
     const mergedMap = new Map<string, User>();
+    const deletedUserIds = this.getDeletedIds(TOMBSTONE_KEYS.USERS);
+    const savedAdmin = this.getSavedAdminProfile();
 
     const demoUids = new Set(['usr-miss-1', 'usr-intercessor-1', 'usr-pastor-1', 'usr-volunteer-1', 'usr-evangelist-1']);
     const demoEmails = new Set([
@@ -302,9 +360,20 @@ class StorageService {
       'emmanuel.mensah@prayercloud.org'
     ]);
 
-    mergedMap.set('usr-admin-1', DEFAULT_ADMIN_USER);
+    // Initialize with saved official admin profile if available, or current local admin
+    if (savedAdmin && !deletedUserIds.has(savedAdmin.id)) {
+      mergedMap.set(savedAdmin.id, savedAdmin);
+    } else {
+      const existingAdmin = localUsers.find(u => u.role === 'Super Admin' || u.id === 'usr-admin-1');
+      if (existingAdmin && !deletedUserIds.has(existingAdmin.id)) {
+        mergedMap.set(existingAdmin.id, existingAdmin);
+      } else if (!deletedUserIds.has('usr-admin-1')) {
+        mergedMap.set('usr-admin-1', DEFAULT_ADMIN_USER);
+      }
+    }
+
     localUsers.forEach(u => {
-      if (!demoUids.has(u.id) && !demoEmails.has((u.email || '').toLowerCase())) {
+      if (!deletedUserIds.has(u.id) && !demoUids.has(u.id) && !demoEmails.has((u.email || '').toLowerCase())) {
         mergedMap.set(u.id, u);
       }
     });
@@ -316,8 +385,15 @@ class StorageService {
       const firestoreUsers = await firestoreService.getUsersFromFirestore();
       if (firestoreUsers && firestoreUsers.length > 0) {
         firestoreUsers.forEach((fu) => {
+          if (deletedUserIds.has(fu.id)) return;
           if (!demoUids.has(fu.id) && !demoEmails.has((fu.email || '').toLowerCase())) {
-            mergedMap.set(fu.id, { ...(mergedMap.get(fu.id) || {}), ...fu });
+            // If this is admin, preserve any saved official properties
+            if (fu.id === 'usr-admin-1' || fu.role === 'Super Admin') {
+              const currentSaved = savedAdmin || mergedMap.get(fu.id);
+              mergedMap.set(fu.id, { ...(currentSaved || {}), ...fu });
+            } else {
+              mergedMap.set(fu.id, { ...(mergedMap.get(fu.id) || {}), ...fu });
+            }
           }
         });
         updated = true;
@@ -338,7 +414,7 @@ class StorageService {
         res.users.forEach((u: any) => {
           const email = (u.email || '').toLowerCase();
           const uid = u.uid || `usr-${u.id}`;
-          if (demoUids.has(uid) || demoEmails.has(email)) {
+          if (deletedUserIds.has(uid) || demoUids.has(uid) || demoEmails.has(email)) {
             return;
           }
           const userObj: User = {
@@ -357,6 +433,10 @@ class StorageService {
             joinedAt: u.joinedAt || u.joined_at || new Date().toISOString(),
             prayersOfferedCount: u.prayersOfferedCount || u.prayers_offered_count || 0,
           };
+          // If this is the admin from Cloud SQL, remember it in saved admin profile
+          if (userObj.role === 'Super Admin' || userObj.id === 'usr-admin-1') {
+            this.setSavedAdminProfile(userObj);
+          }
           mergedMap.set(userObj.id, { ...(mergedMap.get(userObj.id) || {}), ...userObj });
         });
         updated = true;
@@ -365,7 +445,8 @@ class StorageService {
       console.warn('Cloud SQL users sync notice:', e);
     }
 
-    const mergedList = Array.from(mergedMap.values());
+    // Filter out any tombstoned deleted user IDs
+    const mergedList = Array.from(mergedMap.values()).filter(u => !deletedUserIds.has(u.id));
     this.set(STORAGE_KEYS.USERS, mergedList);
     return mergedList;
   }
@@ -374,10 +455,12 @@ class StorageService {
   // PRAYERS
   // ==========================================
   public getPrayerRequests(): PrayerRequest[] {
-    return this.get<PrayerRequest[]>(STORAGE_KEYS.PRAYERS, []);
+    const deletedPrayerIds = this.getDeletedIds(TOMBSTONE_KEYS.PRAYERS);
+    return this.get<PrayerRequest[]>(STORAGE_KEYS.PRAYERS, []).filter(p => !deletedPrayerIds.has(p.id));
   }
 
   public async syncPrayersFromCloudSql(): Promise<PrayerRequest[]> {
+    const deletedPrayerIds = this.getDeletedIds(TOMBSTONE_KEYS.PRAYERS);
     try {
       const res = await apiClient.getPrayersFromCloudSql();
       if (res && res.success && Array.isArray(res.prayers)) {
@@ -386,6 +469,8 @@ class StorageService {
 
         const cloudPrayers: PrayerRequest[] = res.prayers
           .filter((p: any) => {
+            const pId = p.customId || `pr-${p.id}`;
+            if (deletedPrayerIds.has(pId) || deletedPrayerIds.has(String(p.id))) return false;
             const t = (p.title || '').toLowerCase();
             if (demoTitles.some(dt => t.includes(dt))) return false;
             if (demoUids.has(p.authorUid)) return false;
@@ -414,14 +499,19 @@ class StorageService {
         const map = new Map<string, PrayerRequest>();
         this.getPrayerRequests()
           .filter(p => {
+            if (deletedPrayerIds.has(p.id)) return false;
             const t = (p.title || '').toLowerCase();
             return !demoTitles.some(dt => t.includes(dt)) && !demoUids.has(p.authorId) && !['pr-1', 'pr-2', 'pr-3', 'pr-4'].includes(p.id);
           })
           .forEach(p => map.set(p.id, p));
 
-        cloudPrayers.forEach(cp => map.set(cp.id, cp));
+        cloudPrayers.forEach(cp => {
+          if (!deletedPrayerIds.has(cp.id)) {
+            map.set(cp.id, cp);
+          }
+        });
 
-        const merged = Array.from(map.values());
+        const merged = Array.from(map.values()).filter(p => !deletedPrayerIds.has(p.id));
         this.set(STORAGE_KEYS.PRAYERS, merged);
         return merged;
       }
@@ -546,25 +636,32 @@ class StorageService {
     } catch {}
   }
 
-  public deletePrayerRequest(prayerId: string): void {
+  public async deletePrayerRequest(prayerId: string): Promise<void> {
+    this.markDeletedId(TOMBSTONE_KEYS.PRAYERS, prayerId);
     const list = this.getPrayerRequests().filter(p => p.id !== prayerId);
     this.set(STORAGE_KEYS.PRAYERS, list);
-    this.logAudit('admin', 'Admin', 'DELETE_PRAYER', prayerId, `Prayer petition removed by moderator.`);
+    this.logAudit('admin', 'Admin', 'DELETE_PRAYER', prayerId, `Prayer petition permanently removed.`);
 
     try {
-      apiClient.deletePrayerInCloudSql(prayerId).catch(() => {});
-      firestoreService.deletePrayerFromFirestore(prayerId).catch(() => {});
-    } catch {}
+      await Promise.allSettled([
+        apiClient.deletePrayerInCloudSql(prayerId),
+        firestoreService.deletePrayerFromFirestore(prayerId)
+      ]);
+    } catch (e) {
+      console.warn('Cloud delete prayer notice:', e);
+    }
   }
 
   // ==========================================
   // MISSION REPORTS
   // ==========================================
   public getMissionReports(): MissionReport[] {
-    return this.get<MissionReport[]>(STORAGE_KEYS.REPORTS, []);
+    const deletedReportIds = this.getDeletedIds(TOMBSTONE_KEYS.REPORTS);
+    return this.get<MissionReport[]>(STORAGE_KEYS.REPORTS, []).filter(r => !deletedReportIds.has(r.id));
   }
 
   public async syncReportsFromCloudSql(): Promise<MissionReport[]> {
+    const deletedReportIds = this.getDeletedIds(TOMBSTONE_KEYS.REPORTS);
     try {
       const res = await apiClient.getReportsFromCloudSql();
       if (res && res.success && Array.isArray(res.reports)) {
@@ -572,7 +669,7 @@ class StorageService {
         const demoUids = new Set(['usr-miss-1', 'usr-pastor-1']);
 
         const cloudReports: MissionReport[] = res.reports
-          .filter((r: any) => !demoIds.has(r.id) && !demoUids.has(r.authorId))
+          .filter((r: any) => !deletedReportIds.has(r.id) && !demoIds.has(r.id) && !demoUids.has(r.authorId))
           .map((r: any) => ({
             id: r.id,
             title: r.title,
@@ -597,11 +694,15 @@ class StorageService {
 
         const map = new Map<string, MissionReport>();
         this.getMissionReports()
-          .filter(r => !demoIds.has(r.id) && !demoUids.has(r.missionaryId))
+          .filter(r => !deletedReportIds.has(r.id) && !demoIds.has(r.id) && !demoUids.has(r.missionaryId))
           .forEach(r => map.set(r.id, r));
-        cloudReports.forEach(cr => map.set(cr.id, cr));
+        cloudReports.forEach(cr => {
+          if (!deletedReportIds.has(cr.id)) {
+            map.set(cr.id, cr);
+          }
+        });
 
-        const merged = Array.from(map.values());
+        const merged = Array.from(map.values()).filter(r => !deletedReportIds.has(r.id));
         this.set(STORAGE_KEYS.REPORTS, merged);
         return merged;
       }
@@ -670,31 +771,38 @@ class StorageService {
     this.set(STORAGE_KEYS.REPORTS, list);
   }
 
-  public deleteMissionReport(reportId: string): void {
+  public async deleteMissionReport(reportId: string): Promise<void> {
+    this.markDeletedId(TOMBSTONE_KEYS.REPORTS, reportId);
     const list = this.getMissionReports().filter(r => r.id !== reportId);
     this.set(STORAGE_KEYS.REPORTS, list);
-    this.logAudit('admin', 'Admin', 'DELETE_REPORT', reportId, `Mission report removed by moderator.`);
+    this.logAudit('admin', 'Admin', 'DELETE_REPORT', reportId, `Mission report permanently removed.`);
 
     try {
-      apiClient.deleteReportInCloudSql(reportId).catch(() => {});
-      firestoreService.deleteReportFromFirestore(reportId).catch(() => {});
-    } catch {}
+      await Promise.allSettled([
+        apiClient.deleteReportInCloudSql(reportId),
+        firestoreService.deleteReportFromFirestore(reportId)
+      ]);
+    } catch (e) {
+      console.warn('Cloud delete report notice:', e);
+    }
   }
 
   // ==========================================
   // EVENTS & PRAYER MEETINGS
   // ==========================================
   public getEvents(): EventMeeting[] {
-    return this.get<EventMeeting[]>(STORAGE_KEYS.EVENTS, []);
+    const deletedEventIds = this.getDeletedIds(TOMBSTONE_KEYS.EVENTS);
+    return this.get<EventMeeting[]>(STORAGE_KEYS.EVENTS, []).filter(e => !deletedEventIds.has(e.id));
   }
 
   public async syncEventsFromCloudSql(): Promise<EventMeeting[]> {
+    const deletedEventIds = this.getDeletedIds(TOMBSTONE_KEYS.EVENTS);
     try {
       const res = await apiClient.getEventsFromCloudSql();
       if (res && res.success && Array.isArray(res.events)) {
         const demoIds = new Set(['evt-1', 'evt-2', 'evt-3']);
         const cloudEvents: EventMeeting[] = res.events
-          .filter((e: any) => !demoIds.has(e.id))
+          .filter((e: any) => !deletedEventIds.has(e.id) && !demoIds.has(e.id))
           .map((e: any) => ({
             id: e.id,
             title: e.title,
@@ -713,11 +821,15 @@ class StorageService {
 
         const map = new Map<string, EventMeeting>();
         this.getEvents()
-          .filter(e => !demoIds.has(e.id))
+          .filter(e => !deletedEventIds.has(e.id) && !demoIds.has(e.id))
           .forEach(e => map.set(e.id, e));
-        cloudEvents.forEach(ce => map.set(ce.id, ce));
+        cloudEvents.forEach(ce => {
+          if (!deletedEventIds.has(ce.id)) {
+            map.set(ce.id, ce);
+          }
+        });
 
-        const merged = Array.from(map.values());
+        const merged = Array.from(map.values()).filter(e => !deletedEventIds.has(e.id));
         this.set(STORAGE_KEYS.EVENTS, merged);
         return merged;
       }
@@ -788,15 +900,20 @@ class StorageService {
     this.set(STORAGE_KEYS.EVENTS, list);
   }
 
-  public deleteEvent(eventId: string): void {
+  public async deleteEvent(eventId: string): Promise<void> {
+    this.markDeletedId(TOMBSTONE_KEYS.EVENTS, eventId);
     const list = this.getEvents().filter(e => e.id !== eventId);
     this.set(STORAGE_KEYS.EVENTS, list);
     this.logAudit('admin', 'Admin', 'DELETE_EVENT', eventId, `Prayer meeting event removed.`);
 
     try {
-      apiClient.deleteEventInCloudSql(eventId).catch(() => {});
-      firestoreService.deleteEventFromFirestore(eventId).catch(() => {});
-    } catch {}
+      await Promise.allSettled([
+        apiClient.deleteEventInCloudSql(eventId),
+        firestoreService.deleteEventFromFirestore(eventId)
+      ]);
+    } catch (e) {
+      console.warn('Cloud delete event notice:', e);
+    }
   }
 
   // ==========================================
@@ -927,7 +1044,9 @@ class StorageService {
   }
 
   public getResources(): MissionaryResource[] {
-    return this.get<MissionaryResource[]>(STORAGE_KEYS.RESOURCES, INITIAL_RESOURCES);
+    const deletedIds = this.getDeletedIds(TOMBSTONE_KEYS.RESOURCES);
+    const list = this.get<MissionaryResource[]>(STORAGE_KEYS.RESOURCES, INITIAL_RESOURCES);
+    return list.filter(r => !deletedIds.has(r.id));
   }
 
   public addResource(res: MissionaryResource): void {
@@ -948,9 +1067,10 @@ class StorageService {
   }
 
   public deleteResource(resourceId: string): void {
+    this.markDeletedId(TOMBSTONE_KEYS.RESOURCES, resourceId);
     const list = this.getResources().filter(r => r.id !== resourceId);
     this.set(STORAGE_KEYS.RESOURCES, list);
-    this.logAudit('admin', 'Admin', 'DELETE_RESOURCE', resourceId, `Resource removed from library.`);
+    this.logAudit('admin', 'Admin', 'DELETE_RESOURCE', resourceId, `Resource permanently removed from library.`);
   }
 
   // ==========================================
@@ -1127,9 +1247,17 @@ class StorageService {
   // ==========================================
   // USER DELETION & LAUNCH PURGE
   // ==========================================
-  public deleteUser(userId: string): void {
+  public async deleteUser(userId: string): Promise<void> {
+    this.markDeletedId(TOMBSTONE_KEYS.USERS, userId);
+
     const users = this.getUsers().filter(u => u.id !== userId);
     this.set(STORAGE_KEYS.USERS, users);
+
+    // If the deleted user is the saved admin, clear saved admin profile
+    const savedAdmin = this.getSavedAdminProfile();
+    if (savedAdmin && savedAdmin.id === userId) {
+      localStorage.removeItem('prayercloud_saved_admin_profile');
+    }
     
     const creds = this.getUserCredentials();
     delete creds[userId];
@@ -1155,27 +1283,45 @@ class StorageService {
       this.set(STORAGE_KEYS.MESSAGES, allMsgs);
     }
 
-    this.logAudit('admin', 'Super Admin', 'DELETE_USER', userId, `User account ${userId} deleted from system and chat channels.`);
+    this.logAudit('admin', 'Super Admin', 'DELETE_USER', userId, `User account ${userId} deleted permanently from system, database, and chat channels.`);
 
     try {
-      apiClient.deleteUserFromCloudSql(userId).catch(() => {});
-      firestoreService.deleteUserFromFirestore(userId).catch(() => {});
-    } catch {}
+      await Promise.allSettled([
+        apiClient.deleteUserFromCloudSql(userId),
+        firestoreService.deleteUserFromFirestore(userId)
+      ]);
+    } catch (e) {
+      console.warn('Cloud delete notice:', e);
+    }
   }
 
   public purgeNonAdminUsers(): { remainingUsers: User[]; purgedCount: number } {
     const allUsers = this.getUsers();
+    const savedAdmin = this.getSavedAdminProfile();
     const adminUsers = allUsers.filter(
-      u => u.role === 'Super Admin' || u.id === 'usr-admin-1' || u.email === 'admin@prayercloud.org' || u.email === 'dtemitope60@gmail.com'
+      u => u.role === 'Super Admin' ||
+           u.id === 'usr-admin-1' ||
+           (savedAdmin && u.id === savedAdmin.id) ||
+           (savedAdmin && u.email.toLowerCase() === savedAdmin.email.toLowerCase()) ||
+           u.email === 'admin@prayercloud.org' ||
+           u.email === 'dtemitope60@gmail.com'
     );
     
+    // Tombstone all purged users so they are never re-imported from cloud or cached data
+    allUsers.forEach(u => {
+      if (!adminUsers.some(a => a.id === u.id)) {
+        this.markDeletedId(TOMBSTONE_KEYS.USERS, u.id);
+      }
+    });
+
     const purgedCount = allUsers.length - adminUsers.length;
     this.set(STORAGE_KEYS.USERS, adminUsers);
 
     const creds = this.getUserCredentials();
-    const newCreds: Record<string, string> = {
-      'usr-admin-1': creds['usr-admin-1'] || 'Admin@12345'
-    };
+    const newCreds: Record<string, string> = {};
+    adminUsers.forEach(a => {
+      newCreds[a.id] = creds[a.id] || 'Admin@12345';
+    });
     this.set('prayercloud_credentials_v2', newCreds);
 
     this.purgeChatroomDemoData();
@@ -1271,44 +1417,77 @@ class StorageService {
     purgedRecordingsCount: number;
     purgedMessagesCount: number;
   } {
-    // 1. Purge demo users
+    // 1. Purge demo users and tombstone them
     const allUsers = this.getUsers();
+    const savedAdmin = this.getSavedAdminProfile();
     const adminUsers = allUsers.filter(
-      u => u.role === 'Super Admin' || u.id === 'usr-admin-1' || u.email === 'admin@prayercloud.org' || u.email === 'dtemitope60@gmail.com'
+      u => u.role === 'Super Admin' ||
+           u.id === 'usr-admin-1' ||
+           (savedAdmin && u.id === savedAdmin.id) ||
+           (savedAdmin && u.email.toLowerCase() === savedAdmin.email.toLowerCase()) ||
+           u.email === 'admin@prayercloud.org' ||
+           u.email === 'dtemitope60@gmail.com'
     );
+    allUsers.forEach(u => {
+      if (!adminUsers.some(a => a.id === u.id)) {
+        this.markDeletedId(TOMBSTONE_KEYS.USERS, u.id);
+      }
+    });
     const purgedUsersCount = allUsers.length - adminUsers.length;
     this.set(STORAGE_KEYS.USERS, adminUsers);
 
     // 2. Reset credentials to only admin
     const creds = this.getUserCredentials();
-    const newCreds: Record<string, string> = {
-      'usr-admin-1': creds['usr-admin-1'] || 'Admin@12345'
-    };
+    const newCreds: Record<string, string> = {};
+    adminUsers.forEach(a => {
+      newCreds[a.id] = creds[a.id] || 'Admin@12345';
+    });
     this.set('prayercloud_credentials_v2', newCreds);
 
-    // 3. Purge demo prayers
+    // 3. Purge demo prayers and tombstone
     const currentPrayers = this.getPrayerRequests();
     const demoTitles = ['pamir corridor', 'tehranian', 'berber clan', 'turkana', 'secret believers', 'cox\'s bazar', 'bandung', 'saharan oasis'];
     const demoUids = new Set(['usr-miss-1', 'usr-intercessor-1', 'usr-pastor-1', 'usr-volunteer-1', 'usr-evangelist-1']);
     const keptPrayers = currentPrayers.filter(p => {
       const t = (p.title || '').toLowerCase();
-      if (demoTitles.some(dt => t.includes(dt))) return false;
-      if (demoUids.has(p.authorId)) return false;
-      if (['pr-1', 'pr-2', 'pr-3', 'pr-4'].includes(p.id)) return false;
+      if (demoTitles.some(dt => t.includes(dt))) {
+        this.markDeletedId(TOMBSTONE_KEYS.PRAYERS, p.id);
+        return false;
+      }
+      if (demoUids.has(p.authorId)) {
+        this.markDeletedId(TOMBSTONE_KEYS.PRAYERS, p.id);
+        return false;
+      }
+      if (['pr-1', 'pr-2', 'pr-3', 'pr-4'].includes(p.id)) {
+        this.markDeletedId(TOMBSTONE_KEYS.PRAYERS, p.id);
+        return false;
+      }
       return true;
     });
     const purgedPrayersCount = currentPrayers.length - keptPrayers.length;
     this.set(STORAGE_KEYS.PRAYERS, keptPrayers);
 
-    // 4. Purge demo reports
+    // 4. Purge demo reports and tombstone
     const currentReports = this.getMissionReports();
-    const keptReports = currentReports.filter(r => !['rep-1', 'rep-2'].includes(r.id) && !['usr-miss-1', 'usr-pastor-1'].includes(r.missionaryId));
+    const keptReports = currentReports.filter(r => {
+      if (['rep-1', 'rep-2'].includes(r.id) || ['usr-miss-1', 'usr-pastor-1'].includes(r.missionaryId)) {
+        this.markDeletedId(TOMBSTONE_KEYS.REPORTS, r.id);
+        return false;
+      }
+      return true;
+    });
     const purgedReportsCount = currentReports.length - keptReports.length;
     this.set(STORAGE_KEYS.REPORTS, keptReports);
 
-    // 5. Purge demo events
+    // 5. Purge demo events and tombstone
     const currentEvents = this.getEvents();
-    const keptEvents = currentEvents.filter(e => !['evt-1', 'evt-2', 'evt-3'].includes(e.id));
+    const keptEvents = currentEvents.filter(e => {
+      if (['evt-1', 'evt-2', 'evt-3'].includes(e.id)) {
+        this.markDeletedId(TOMBSTONE_KEYS.EVENTS, e.id);
+        return false;
+      }
+      return true;
+    });
     const purgedEventsCount = currentEvents.length - keptEvents.length;
     this.set(STORAGE_KEYS.EVENTS, keptEvents);
 
