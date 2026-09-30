@@ -155,12 +155,6 @@ class StorageService {
       this.set(STORAGE_KEYS.RECORDINGS, []);
     }
 
-    // Auto-clean any legacy demo records cached in browser from prior deployments
-    if (!localStorage.getItem('prayercloud_demo_cleaned_v4')) {
-      this.purgeAllDemoData();
-      localStorage.setItem('prayercloud_demo_cleaned_v4', 'true');
-    }
-
     // Trigger full background sync with Google Cloud SQL
     this.syncAllFromCloudSql().catch(() => {});
   }
@@ -1296,33 +1290,24 @@ class StorageService {
   }
 
   public purgeNonAdminUsers(): { remainingUsers: User[]; purgedCount: number } {
+    const demoUids = new Set(['usr-miss-1', 'usr-intercessor-1', 'usr-pastor-1', 'usr-volunteer-1', 'usr-evangelist-1']);
+    const demoEmails = new Set([
+      'johnathan.bae@prayercloud.org',
+      'deborah.alabi@prayercloud.org',
+      'pastor.mateo@prayercloud.org',
+      'sarah.jenkins@prayercloud.org',
+      'caleb.masri@prayercloud.org',
+      'emmanuel.mensah@prayercloud.org'
+    ]);
+
     const allUsers = this.getUsers();
-    const savedAdmin = this.getSavedAdminProfile();
-    const adminUsers = allUsers.filter(
-      u => u.role === 'Super Admin' ||
-           u.id === 'usr-admin-1' ||
-           (savedAdmin && u.id === savedAdmin.id) ||
-           (savedAdmin && u.email.toLowerCase() === savedAdmin.email.toLowerCase()) ||
-           u.email === 'admin@prayercloud.org' ||
-           u.email === 'dtemitope60@gmail.com'
-    );
+    const keptUsers = allUsers.filter(u => !demoUids.has(u.id) && !demoEmails.has((u.email || '').toLowerCase()));
     
-    // Tombstone all purged users so they are never re-imported from cloud or cached data
-    allUsers.forEach(u => {
-      if (!adminUsers.some(a => a.id === u.id)) {
-        this.markDeletedId(TOMBSTONE_KEYS.USERS, u.id);
-      }
-    });
+    // Tombstone only the mock demo accounts
+    demoUids.forEach(id => this.markDeletedId(TOMBSTONE_KEYS.USERS, id));
 
-    const purgedCount = allUsers.length - adminUsers.length;
-    this.set(STORAGE_KEYS.USERS, adminUsers);
-
-    const creds = this.getUserCredentials();
-    const newCreds: Record<string, string> = {};
-    adminUsers.forEach(a => {
-      newCreds[a.id] = creds[a.id] || 'Admin@12345';
-    });
-    this.set('prayercloud_credentials_v2', newCreds);
+    const purgedCount = allUsers.length - keptUsers.length;
+    this.set(STORAGE_KEYS.USERS, keptUsers);
 
     this.purgeChatroomDemoData();
 
@@ -1331,14 +1316,10 @@ class StorageService {
       'Super Admin',
       'PURGE_USER_DATABASE_FOR_LAUNCH',
       'Users Table & Chatrooms',
-      `Purged ${purgedCount} directory records and cleaned all chatrooms for official launch. Primary administrator retained.`
+      `Purged ${purgedCount} demo records and cleaned all chatrooms. All registered users retained.`
     );
 
-    try {
-      apiClient.purgeNonAdminUsersFromCloudSql().catch(() => {});
-    } catch {}
-
-    return { remainingUsers: adminUsers, purgedCount };
+    return { remainingUsers: keptUsers, purgedCount };
   }
 
   public purgeChatroomDemoData(): { purgedMessagesCount: number; updatedRoomsCount: number } {
@@ -1346,7 +1327,7 @@ class StorageService {
     const currentUsers = this.getUsers();
     const adminIds = new Set(
       currentUsers
-        .filter(u => u.role === 'Super Admin' || u.role === 'Admin' || u.id === 'usr-admin-1' || u.email === 'admin@prayercloud.org' || u.email === 'dtemitope60@gmail.com')
+        .filter(u => u.role === 'Super Admin' || u.role === 'Admin' || u.id === 'usr-admin-1' || u.email === 'admin@prayercloud.org')
         .map(u => u.id)
     );
 
@@ -1417,37 +1398,27 @@ class StorageService {
     purgedRecordingsCount: number;
     purgedMessagesCount: number;
   } {
-    // 1. Purge demo users and tombstone them
+    // 1. Purge only demo users and tombstone demo accounts, retaining all registered users
     const allUsers = this.getUsers();
-    const savedAdmin = this.getSavedAdminProfile();
-    const adminUsers = allUsers.filter(
-      u => u.role === 'Super Admin' ||
-           u.id === 'usr-admin-1' ||
-           (savedAdmin && u.id === savedAdmin.id) ||
-           (savedAdmin && u.email.toLowerCase() === savedAdmin.email.toLowerCase()) ||
-           u.email === 'admin@prayercloud.org' ||
-           u.email === 'dtemitope60@gmail.com'
-    );
-    allUsers.forEach(u => {
-      if (!adminUsers.some(a => a.id === u.id)) {
-        this.markDeletedId(TOMBSTONE_KEYS.USERS, u.id);
-      }
-    });
-    const purgedUsersCount = allUsers.length - adminUsers.length;
-    this.set(STORAGE_KEYS.USERS, adminUsers);
+    const demoUids = new Set(['usr-miss-1', 'usr-intercessor-1', 'usr-pastor-1', 'usr-volunteer-1', 'usr-evangelist-1']);
+    const demoEmails = new Set([
+      'johnathan.bae@prayercloud.org',
+      'deborah.alabi@prayercloud.org',
+      'pastor.mateo@prayercloud.org',
+      'sarah.jenkins@prayercloud.org',
+      'caleb.masri@prayercloud.org',
+      'emmanuel.mensah@prayercloud.org'
+    ]);
 
-    // 2. Reset credentials to only admin
-    const creds = this.getUserCredentials();
-    const newCreds: Record<string, string> = {};
-    adminUsers.forEach(a => {
-      newCreds[a.id] = creds[a.id] || 'Admin@12345';
-    });
-    this.set('prayercloud_credentials_v2', newCreds);
+    const keptUsers = allUsers.filter(u => !demoUids.has(u.id) && !demoEmails.has((u.email || '').toLowerCase()));
+    demoUids.forEach(id => this.markDeletedId(TOMBSTONE_KEYS.USERS, id));
 
-    // 3. Purge demo prayers and tombstone
+    const purgedUsersCount = allUsers.length - keptUsers.length;
+    this.set(STORAGE_KEYS.USERS, keptUsers);
+
+    // 2. Purge demo prayers and tombstone
     const currentPrayers = this.getPrayerRequests();
     const demoTitles = ['pamir corridor', 'tehranian', 'berber clan', 'turkana', 'secret believers', 'cox\'s bazar', 'bandung', 'saharan oasis'];
-    const demoUids = new Set(['usr-miss-1', 'usr-intercessor-1', 'usr-pastor-1', 'usr-volunteer-1', 'usr-evangelist-1']);
     const keptPrayers = currentPrayers.filter(p => {
       const t = (p.title || '').toLowerCase();
       if (demoTitles.some(dt => t.includes(dt))) {
@@ -1467,7 +1438,7 @@ class StorageService {
     const purgedPrayersCount = currentPrayers.length - keptPrayers.length;
     this.set(STORAGE_KEYS.PRAYERS, keptPrayers);
 
-    // 4. Purge demo reports and tombstone
+    // 3. Purge demo reports and tombstone
     const currentReports = this.getMissionReports();
     const keptReports = currentReports.filter(r => {
       if (['rep-1', 'rep-2'].includes(r.id) || ['usr-miss-1', 'usr-pastor-1'].includes(r.missionaryId)) {
@@ -1479,7 +1450,7 @@ class StorageService {
     const purgedReportsCount = currentReports.length - keptReports.length;
     this.set(STORAGE_KEYS.REPORTS, keptReports);
 
-    // 5. Purge demo events and tombstone
+    // 4. Purge demo events and tombstone
     const currentEvents = this.getEvents();
     const keptEvents = currentEvents.filter(e => {
       if (['evt-1', 'evt-2', 'evt-3'].includes(e.id)) {
@@ -1491,13 +1462,13 @@ class StorageService {
     const purgedEventsCount = currentEvents.length - keptEvents.length;
     this.set(STORAGE_KEYS.EVENTS, keptEvents);
 
-    // 6. Purge demo recordings
+    // 5. Purge demo recordings
     const currentRecordings = this.getRecordings();
     const keptRecordings = currentRecordings.filter(rec => !['rec-1', 'rec-2', 'rec-3'].includes(rec.id));
     const purgedRecordingsCount = currentRecordings.length - keptRecordings.length;
     this.set(STORAGE_KEYS.RECORDINGS, keptRecordings);
 
-    // 7. Purge chatroom demo data
+    // 6. Purge chatroom demo data
     const chatRes = this.purgeChatroomDemoData();
 
     // Mark demo data as permanently purged so it never gets auto-seeded again
@@ -1510,12 +1481,11 @@ class StorageService {
       'Super Admin',
       'PURGE_ALL_DEMO_DATA_FOR_LAUNCH',
       'All Entities',
-      `Purged ${purgedUsersCount} demo users, ${purgedPrayersCount} demo prayers, ${purgedReportsCount} reports, ${purgedEventsCount} events, and ${chatRes.purgedMessagesCount} demo transmissions for official deployment.`
+      `Purged ${purgedUsersCount} demo users, ${purgedPrayersCount} demo prayers, ${purgedReportsCount} reports, ${purgedEventsCount} events, and ${chatRes.purgedMessagesCount} demo transmissions for official deployment. All real registered users preserved.`
     );
 
-    // Clean Cloud SQL backend
+    // Clean demo prayers from Cloud SQL
     try {
-      apiClient.purgeNonAdminUsersFromCloudSql().catch(() => {});
       apiClient.purgeDemoPrayersFromCloudSql().catch(() => {});
     } catch {}
 

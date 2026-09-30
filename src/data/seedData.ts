@@ -26,22 +26,6 @@ export const INITIAL_USERS: User[] = [
     mustChangePassword: false,
     joinedAt: '2025-01-01T00:00:00Z',
     prayersOfferedCount: 2480
-  },
-  {
-    id: 'usr-1790216583705',
-    fullName: 'Temitope Admin',
-    username: 'dtemitope60',
-    email: 'dtemitope60@gmail.com',
-    phoneNumber: '+234-800-PRAY-NOW',
-    country: 'Nigeria',
-    role: 'Super Admin',
-    avatarUrl: '',
-    bio: 'Global directorate overseer and platform administrator.',
-    isVerified: true,
-    isActive: true,
-    mustChangePassword: false,
-    joinedAt: '2025-01-01T00:00:00Z',
-    prayersOfferedCount: 2480
   }
 ];
 

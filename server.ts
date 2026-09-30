@@ -543,7 +543,7 @@ app.get('/api/email/status', async (req: Request, res: Response) => {
   try {
     const hasApiKey = !!(process.env.RESEND_API_KEY || '').trim();
     const sender = (process.env.EMAIL_FROM || '').trim() || 'PrayerCloud <notifications@livingtech.name.ng>';
-    const adminEmail = (process.env.ADMIN_NOTIFICATION_EMAIL || '').trim() || 'dtemitope60@gmail.com';
+    const adminEmail = (process.env.ADMIN_NOTIFICATION_EMAIL || '').trim() || 'admin@prayercloud.org';
 
     return res.json({
       success: true,
@@ -562,7 +562,7 @@ app.get('/api/email/status', async (req: Request, res: Response) => {
 app.post('/api/email/test', async (req: Request, res: Response) => {
   try {
     const { recipient, sender } = req.body || {};
-    const targetEmail = recipient || (process.env.ADMIN_NOTIFICATION_EMAIL || '').trim() || 'dtemitope60@gmail.com';
+    const targetEmail = recipient || (process.env.ADMIN_NOTIFICATION_EMAIL || '').trim() || 'admin@prayercloud.org';
 
     let result: any;
     if (sender) {

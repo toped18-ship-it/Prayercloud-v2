@@ -56,7 +56,7 @@ class EmailService {
   private getAdminEmail(): string {
     return (
       (process.env.ADMIN_NOTIFICATION_EMAIL || '').trim() ||
-      'dtemitope60@gmail.com'
+      'admin@prayercloud.org'
     );
   }
 
